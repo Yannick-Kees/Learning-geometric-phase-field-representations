@@ -8,7 +8,6 @@ class small_MLP(nn.Module):
         self.lin1 = nn.Linear(2,NUM_NODES)
         self.lin2 = nn.Linear(NUM_NODES,NUM_NODES)
         self.lin3 = nn.Linear(NUM_NODES,NUM_NODES)
-        self.lin3 = nn.Linear(NUM_NODES,NUM_NODES)
         self.lin4 = nn.Linear(NUM_NODES,1)
 
     def forward(self, x):

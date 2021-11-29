@@ -1,6 +1,5 @@
 from networks import *
 
-
 def gradient(inputs, outputs):
     # Returns:
     #   Pointwise gradient estimation [ Df(x_i) ]
@@ -30,6 +29,7 @@ def ModicaMortola(f, eps, n):
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     
     start_points = Variable(torch.rand(n, 2), requires_grad =True)  # Create random points [ x_i ]
+    start_points = start_points.to(device)                          # Move points to GPU if possible
     gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
     norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
 
@@ -55,6 +55,7 @@ def Zero_recontruction_loss(f, pc, eps, n, c):
         
         variation  = torch.normal(mean = torch.full(size=( n* dim,1), fill_value=0.0) , std= torch.full(size=(n*dim,1), fill_value=.001) )  # Random points in B_\delta(0)
         start_point = point.repeat(n,1)+   torch.reshape( variation, (n, dim) )                                                             # Random points [ x_i ] in B_\delta(x)
+        start_point = start_point.to(device)
         loss +=  torch.abs(f(start_point).mean())                                                                                           # Estimate \sum_{x\in X} |\dashint_{B_delta} u(x) dx|
 
     return  c*eps**(1.0/3.0)/(len(pc)) *  loss      # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} u(x) dx|
@@ -69,7 +70,7 @@ def Eikonal_loss(f, pc, eps):
     #   pc:     Pointcloud X = [ x_i ]
     #   eps:    Epsilon
     
-    gradients = gradient( pc, f(pc) )                                               # calculates [ Du(x) ]
+    gradients = gradient( pc, f(pc) )                                              # calculates [ Du(x) ]
     norms = np.sqrt(eps) *  gradients.norm(2,dim=-1)                                # calculates [ |Dw(x)| ] = [ sqrt(eps) * |Du(x)| ]
     eikonal = torch.abs(torch.full(size=(len(pc) ,1), fill_value=1.0)-norms)**2     # calculates [ | 1-|Dw(x)| |^2 ] 
     
@@ -82,3 +83,5 @@ def Phase_loss(f, pointcloud, eps, n, m, c, mu ):
 #############################
 # Ambrosio Tortorelli #######
 #############################
+
+print(device)
