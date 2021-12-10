@@ -9,6 +9,7 @@ Quellen und so
 * RBF: [Reconstruction and Representation of 3D Objects with Radial Basis
 Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatson, Cherrie, ... 2001)
 * Polynomials: [Multi-level Partition of Unity Implicits](https://www.cc.gatech.edu/~turk/my_papers/mpu_implicits.pdf) (Ohtake, Belyaev, .. 2003)
+* Polynomials: [Smoothing of partition of unity implicit surfaces for noise robust surface reconstruction](http://www.den.t.u-tokyo.ac.jp/nagai/Material/PoissonPU/PoissonPU.pdf) (Nagai et all 2009)
 
 
  ## Surface reconstruction via occupancy function:

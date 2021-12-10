@@ -11,7 +11,7 @@ def draw_phase_field(f,x_,y_):
     ylist = np.linspace(0, y_, 100)
     X, Y = np.meshgrid(xlist, ylist)
 
-    Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for i in range(len(X))] for j in range(len(X[0]))] # Evaluate function in points
+    Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
     
     plt.figure()                                                    # Draw contour plot
     levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                        # Specify contours to plot
@@ -55,14 +55,44 @@ def draw_point_cloud(pc):
     
     # Parameters:
     #   pc:      Tensor of points
-    
-    pointcloud = pc.detach().numpy().T 
-    plt.plot(pointcloud[0],pointcloud[1], '.')
-    plt.xlim(0,1)
-    plt.ylim(0,1)
-    plt.show()
-    return
 
+    d = pc.shape[1] # dimension
+    if (d==2):
+        pointcloud = pc.detach().numpy().T 
+        plt.plot(pointcloud[0],pointcloud[1], '.')
+        plt.xlim(0,1)
+        plt.ylim(0,1)
+        plt.show()
+        return
+    if (d==3):
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        pointcloud = pc.detach().numpy().T 
+        ax.scatter(pointcloud[0],pointcloud[1],pointcloud[2])
+        plt.show()
+        print("###")
 
+def plot_implicit(fn):
+    """
+    create a plot of an implicit function
+    fn  ...implicit function (plot where fn==0)
+    bbox ..the x,y,and z limits of plotted interval
+    """
+    plot = k3d.plot()
+    x = np.linspace(0, 1, 40, dtype=np.float32)
+    y = np.linspace(0, 1, 40, dtype=np.float32)
+    z = np.linspace(0, 1, 40, dtype=np.float32)
+    x, y, z = np.meshgrid(x, y, z, indexing='ij')
+    Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
+    plt_iso = k3d.marching_cubes(Z, compression_level=9, xmin=0, xmax=1,ymin=0, ymax=1,  zmin=0, zmax=1, level=0.0, flat_shading=False)
+    plot += plt_iso
+    plot += plt_iso
+    plot.display()
 # draw_point_cloud(triangle)
+def test_f(t):
+    return t[0]**2+t[1]**2+t[2]**2 -1 
+
+
+#plot_implicit(test_f)
+
     

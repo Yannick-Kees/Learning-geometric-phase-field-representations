@@ -16,4 +16,13 @@ def report_progress(current, total, error):
    
 # enable computing on GPU if possible
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    
+
+def read_off(file):
+   # read .off file
+   if 'OFF' != file.readline().strip():
+      raise('Not a valid OFF header')
+   n_verts, n_faces, n_dontknow = tuple([int(s) for s in file.readline().strip().split(' ')])
+   verts = [[float(s) for s in file.readline().strip().split()] for _ in range(n_verts)]
+   return verts
+
+

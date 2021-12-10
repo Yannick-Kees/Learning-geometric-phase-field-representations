@@ -35,3 +35,11 @@ def add_noise(pc):
     return pc
 
 
+def normalize(pc):
+    
+    pc = np.matrix(pc)
+    norm = pc - np.amin(pc)
+    norm = .4 * (1.0/np.amax(norm) *  norm  ) + .2
+    return norm.tolist()
+
+

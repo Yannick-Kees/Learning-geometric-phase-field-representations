@@ -19,7 +19,7 @@ def gradient(inputs, outputs):
 # double well potential
 W = lambda s: s**2 - 2.0*torch.abs(s) + torch.tensor([1.0])
 
-def ModicaMortola(f, eps, n):
+def ModicaMortola(f, eps, n, d):
     # Returns:
     #   Monte Carlo Integral of int_{[0,1]^2} W(u(x)) + eps * |Du(x)|^2 dx
     
@@ -27,8 +27,9 @@ def ModicaMortola(f, eps, n):
     #   f:      Function to evaluate
     #   eps:    Epsilon
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
-    
-    start_points = Variable(torch.rand(n, 2), requires_grad =True)  # Create random points [ x_i ]
+    #   d:      Dimension of point cloud
+     
+    start_points = Variable(torch.rand(n, d), requires_grad =True)  # Create random points [ x_i ]
     start_points = start_points.to(device)                          # Move points to GPU if possible
     gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
     norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
@@ -36,7 +37,7 @@ def ModicaMortola(f, eps, n):
     return (W(f(start_points))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
 
 
-def Zero_recontruction_loss(f, pc, eps, n, c):
+def Zero_recontruction_loss(f, pc, eps, n, c, d):
     # Returns:
     #   Monte Carlo Estimation of C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta}(x) u(s) ds|
     
@@ -46,22 +47,22 @@ def Zero_recontruction_loss(f, pc, eps, n, c):
     #   eps:    Epsilon
     #   c:      Constant
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
+    #   d:      Dimension of point cloud
     
     loss = 0    # loss in the sum
-    dim = 2     # Dimension of points in point cloud
     
     for point in pc:
-        # loop over all point in pointcloud, i.e. x\in X
+        # loop over all points in pointcloud, i.e. x\in X
         
-        variation  = torch.normal(mean = torch.full(size=( n* dim,1), fill_value=0.0) , std= torch.full(size=(n*dim,1), fill_value=.001) )  # Random points in B_\delta(0)
-        start_point = point.repeat(n,1)+   torch.reshape( variation, (n, dim) )                                                             # Random points [ x_i ] in B_\delta(x)
+        variation  = torch.normal(mean = torch.full(size=( n* d,1), fill_value=0.0) , std= torch.full(size=(n*d,1), fill_value=.001) )  # Random points in B_\delta(0)
+        start_point = point.repeat(n,1)+   torch.reshape( variation, (n, d) )                                                             # Random points [ x_i ] in B_\delta(x)
         start_point = start_point.to(device)
         loss +=  torch.abs(f(start_point).mean())                                                                                           # Estimate \sum_{x\in X} |\dashint_{B_delta} u(x) dx|
 
     return  c*eps**(1.0/3.0)/(len(pc)) *  loss      # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} u(x) dx|
 
 
-def Eikonal_loss(f, pc, eps):
+def Eikonal_loss(f, pc, eps, d):
     # Returns:
     #   Eikonal loss around the points of point cloud
     
@@ -76,12 +77,11 @@ def Eikonal_loss(f, pc, eps):
     
     return eikonal.mean()    # return \sum_{x\in X} |1-|Dw(u) | |^2                 # returns [ | 1-|Dw(x)| |^2 ] 
 
-def Phase_loss(f, pointcloud, eps, n, m, c, mu ):
-    return eps**(-.5)*(ModicaMortola(f, eps, n) +  Zero_recontruction_loss(f, pointcloud, eps, m, c))+mu * Eikonal_loss(f, pointcloud, eps )
+def Phase_loss(f, pointcloud, eps, n, m, c, mu, d):
+    return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
 
 
 #############################
 # Ambrosio Tortorelli #######
 #############################
 
-print(device)

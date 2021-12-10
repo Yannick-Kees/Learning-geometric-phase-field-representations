@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 1000
+NUM_TRAINING_SESSIONS = 20000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 128
@@ -22,19 +22,24 @@ MU = 0.1
 # Main #############
 ####################
 
-network = small_MLP(NUM_NODES)
+network = small_MLP3D(NUM_NODES)
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pointcloud = Variable( eight , requires_grad=True).to(device)
+file = open("3dObjects/cube.off")    
+pc = read_off(file)
+cloud = torch.tensor(normalize(pc) )
+
+
+pointcloud = Variable( cloud , requires_grad=True).to(device)
 
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
     # feed forward
     # Omega = [0,1]^2
     
-    loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU, 2)
+    loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU, 3)
     
     if (i%50==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
@@ -44,7 +49,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     optimizer.step()
     scheduler.step(loss)
     
-draw_point_cloud(pointcloud)
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\quadrat_2.pth")
-color_plot(network)
-draw_phase_field(network, 1.0, 1.0)
+
+torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\quadrat3D.pth")
+
+plot_implicit(network)

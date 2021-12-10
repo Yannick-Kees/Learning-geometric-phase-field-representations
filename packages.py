@@ -15,3 +15,4 @@ from torch.functional import Tensor
 import torch.optim as optim
 import sys
 from PIL import Image
+import k3d
