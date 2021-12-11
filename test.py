@@ -1,8 +1,7 @@
 from networks import *
 
-plot = k3d.plot()
-
-# here you would normally create objects to display
-# and add them to the plot
-
-plot.display()
+file = open("3dObjects/cube.off")    
+pc = read_off(file)
+print(pc)
+cloud = torch.tensor(normalize(pc) )
+print(cloud)

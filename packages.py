@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.autograd import Variable
+import torchvision.models as models
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm

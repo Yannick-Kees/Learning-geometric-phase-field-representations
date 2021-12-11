@@ -22,24 +22,39 @@ def produce_circe(n):
     # n points sampled from a circle
     r = .3
     pc = []
+    
     for t in range(n):
         x   = float(r * np.sin( 2 * t * np.pi /n ) + .5)
         y   = float(r * np.cos( 2 * t * np.pi /n ) + .5)
         pc.append([x,y])
+        
     return torch.tensor(pc)
 
+
+#############################
+# change pointclouds ########
+#############################
+
 def add_noise(pc):
-    # Adding noise to points in pointcloud
+    # Adding noise to every second point in pointcloud
+    
     for i in range(len(pc)//2):
         pc[2*i] +=  uniform(-0.02,.02)
+        
     return pc
 
 
 def normalize(pc):
-    
+    # Scale all point of the point cloud in such a way, that every coordinate is betweeen 0.2 and 0.8 
+    # So they are still away enough from the boundary
+        
     pc = np.matrix(pc)
+    
+    if np.amin(pc)<0:
+        pc = pc - np.amin(pc)
+    
     norm = pc - np.amin(pc)
-    norm = .4 * (1.0/np.amax(norm) *  norm  ) + .2
+    norm = .6 * (1.0/np.amax(norm) *  norm  ) + .2
     return norm.tolist()
 
 

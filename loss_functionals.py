@@ -71,13 +71,27 @@ def Eikonal_loss(f, pc, eps, d):
     #   pc:     Pointcloud X = [ x_i ]
     #   eps:    Epsilon
     
-    gradients = gradient( pc, f(pc) )                                              # calculates [ Du(x) ]
+    gradients = gradient( pc, f(pc) )                                               # calculates [ Du(x) ]
     norms = np.sqrt(eps) *  gradients.norm(2,dim=-1)                                # calculates [ |Dw(x)| ] = [ sqrt(eps) * |Du(x)| ]
     eikonal = torch.abs(torch.full(size=(len(pc) ,1), fill_value=1.0)-norms)**2     # calculates [ | 1-|Dw(x)| |^2 ] 
     
     return eikonal.mean()    # return \sum_{x\in X} |1-|Dw(u) | |^2                 # returns [ | 1-|Dw(x)| |^2 ] 
 
-def Phase_loss(f, pointcloud, eps, n, m, c, mu, d):
+def Phase_loss(f, pointcloud, eps, n, m, c, mu):
+    # Returns:
+    #   PHASE Loss = e^(-.5)(\int_\Omega W(u) +e|Du|^2 + Ce(^.3)/(n) sum_{p\in P} \dashint u ) + \mu/n \sum_{p\in P} |1-|w||
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   pc:     Pointcloud X = [ x_i ]
+    #   eps:    Epsilon
+    #   n:      Number of Sample for Monte-Carlo in int_\Omega
+    #   m:      Number of Sample for Monte-Carlo in int_{B_\delta}
+    #   c:      Constant C, contribution of Zero recontruction loss
+    #   mu:     Constant \mu, contribution of Eikonal equation
+    
+    d = pointcloud.shape[1] # dimension of point cloud
+    
     return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
 
 

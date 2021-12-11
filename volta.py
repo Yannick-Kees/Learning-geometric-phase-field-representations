@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 20000
+NUM_TRAINING_SESSIONS = 25000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 128
@@ -14,7 +14,7 @@ NUM_NODES = 128
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 50
 EPSILON = .001
-CONSTANT = 14.0
+CONSTANT = 50.0
 MU = 0.1
 
 
@@ -51,5 +51,4 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     
 
 torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\quadrat3D.pth")
-
-plot_implicit(network)
+print("Finished")

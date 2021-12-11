@@ -1,5 +1,11 @@
 from pointclouds import *
 
+
+#############################
+# 2D point cloud ############
+#############################
+
+
 def draw_phase_field(f,x_,y_):
     # Creating Contour plot of f
     
@@ -14,7 +20,7 @@ def draw_phase_field(f,x_,y_):
     Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
     
     plt.figure()                                                    # Draw contour plot
-    levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                        # Specify contours to plot
+    levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                        # Specify contours/level set to plot
     contour = plt.contour(X, Y, Z, levels, colors='k')
     plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
     plt.show()
@@ -22,6 +28,9 @@ def draw_phase_field(f,x_,y_):
     
 def color_plot(f):
     # Creating 3D plot of f on [0,1]^2
+        
+    # Parameters:
+    #   f:      Function to plot
     
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -50,6 +59,12 @@ def color_plot(f):
     plt.show()
     return
 
+#############################
+# 2/3D point cloud ##########
+#############################
+
+
+
 def draw_point_cloud(pc):
     # Plotting point cloud
     
@@ -57,6 +72,7 @@ def draw_point_cloud(pc):
     #   pc:      Tensor of points
 
     d = pc.shape[1] # dimension
+    
     if (d==2):
         pointcloud = pc.detach().numpy().T 
         plt.plot(pointcloud[0],pointcloud[1], '.')
@@ -70,14 +86,19 @@ def draw_point_cloud(pc):
         pointcloud = pc.detach().numpy().T 
         ax.scatter(pointcloud[0],pointcloud[1],pointcloud[2])
         plt.show()
-        print("###")
+
+        
+        
+#############################
+# 3D point cloud ############
+#############################       
 
 def plot_implicit(fn):
-    """
-    create a plot of an implicit function
-    fn  ...implicit function (plot where fn==0)
-    bbox ..the x,y,and z limits of plotted interval
-    """
+    # Creating 3D contour plot of f on [0,1]^2 using marching cubes 
+        
+    # Parameters:
+    #   fn:      Function to plot
+    
     plot = k3d.plot()
     x = np.linspace(0, 1, 40, dtype=np.float32)
     y = np.linspace(0, 1, 40, dtype=np.float32)
@@ -88,11 +109,14 @@ def plot_implicit(fn):
     plot += plt_iso
     plot += plt_iso
     plot.display()
-# draw_point_cloud(triangle)
+
+
+
 def test_f(t):
+    # test function for implicit plotting
     return t[0]**2+t[1]**2+t[2]**2 -1 
 
 
-#plot_implicit(test_f)
+
 
     
