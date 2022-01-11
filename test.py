@@ -1,7 +1,7 @@
 from networks import *
 
-file = open("3dObjects/cube.off")    
+file = open("3dObjects/bigcube.off")    
 pc = read_off(file)
 print(pc)
 cloud = torch.tensor(normalize(pc) )
-print(cloud)
+draw_point_cloud(cloud)

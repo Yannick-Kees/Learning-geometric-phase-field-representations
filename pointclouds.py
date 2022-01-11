@@ -30,6 +30,18 @@ def produce_circe(n):
         
     return torch.tensor(pc)
 
+def produce_spiral(n):
+    # n points sampled from a circle
+    r = .3
+    pc = []
+    
+    for t in range(n):
+        x   = float(r *t  * np.sin( 2 * t * np.pi /n ) + .5)
+        y   = float(r * np.cos( 2 * t * np.pi /n ) + .5)
+        pc.append([x,y])
+        
+    return torch.tensor( normalize(pc) )
+
 
 #############################
 # change pointclouds ########

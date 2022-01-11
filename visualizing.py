@@ -116,7 +116,3 @@ def test_f(t):
     # test function for implicit plotting
     return t[0]**2+t[1]**2+t[2]**2 -1 
 
-
-
-
-    

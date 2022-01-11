@@ -5,14 +5,14 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 25000
+NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 128
 
 # Phase-Loss
 MONTE_CARLO_SAMPLES = 200
-MONTE_CARLO_BALL_SAMPLES = 50
+MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .001
 CONSTANT = 50.0
 MU = 0.1
@@ -22,12 +22,12 @@ MU = 0.1
 # Main #############
 ####################
 
-network = small_MLP3D(NUM_NODES)
+network = ParkEtAl(3, [NUM_NODES]*4, [2] )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/cube.off")    
+file = open("3dObjects/bigcube.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 
@@ -39,9 +39,9 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     # feed forward
     # Omega = [0,1]^2
     
-    loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU, 3)
-    
-    if (i%50==0):
+    loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+    #report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+    if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
     # backpropagation
     network.zero_grad()
@@ -50,5 +50,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\quadrat3D.pth")
+torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bigcubePARK.pth")
 print("Finished")
