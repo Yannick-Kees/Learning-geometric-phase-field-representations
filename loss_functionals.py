@@ -38,7 +38,7 @@ def ModicaMortola(f, eps, n, d):
     return (W(f(start_points))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
 
 
-def Zero_recontruction_loss(f, pc, eps, n, c, d):
+def Zero_recontruction_loss_Lip(f, pc, eps, m, c, d):
     # Returns:
     #   Monte Carlo Estimation of C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta}(x) u(s) ds|
     
@@ -49,7 +49,7 @@ def Zero_recontruction_loss(f, pc, eps, n, c, d):
     #   c:      Constant
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
-    
+    """" 
     loss = 0    # loss in the sum
     
     for point in pc:
@@ -59,8 +59,24 @@ def Zero_recontruction_loss(f, pc, eps, n, c, d):
         start_point = point.repeat(n,1)+   torch.reshape( variation, (n, d) )                                                             # Random points [ x_i ] in B_\delta(x)
         start_point = start_point.to(device)
         loss +=  torch.abs(f(start_point).mean())                                                                                           # Estimate \sum_{x\in X} |\dashint_{B_delta} u(x) dx|
+        
+    loss = ( 1.0/(len(pc)) ) * loss
 
-    return  c*eps**(1.0/3.0)/(len(pc)) *  loss      # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} u(x) dx|
+    """
+    
+    n = len(pc)
+    
+    matrix = pc.repeat(m,1)
+    matrix = torch.reshape(matrix, (m,n,d)) # 3D Matrix containing the points
+    variation  = torch.normal(mean = torch.full(size=( n*m *d,1), fill_value=0.0) , std= torch.full(size=(m*n*d,1), fill_value=.001) )
+    error = torch.reshape( variation, (m,n, d) ) # 3D Matrix containing normal distribution
+    matrix += error
+    matrix = matrix.reshape(m*n,d)
+    matrix = f(matrix)  # Apply network to targets
+    matrix = torch.reshape( matrix, (m,n) ).mean(0)
+    matrix = torch.abs(matrix).mean()
+
+    return  c*eps**(1.0/3.0) *  matrix      # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} u(x) dx|
 
 
 def Eikonal_loss(f, pc, eps, d):
@@ -93,7 +109,7 @@ def Phase_loss(f, pointcloud, eps, n, m, c, mu):
     
     d = pointcloud.shape[1] # dimension of point cloud
     
-    return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
+    return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss_Lip(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
 
 
 #############################

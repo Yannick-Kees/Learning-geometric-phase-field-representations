@@ -42,6 +42,23 @@ def produce_spiral(n):
         
     return torch.tensor( normalize(pc) )
 
+def makeCube(size):
+    #
+    # Make a 3D Model of a cube
+    
+    l =[]
+    counter  = 0
+
+    for x in range(0,size+1):
+        for y in range(0,size+1):
+            for z in range(0,size+1):
+                if x ==size or x==0 or y==size or y==0 or z==size or z==0:
+                    counter += 1
+                    print(float("{0:.2f}".format(x)), float("{0:.2f}".format(y)), float("{0:.2f}".format(z)))
+
+    print(l)
+    print(counter)
+
 
 #############################
 # change pointclouds ########

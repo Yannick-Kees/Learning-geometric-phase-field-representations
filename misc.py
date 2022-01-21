@@ -46,3 +46,7 @@ def read_obj(file):
    n_verts, n_faces, n_dontknow = tuple([int(s) for s in file.readline().strip().split(' ')])
    verts = [[float(s) for s in file.readline().strip().split()] for _ in range(n_verts)]
    return verts
+
+
+def CreateFourierMatrix(size, d):
+   print([[ np.random.normal()  for _ in range(d)] for _ in range(size)])
