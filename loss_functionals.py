@@ -75,7 +75,7 @@ def Eikonal_loss(f, pc, eps, d):
     
     gradients = gradient( pc, f(pc) )                                               # calculates [ Du(x) ]
     norms = np.sqrt(eps) *  gradients.norm(2,dim=-1)                                # calculates [ |Dw(x)| ] = [ sqrt(eps) * |Du(x)| ]
-    eikonal = torch.abs(torch.full(size=(len(pc) ,1), fill_value=1.0)-norms)**2     # calculates [ | 1-|Dw(x)| |^2 ] 
+    eikonal = torch.abs(torch.full(size=(len(pc) ,1), fill_value=1.0).to(device)-norms.to(device))**2     # calculates [ | 1-|Dw(x)| |^2 ] 
     
     return eikonal.mean()    # return \sum_{x\in X} |1-|Dw(u) | |^2                 # returns [ | 1-|Dw(x)| |^2 ] 
 
