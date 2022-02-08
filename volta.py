@@ -52,5 +52,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bumpyFFPARK3.pth")
+torch.save(network.state_dict(), "bunny.pth")
 print("Finished")
