@@ -42,7 +42,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     # Omega = [0,1]^2
     
     loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-    report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+    report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     #if (i%10==0):
         #report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
     # backpropagation
