@@ -60,4 +60,9 @@ def Zero_recontruction_loss_Lip(f, pc,  m,  d):
 
 
 
-draw_point_cloud(torch.tensor(normalize(g_quadrath)))
+file = open("3dObjects/bunny.off")    
+pc = read_off(file)
+cloud = torch.tensor(normalize(pc) )
+cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+cloud = torch.tensor(normalize(cloud) )
+draw_point_cloud(cloud)

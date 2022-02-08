@@ -99,20 +99,26 @@ def plot_implicit(fn, shift=True):
     # Parameters:
     #   fn:      Function to plot
     if shift:
-        a = -.5
-        b = .5
+        xa = ya = za= -.5
+        xb = yb = zb = .5
     else:
-        a = 0.0
-        b = 1.0
+        xa = ya = za= 0.0
+        xb = yb = zb = 1.0
+    xa = -0.4
+    xb = .1
+    ya = -.1
+    yb  = 0.4
+    za = -.4
+    zb = .1
     plot = k3d.plot()
-    x = np.linspace(a, b, 40, dtype=np.float32)
-    y = np.linspace(a, b, 40, dtype=np.float32)
-    z = np.linspace(a,b, 40, dtype=np.float32)
+    x = np.linspace(xa, xb, 100, dtype=np.float32)
+    y = np.linspace(ya, yb, 100, dtype=np.float32)
+    z = np.linspace(za,zb, 100, dtype=np.float32)
     x, y, z = np.meshgrid(x, y, z, indexing='ij')
     Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
-    plt_iso = k3d.marching_cubes(Z, compression_level=9, xmin=a, xmax=b,ymin=a, ymax=b,  zmin=a, zmax=b, level=0.0, flat_shading=False)
+    plt_iso = k3d.marching_cubes(Z, compression_level=5, xmin=xa, xmax=xb,ymin=ya, ymax=yb,  zmin=za, zmax=zb, level=0.0, flat_shading=False)
     plot += plt_iso
-    plot += plt_iso
+    #plot += plt_iso
     plot.display()
 
 

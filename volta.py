@@ -9,7 +9,7 @@ NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
-FOURIER_FEATUERS = True
+FOURIER_FEATUERS = False
 SIGMA = .3
 
 # Phase-Loss
@@ -17,7 +17,7 @@ MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 CONSTANT = 50.0 if not FOURIER_FEATUERS else 70
-MU = 0.5
+MU = 0.0
 
 
 ####################
@@ -32,6 +32,8 @@ scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False
 file = open("3dObjects/bunny.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
+cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+cloud = torch.tensor(normalize(cloud) )
 
 
 pointcloud = Variable( cloud , requires_grad=True).to(device)
@@ -42,9 +44,9 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     # Omega = [0,1]^2
     
     loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-    report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    #if (i%10==0):
-        #report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+    #report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    if (i%10==0):
+        report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     # backpropagation
     network.zero_grad()
     loss.backward()
@@ -52,5 +54,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunny.pth")
+torch.save(network.state_dict(), "bunny2.pth")
 print("Finished")
