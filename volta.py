@@ -29,7 +29,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/cube.off")    
+file = open("3dObjects/bunny.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 
