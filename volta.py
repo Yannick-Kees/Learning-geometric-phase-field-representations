@@ -8,7 +8,7 @@ from loss_functionals import *
 NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 512
+NUM_NODES = 20
 FOURIER_FEATUERS = True
 SIGMA = .3
 
@@ -24,12 +24,12 @@ MU = 0.5
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*2, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/bunny.off")    
+file = open("3dObjects/cube.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 
@@ -52,5 +52,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bumpyFFPARK3.pth")
+torch.save(network.state_dict(), "bunny.pth")
 print("Finished")
