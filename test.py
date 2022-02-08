@@ -57,7 +57,7 @@ def Zero_recontruction_loss_Lip(f, pc,  m,  d):
 
 
     return      # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} u(x) dx|
-file = open("3dObjects/largecube.off")
-testcube = torch.tensor(read_off(file))
-print(testcube)
-draw_point_cloud(testcube)
+
+
+
+draw_point_cloud(torch.tensor(normalize(g_quadrath)))

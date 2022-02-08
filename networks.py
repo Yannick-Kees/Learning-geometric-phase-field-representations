@@ -70,7 +70,7 @@ class ParkEtAl(nn.Module):
         dims,
         skip_in=(),
         geometric_init=True,
-        radius_init=.5,
+        radius_init=.3,
         beta=100,
         FourierFeatures = False,
         num_features = 0,

@@ -13,8 +13,8 @@ def draw_phase_field(f,x_,y_):
     #   f:      Function to plot
     #   x_,y_:  Drawing the function on [0,x_] \times [0,y_]
 
-    xlist = np.linspace(0, x_, 100)
-    ylist = np.linspace(0, y_, 100)
+    xlist = np.linspace(-x_, x_, 100)
+    ylist = np.linspace(-y_, y_, 100)
     X, Y = np.meshgrid(xlist, ylist)
 
     Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
@@ -35,8 +35,8 @@ def color_plot(f):
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
     # Make data.
-    X = np.arange(0, 1, 0.01)
-    Y = np.arange(0, 1, 0.01)
+    X = np.arange(-.5, .5, 0.01)
+    Y = np.arange(-.5, .5, 0.01)
     X, Y = np.meshgrid(X, Y)
     Z = np.zeros((len(X),len(X[0])))
 
@@ -76,8 +76,8 @@ def draw_point_cloud(pc):
     if (d==2):
         pointcloud = pc.detach().numpy().T 
         plt.plot(pointcloud[0],pointcloud[1], '.')
-        plt.xlim(0,1)
-        plt.ylim(0,1)
+        plt.xlim(-.5,.5)
+        plt.ylim(-.5,.5)
         plt.show()
         return
     if (d==3):
@@ -93,19 +93,24 @@ def draw_point_cloud(pc):
 # 3D point cloud ############
 #############################       
 
-def plot_implicit(fn):
+def plot_implicit(fn, shift=True):
     # Creating 3D contour plot of f on [0,1]^2 using marching cubes 
         
     # Parameters:
     #   fn:      Function to plot
-    
+    if shift:
+        a = -.5
+        b = .5
+    else:
+        a = 0.0
+        b = 1.0
     plot = k3d.plot()
-    x = np.linspace(0, 1, 40, dtype=np.float32)
-    y = np.linspace(0, 1, 40, dtype=np.float32)
-    z = np.linspace(0, 1, 40, dtype=np.float32)
+    x = np.linspace(a, b, 40, dtype=np.float32)
+    y = np.linspace(a, b, 40, dtype=np.float32)
+    z = np.linspace(a,b, 40, dtype=np.float32)
     x, y, z = np.meshgrid(x, y, z, indexing='ij')
     Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
-    plt_iso = k3d.marching_cubes(Z, compression_level=9, xmin=0, xmax=1,ymin=0, ymax=1,  zmin=0, zmax=1, level=0.0, flat_shading=False)
+    plt_iso = k3d.marching_cubes(Z, compression_level=9, xmin=a, xmax=b,ymin=a, ymax=b,  zmin=a, zmax=b, level=0.0, flat_shading=False)
     plot += plt_iso
     plot += plt_iso
     plot.display()

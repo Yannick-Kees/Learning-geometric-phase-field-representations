@@ -5,31 +5,31 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 20000
+NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 128
+NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = .3
 
 # Phase-Loss
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
-EPSILON = .001
+EPSILON = .0001
 CONSTANT = 50.0 if not FOURIER_FEATUERS else 70
-MU = 0.1
+MU = 0.5
 
 
 ####################
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*4, [2], FourierFeatures=FOURIER_FEATUERS, num_features = 6, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/largecube.off")    
+file = open("3dObjects/bunny.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 
@@ -52,5 +52,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\largecubeFFPARK.pth")
+torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bumpyFFPARK3.pth")
 print("Finished")

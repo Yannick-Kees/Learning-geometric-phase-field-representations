@@ -18,7 +18,6 @@ def gradient(inputs, outputs):
 
 # double well potential
 W = lambda s: s**2 - 2.0*torch.abs(s) + torch.tensor([1.0])
-#W = lambda s: (s- torch.tensor([1.0]))**2
 
 def ModicaMortola(f, eps, n, d):
     # Returns:
@@ -30,7 +29,7 @@ def ModicaMortola(f, eps, n, d):
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
      
-    start_points = Variable(torch.rand(n, d), requires_grad =True)  # Create random points [ x_i ]
+    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5)  # Create random points [ x_i ]
     start_points = start_points.to(device)                          # Move points to GPU if possible
     gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
     norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
@@ -49,20 +48,6 @@ def Zero_recontruction_loss_Lip(f, pc, eps, m, c, d):
     #   c:      Constant
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
-    """" 
-    loss = 0    # loss in the sum
-    
-    for point in pc:
-        # loop over all points in pointcloud, i.e. x\in X
-        
-        variation  = torch.normal(mean = torch.full(size=( n* d,1), fill_value=0.0) , std= torch.full(size=(n*d,1), fill_value=.001) )  # Random points in B_\delta(0)
-        start_point = point.repeat(n,1)+   torch.reshape( variation, (n, d) )                                                             # Random points [ x_i ] in B_\delta(x)
-        start_point = start_point.to(device)
-        loss +=  torch.abs(f(start_point).mean())                                                                                           # Estimate \sum_{x\in X} |\dashint_{B_delta} u(x) dx|
-        
-    loss = ( 1.0/(len(pc)) ) * loss
-
-    """
     
     n = len(pc)
     
@@ -116,8 +101,75 @@ def Phase_loss(f, pointcloud, eps, n, m, c, mu):
 # Ambrosio Tortorelli #######
 #############################
 
+# One well potential
+U = lambda s: (s- torch.tensor([1.0]))**2
+# Shifting function
+g = lambda s: 2*s- torch.tensor([1.0])
 
-def AT_loss(f, pointcloud, eps, n, m, c, mu):
+def AT_Phasefield(f, eps, n, d):
+    # Returns:
+    #   Monte Carlo Integral of int_{[0,1]^2} W(u(x)) + eps * |Du(x)|^2 dx
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   eps:    Epsilon
+    #   n:      Number of samples drawn in the Monte Carlo Algorithm
+    #   d:      Dimension of point cloud
+     
+    start_points = Variable(torch.rand(n, d), requires_grad =True)  # Create random points [ x_i ]
+    start_points = start_points.to(device)                          # Move points to GPU if possible
+    gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
+    norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
+
+    return ( (1.0/(4.0*eps))  * U(f(start_points))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
+
+
+
+def Zero_recontruction_loss_AT(f, pc, eps, m, c, d):
+    # Returns:
+    #   Monte Carlo Estimation of C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta}(x) u(s) ds|
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   pc:     Pointcloud X
+    #   eps:    Epsilon
+    #   c:      Constant
+    #   n:      Number of samples drawn in the Monte Carlo Algorithm
+    #   d:      Dimension of point cloud
+    
+
+    return  c*eps**(-1.0/3.0) *  ( torch.abs(f(pc)).mean() )            # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} g( u(x) ) dx|
+
+
+def Zero_recontruction_loss_AT_Shift(f, pc, eps, m, c, d):
+    # Returns:
+    #   Monte Carlo Estimation of C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta}(x) u(s) ds|
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   pc:     Pointcloud X
+    #   eps:    Epsilon
+    #   c:      Constant
+    #   n:      Number of samples drawn in the Monte Carlo Algorithm
+    #   d:      Dimension of point cloud
+    
+    n = len(pc)
+    
+    matrix = pc.repeat(m,1)
+    matrix = torch.reshape(matrix, (m,n,d))         # 3D Matrix containing the points
+    variation  = torch.normal(mean = torch.full(size=( n*m *d,1), fill_value=0.0) , std= torch.full(size=(m*n*d,1), fill_value=.001) )
+    error = torch.reshape( variation, (m,n, d) )    # 3D Matrix containing normal distribution
+    matrix += error
+    matrix = matrix.reshape(m*n,d)
+    matrix = g(f(matrix))                           # Apply network to targets and shift values
+    matrix = torch.reshape( matrix, (m,n) ).mean(0)
+    matrix = torch.abs(matrix).mean()
+
+    return  c*eps**(-1.0/3.0) *  matrix              # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} g( u(x) ) dx|
+
+
+
+def AT_loss(f, pointcloud, eps, n, m, c):
     # Returns:
     #   PHASE Loss = e^(-.5)(\int_\Omega W(u) +e|Du|^2 + Ce(^.3)/(n) sum_{p\in P} \dashint u ) + \mu/n \sum_{p\in P} |1-|w||
     
@@ -132,7 +184,7 @@ def AT_loss(f, pointcloud, eps, n, m, c, mu):
     
     d = pointcloud.shape[1] # dimension of point cloud
     
-    return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
+    return AT_Phasefield(f, eps, n, d) +  Zero_recontruction_loss_AT(f, pointcloud, eps, m, c, d)
 
 
 

@@ -83,7 +83,7 @@ def normalize(pc):
         pc = pc - np.amin(pc)
     
     norm = pc - np.amin(pc)
-    norm = .6 * (1.0/np.amax(norm) *  norm  ) + .2
+    norm = .6 * (1.0/np.amax(norm) *  norm  ) - .3
     return norm.tolist()
 
 
