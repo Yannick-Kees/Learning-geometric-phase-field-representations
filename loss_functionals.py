@@ -29,7 +29,7 @@ def ModicaMortola(f, eps, n, d):
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
      
-    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5).to(device)   # Create random points [ x_i ]
+    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5)   # Create random points [ x_i ]
     start_points = start_points.to(device)                          # Move points to GPU if possible
     gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
     norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
