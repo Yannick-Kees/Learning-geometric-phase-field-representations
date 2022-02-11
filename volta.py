@@ -8,15 +8,15 @@ from loss_functionals import *
 NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 512
+NUM_NODES = 64
 FOURIER_FEATUERS = True
 SIGMA = .3
 
 # Phase-Loss
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
-EPSILON = .0001
-CONSTANT = 50.0 if not FOURIER_FEATUERS else 70
+EPSILON = .00005
+CONSTANT = 50.0 if not FOURIER_FEATUERS else 100
 MU = 0.0
 
 
@@ -24,7 +24,7 @@ MU = 0.0
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*2, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
