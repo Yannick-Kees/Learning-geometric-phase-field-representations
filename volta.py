@@ -10,14 +10,14 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 1.0
+SIGMA = 1.7
 
 # Phase-Loss
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
-CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0
-MU = 1.0
+CONSTANT = 70.0 if not FOURIER_FEATUERS else 200.0
+MU = 2.0
 
 
 ####################
@@ -54,5 +54,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunny4.pth")
+torch.save(network.state_dict(), "bunny5.pth")
 print("Finished")
