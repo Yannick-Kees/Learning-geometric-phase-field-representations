@@ -16,8 +16,8 @@ SIGMA = 1.0
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
-CONSTANT = 70.0 if not FOURIER_FEATUERS else 100.0
-MU = 0.0
+CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0
+MU = 1.0
 
 
 ####################
@@ -54,5 +54,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunny3.pth")
+torch.save(network.state_dict(), "bunny4.pth")
 print("Finished")

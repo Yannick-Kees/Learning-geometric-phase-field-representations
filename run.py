@@ -5,23 +5,23 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 6000
+NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1000
 NUM_NODES = 128
-FOURIER_FEATUERS = False
-SIGMA = .0
+FOURIER_FEATUERS = True
+SIGMA = 1.3
 
 # LOSS
 LOSS = "MM" # Either AT or MM
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 20
-EPSILON = .01
+EPSILON = .001
 if LOSS == "MM":
-    CONSTANT = 20.0 if FOURIER_FEATUERS else 14 # 14, Modica Mortola
+    CONSTANT = 14.0 if FOURIER_FEATUERS else 14 # 14, Modica Mortola
 else:
     CONSTANT = .65 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
-MU = 0.0
+MU = 1.0
 
 
 ####################
