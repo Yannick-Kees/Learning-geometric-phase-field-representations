@@ -60,7 +60,7 @@ def Zero_recontruction_loss_Lip(f, pc,  m,  d):
 
 
 
-file = open("3dObjects/cow.off")    
+file = open("3dObjects/beetle.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 draw_point_cloud(cloud)
