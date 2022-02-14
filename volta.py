@@ -29,7 +29,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/beetle.off")    
+file = open("3dObjects/screwdriver.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 """
@@ -55,5 +55,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "beetle.pth")
+torch.save(network.state_dict(), "screwdriver.pth")
 print("Finished")
