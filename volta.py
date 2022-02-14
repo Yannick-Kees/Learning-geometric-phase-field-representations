@@ -29,12 +29,13 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/bunny.off")    
+file = open("3dObjects/cow.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
+"""
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
-
+"""
 
 pointcloud = Variable( cloud , requires_grad=True).to(device)
 
@@ -54,5 +55,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunny6.pth")
+torch.save(network.state_dict(), "cow.pth")
 print("Finished")
