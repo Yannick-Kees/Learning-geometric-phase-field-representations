@@ -10,13 +10,13 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 1.7
+SIGMA = 1.3
 
 # Phase-Loss
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
-CONSTANT = 70.0 if not FOURIER_FEATUERS else 185.0
+CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0
 MU = 2.0
 
 
@@ -29,7 +29,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/screwdriver.off")    
+file = open("3dObjects/cow.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
 """
@@ -55,5 +55,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "screwdriver.pth")
+torch.save(network.state_dict(), "cow2.pth")
 print("Finished")
