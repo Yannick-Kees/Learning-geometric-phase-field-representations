@@ -30,6 +30,21 @@ def produce_circe(n):
         
     return torch.tensor(pc)
 
+
+def produce_pan(n):
+    # n points sampled from a circle, and additional n point uniformly distrubuted from 0 to 1/3
+    r = .3
+    pc = []
+    
+    for t in range(n):
+        x   = float(r * np.sin( 2 * t * np.pi /n )  )
+        y   = float(r * np.cos( 2 * t * np.pi /n )  )
+        pc.append([x,y])
+        
+    for t in range(n//3):
+        pc.append([0.0,t/(n)])
+    return torch.tensor(pc)
+
 def produce_spiral(n):
     # n points sampled from a circle
     r = .3

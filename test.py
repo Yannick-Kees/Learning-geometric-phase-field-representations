@@ -65,6 +65,9 @@ pc = read_off(file)
  
 cloud = torch.tensor(normalize(pc) )
 
-draw_point_cloud(cloud)
+#draw_point_cloud(cloud)
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
+
+pointcloud = Variable(torch.tensor(normalize(produce_pan(50)))  , requires_grad=True).to(device)
+draw_point_cloud(pointcloud)

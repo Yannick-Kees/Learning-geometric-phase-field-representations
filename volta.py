@@ -13,11 +13,15 @@ FOURIER_FEATUERS = True
 SIGMA = 1.3
 
 # Phase-Loss
+LOSS = "AT"
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
-EPSILON = .0001
-CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0
-MU = 2.0
+EPSILON = .01
+if LOSS == "MM":
+    CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
+else:
+    CONSTANT = 6.5 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
+MU = 0.0
 
 
 ####################
@@ -29,13 +33,13 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/cow.off")    
+file = open("3dObjects/bunny.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
-"""
+
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
-"""
+
 
 pointcloud = Variable( cloud , requires_grad=True).to(device)
 
@@ -44,8 +48,11 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     # feed forward
     # Omega = [0,1]^2
     
-    loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-    #report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    if LOSS == "AT":
+            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+    else:
+        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+    # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     # backpropagation
@@ -55,5 +62,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "cow2.pth")
+torch.save(network.state_dict(), "bunnyAT.pth")
 print("Finished")

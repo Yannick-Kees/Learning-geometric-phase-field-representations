@@ -97,6 +97,33 @@ def Phase_loss(f, pointcloud, eps, n, m, c, mu):
     return eps**(-.5)*(ModicaMortola(f, eps, n, d) +  Zero_recontruction_loss_Lip(f, pointcloud, eps, m, c, d))+mu * Eikonal_loss(f, pointcloud, eps, d )
 
 
+def test_MM_GV(f, pc, eps, n, m, c, p):
+    d = pc.shape[1]
+    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5)   # Create random points [ x_i ]
+    start_points = start_points.to(device)                          # Move points to GPU if possible
+    gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
+    norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
+
+    
+    (W(f(start_points))+eps*norms).mean()   
+    EINS = 1.0/(eps) * W(f(start_points)).mean()
+    ZWEI  = (eps * norms).mean()
+    n = len(pc)
+    
+    matrix = pc.repeat(m,1).to(device) 
+    matrix = torch.reshape(matrix, (m,n,d)) # 3D Matrix containing the points
+    variation  = torch.normal(mean = torch.full(size=( n*m *d,1), fill_value=0.0) , std= torch.full(size=(m*n*d,1), fill_value=.001) ).to(device) 
+    error = torch.reshape( variation, (m,n, d) ) # 3D Matrix containing normal distribution
+    matrix += error
+    matrix = matrix.reshape(m*n,d)
+    matrix = f(matrix)  # Apply network to targets
+    matrix = torch.reshape( matrix, (m,n) ).mean(0)
+    DREI = c * eps**(-1.0/3.0) * torch.abs(matrix).mean()
+    if p:
+        print("1: ",EINS,"2: ",ZWEI,"3: ",DREI)
+    return  EINS+ZWEI+DREI
+
+
 #############################
 # Ambrosio Tortorelli #######
 #############################
@@ -116,12 +143,12 @@ def AT_Phasefield(f, eps, n, d):
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
      
-    start_points = Variable(torch.rand(n, d), requires_grad =True)  # Create random points [ x_i ]
+    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5)   # Create random points [ x_i ]
     start_points = start_points.to(device)                          # Move points to GPU if possible
     gradients = gradient(start_points, f(start_points))             # Calculate their gradients [ Dx_i ]
     norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
 
-    return ( (1.0/(4.0*eps))  * U(f(start_points))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
+    return ( (1.0/(4*eps))  * U(f(start_points))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
 
 
 
