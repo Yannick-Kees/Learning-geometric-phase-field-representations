@@ -129,9 +129,9 @@ def test_MM_GV(f, pc, eps, n, m, c, p):
 #############################
 
 # One well potential
-U = lambda s: (s- torch.tensor([1.0]))**2
+U = lambda s: (s- torch.tensor([1.0]).to(device))**2
 # Shifting function
-g = lambda s: 2*s- torch.tensor([1.0])
+g = lambda s: 2*s- torch.tensor([1.0]).to(device)
 
 def AT_Phasefield(f, eps, n, d):
     # Returns:
