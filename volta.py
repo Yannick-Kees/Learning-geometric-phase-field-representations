@@ -10,7 +10,7 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 1.3
+SIGMA = 1.7
 
 # Phase-Loss
 LOSS = "AT"
@@ -20,7 +20,7 @@ EPSILON = .01
 if LOSS == "MM":
     CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 6.5 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
+    CONSTANT = 10. if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
 MU = 0.0
 
 
@@ -62,5 +62,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunnyAT.pth")
+torch.save(network.state_dict(), "bunnyAT2.pth")
 print("Finished")
