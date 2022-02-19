@@ -1,4 +1,4 @@
-<img src="images/3D/header.png" height="202pt">
+<img src="images/3D/header.png" height="402pt">
 
 # About
 Implementation of
