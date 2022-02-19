@@ -13,14 +13,14 @@ FOURIER_FEATUERS = False
 SIGMA = 1.7
 
 # Phase-Loss
-LOSS = "MM"
+LOSS = "AT"
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 if LOSS == "MM":
     CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 10. if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
+    CONSTANT = 10. if FOURIER_FEATUERS else 5.0 # 14, Constante höher bei FF
 MU = 0.0
 
 
