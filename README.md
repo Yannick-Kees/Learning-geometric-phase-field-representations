@@ -1,3 +1,9 @@
+# About
+Implementation of
+
+* [Phase Transitions, Distance Functions, and Implicit Neural Representations](https://arxiv.org/pdf/2106.07689.pdf) (Yaron Lipman 2021)
+
+
 # Literatur:
 Quellen und so
  
