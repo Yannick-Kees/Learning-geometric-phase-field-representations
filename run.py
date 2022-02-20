@@ -16,9 +16,9 @@ SIGMA = .3
 LOSS = "MM" # Either AT or MM
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 20
-EPSILON = .01
+EPSILON = .05
 if LOSS == "MM":
-    CONSTANT = 14.0 if FOURIER_FEATUERS else 14.0 # 14, Modica Mortola
+    CONSTANT = 3.5 if FOURIER_FEATUERS else 14.0 # 14, Modica Mortola
 else:
     CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
 MU = 0.0
@@ -36,7 +36,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pointcloud = Variable(torch.tensor(normalize(produce_pan(50)))  , requires_grad=True).to(device)
+pointcloud = Variable(torch.tensor(normalize( g_quadrath ))  , requires_grad=True).to(device)
 
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
@@ -46,8 +46,8 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     if LOSS == "AT":
         loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
     else:
-        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-        #loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
+        #loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+        loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
     if (i%50==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
         
@@ -57,9 +57,10 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     loss.backward()
     optimizer.step()
     scheduler.step(loss)
-    
-draw_point_cloud(pointcloud)
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bla.pth")
+
+test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, True)
+#draw_point_cloud(pointcloud)
+#torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bla.pth")
 
 color_plot(network)
-draw_phase_field(network, .5, .5)
+#draw_phase_field(network, .5, .5)

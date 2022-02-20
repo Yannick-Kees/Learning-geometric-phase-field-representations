@@ -17,7 +17,8 @@ def gradient(inputs, outputs):
 #############################
 
 # double well potential
-W = lambda s: s**2 - 2.0*torch.abs(s) + torch.tensor([1.0]).to(device) 
+#W = lambda s: s**2 - 2.0*torch.abs(s) + torch.tensor([1.0]).to(device) 
+W = lambda s: (9.0/16.0) *  (s**2 -torch.tensor([1.0]).to(device)   )**2
 
 def ModicaMortola(f, eps, n, d):
     # Returns:
