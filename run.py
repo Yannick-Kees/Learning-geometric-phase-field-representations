@@ -9,19 +9,22 @@ NUM_TRAINING_SESSIONS = 7000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1000
 NUM_NODES = 128
-FOURIER_FEATUERS = True
-SIGMA = .3
+FOURIER_FEATUERS = False
+SIGMA = 1.3
 
 # LOSS
-LOSS = "MM" # Either AT or MM
+LOSS = "AT" # Either AT or MM
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 20
-EPSILON = .05
+EPSILON = .01
 if LOSS == "MM":
-    CONSTANT = 3.5 if FOURIER_FEATUERS else 14.0 # 14, Modica Mortola
+    CONSTANT = 14 if FOURIER_FEATUERS else 14. # 14, Modica Mortola
 else:
-    CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
-MU = 0.0
+    CONSTANT = 2.0 if FOURIER_FEATUERS else 7.5 # 14, Constante höher bei FF
+MU = .8
+
+# MISC
+FILM = False
 
 
 ####################
@@ -36,7 +39,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pointcloud = Variable(torch.tensor(normalize( g_quadrath ))  , requires_grad=True).to(device)
+pointcloud = Variable(torch.tensor(normalize( produce_pan(1000) ))  , requires_grad=True).to(device)
 
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
@@ -48,8 +51,14 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     else:
         #loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
         loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
-    if (i%50==0):
+    
+    if FILM:
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+    else:
+        if (i%50==0):
+            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+        
+    
         
     # backpropagation
     
@@ -57,10 +66,14 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     loss.backward()
     optimizer.step()
     scheduler.step(loss)
+    if FILM:
+        color_plot(network, i, True)
+        draw_phase_field(network, .5, .5, i, True)
 
 test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, True)
-#draw_point_cloud(pointcloud)
+draw_point_cloud(pointcloud)
+color_plot(network, 2, False)
+draw_phase_field(network, .5, .5, i, False)
 #torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bla.pth")
 
-color_plot(network)
-#draw_phase_field(network, .5, .5)
+

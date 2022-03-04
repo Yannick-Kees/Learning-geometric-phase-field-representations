@@ -10,15 +10,15 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = False
-SIGMA = 1.7
+SIGMA = 1.3
 
 # Phase-Loss
 LOSS = "MM"
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
-EPSILON = .00001
+EPSILON = .0001
 if LOSS == "MM":
-    CONSTANT = 70.0 if not FOURIER_FEATUERS else 400.0 # 14, Modica Mortola
+    CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
     CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.0
@@ -36,6 +36,7 @@ scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False
 file = open("3dObjects/bunny.off")    
 pc = read_off(file)
 cloud = torch.tensor(normalize(pc) )
+indices = torch.tensor(np.random.choice(3, 50000, False))
 
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )

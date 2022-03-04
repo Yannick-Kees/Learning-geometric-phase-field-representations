@@ -50,3 +50,5 @@ def read_obj(file):
 
 def CreateFourierMatrix(size, d):
    print([[ np.random.normal()  for _ in range(d)] for _ in range(size)])
+   
+ 

@@ -6,7 +6,7 @@ from pointclouds import *
 #############################
 
 
-def draw_phase_field(f,x_,y_):
+def draw_phase_field(f,x_,y_, i, film):
     # Creating Contour plot of f
     
     # Parameters:
@@ -19,14 +19,18 @@ def draw_phase_field(f,x_,y_):
 
     Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
     
-    plt.figure()                                                    # Draw contour plot
+    fig = plt.figure()                                                    # Draw contour plot
     levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                        # Specify contours/level set to plot
     contour = plt.contour(X, Y, Z, levels, colors='k')
     plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
-    plt.show()
+    if film:
+        plt.savefig("images/mov/pf" + str(i).zfill(5) + '.jpg')
+        plt.close(fig)
+    else:
+        plt.show()
     return
     
-def color_plot(f):
+def color_plot(f, y, film):
     # Creating 3D plot of f on [0,1]^2
         
     # Parameters:
@@ -55,8 +59,11 @@ def color_plot(f):
 
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)
-
-    plt.show()
+    if film:
+        plt.savefig('images/mov/cp' + str(y).zfill(5) + '.jpg')
+        plt.close(fig)
+    else:
+        plt.show()
     return
 
 #############################

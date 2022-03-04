@@ -20,13 +20,13 @@ Points = [
 gq_columns = ('C=3.5, e=0.1', 'C=3.5, e=0.05', 'C=6, e=0.05', 'C=6, e=0.01', 'C=14, e=0.01', 'C=14, e=0.005','C=20, e=0.005')
 point_columns = ("5","6","7","8","9","25","100","1000")
 
-data = Points
-columns = point_columns
+data = G_Quadrath
+columns = gq_columns
 rows = ["ZRL","|Du| ","W(u)"]
 
-values = np.arange(0, 5, 500)
+values = np.arange(0, 8, 500)
 value_increment = 1
-plt.figure(figsize=(15, 12), dpi=80)
+plt.figure(figsize=(15, 12), dpi=200)
 # Get some pastel shades for the colors
 colors = plt.cm.Set2(np.linspace(0.0, 1.5, len(rows)))
 n_rows = len(data)
@@ -63,7 +63,7 @@ for i in range(0,len(columns)):
 plt.subplots_adjust(left=0.2, bottom=0.2)
 
 plt.ylabel("Total loss")
-plt.yticks([1,2,3,4,5])
+plt.yticks([1,2,3,4,5,6,7,8])
 plt.xticks([])
 plt.title('Composition of the loss')
 
