@@ -8,8 +8,8 @@ from loss_functionals import *
 NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 128
-FOURIER_FEATUERS = False
+NUM_NODES = 512
+FOURIER_FEATUERS = True
 SIGMA = 1.3
 BATCHSIZE = 15000
 
@@ -22,19 +22,19 @@ if LOSS == "MM":
     CONSTANT = 70.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
     CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
-MU = 0.0
+MU = 0.3
 
 
 ####################
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*2, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("models/octopus_1.ply")
+file = open("models/bunny_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc) )
 
@@ -70,5 +70,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "bunnyNoFFNoMU.pth")
+torch.save(network.state_dict(), "bunnyPLY0.pth")
 print("Finished")
