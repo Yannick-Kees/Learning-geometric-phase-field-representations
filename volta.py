@@ -5,13 +5,13 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 5000
+NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 1.3
-BATCHSIZE = 15000
+BATCHSIZE = 16000
 
 # Phase-Loss
 LOSS = "MM"
