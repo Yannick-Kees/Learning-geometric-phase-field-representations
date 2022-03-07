@@ -18,23 +18,23 @@ bow = torch.tensor([ [.24,.26],[.24,.3],[.28,.35],[.32,.38],[.37,.4],[.42,.43],[
 # curve in 8 shape
 eight = torch.tensor([ [.31,.34],[.32,.27],[.35,.22],[.4,.2],[.47,.18],[.51,.19],[.58,.21],[.63,.24],[.64,.3],[.64,.38],[.62,.43],[.58,.48],[.54,.52],[.48,.53],[.42,.53],[.36,.52],[.33,.45],[.43,.59],[.37,.64],[.34,.69],[.31,75],[.32,.79],[.35,.84],[.37,.87],[.45,.89],[.54,.87],[.58,.83],[.6,.8],[.61,.73],[.57,.67],[.51,.62],[.47,.6] ,[.45,.56]  ])
 
-def produce_circe(n):
+def produce_circle(n, r=.3):
     # n points sampled from a circle
-    r = .3
+    # r = .3
     pc = []
     
     for t in range(n):
-        x   = float(r * np.sin( 2 * t * np.pi /n ) + .5)
-        y   = float(r * np.cos( 2 * t * np.pi /n ) + .5)
+        x   = float(r * np.sin( 2 * t * np.pi /n ) )
+        y   = float(r * np.cos( 2 * t * np.pi /n ) )
         pc.append([x,y])
         
     return torch.tensor(pc)
 
 
-def produce_pan(n):
+def produce_pan(n, r=.3):
     # n points sampled from a circle, and additional n point uniformly distrubuted from 0 to 1/3
-    r = .3
     pc = []
+
     
     for t in range(n):
         x   = float(r * np.sin( 2 * t * np.pi /n )  )
@@ -42,7 +42,7 @@ def produce_pan(n):
         pc.append([x,y])
         
     for t in range(n//3):
-        pc.append([0.0,t/(n)])
+        pc.append([t/(n),t/(n)])
     return torch.tensor(pc)
 
 def produce_spiral(n):

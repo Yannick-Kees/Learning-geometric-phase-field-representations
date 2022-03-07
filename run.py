@@ -11,6 +11,7 @@ PATIENCE = 1000
 NUM_NODES = 128
 FOURIER_FEATUERS = False
 SIGMA = 1.3
+BATCHSIZE = 200
 
 # LOSS
 LOSS = "AT" # Either AT or MM
@@ -20,7 +21,7 @@ EPSILON = .01
 if LOSS == "MM":
     CONSTANT = 14 if FOURIER_FEATUERS else 14. # 14, Modica Mortola
 else:
-    CONSTANT = 2.0 if FOURIER_FEATUERS else 7.5 # 14, Constante höher bei FF
+    CONSTANT = 2.0 if FOURIER_FEATUERS else 30.5 # 14, Constante höher bei FF
 MU = .8
 
 # MISC
@@ -39,12 +40,19 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pointcloud = Variable(torch.tensor(normalize( produce_pan(1000) ))  , requires_grad=True).to(device)
+pc = Variable(torch.tensor( produce_circle(1000, r=.05))  , requires_grad=True).to(device)
+use_batch = (len(pc) > BATCHSIZE )
 
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
     # feed forward
     # Omega = [0,1]^2
+    if use_batch:
+        
+        indices = np.random.choice(len(pc), BATCHSIZE, False)
+        pointcloud = pc[indices]
+    else:
+        pointcloud = pc
     
     if LOSS == "AT":
         loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )

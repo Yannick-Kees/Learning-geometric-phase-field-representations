@@ -34,7 +34,7 @@ def read_off(file):
 
 
 def read_obj(file):
-       # returning matrix of points from an .off file
+   # returning matrix of points from an .obj file
 
    # Parameters:
    #   file:   path of file to read
@@ -47,8 +47,22 @@ def read_obj(file):
    verts = [[float(s) for s in file.readline().strip().split()] for _ in range(n_verts)]
    return verts
 
+def read_ply_file(file):
+       
+   # returning matrix of points from an .ply file
+   # needed for large numbers of points
+
+   # Parameters:
+   #   file:   path of file to read
+    
+    data = file.readlines()
+    num_vertices = int(data[4].split(" ")[2].replace("\n","")) # Number of vertices are stored in line 
+
+    vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
+    return vertices
 
 def CreateFourierMatrix(size, d):
    print([[ np.random.normal()  for _ in range(d)] for _ in range(size)])
+   
    
  
