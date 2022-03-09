@@ -75,6 +75,17 @@ def makeCube(size):
     print(counter)
 
 
+def flat_circle(n):
+    pc = []
+    for _ in range(n):
+        r =  np.random.uniform(0,.3)
+        alpha = np.random.uniform(0,2.0*np.pi)
+        x   = float(r * np.sin( alpha )  )
+        y   = float(r * np.cos( alpha )  )
+        pc.append([x,y, 0])
+    return pc
+        
+
 #############################
 # change pointclouds ########
 #############################

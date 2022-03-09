@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 7000
+NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1000
 NUM_NODES = 128
@@ -21,7 +21,7 @@ EPSILON = .01
 if LOSS == "MM":
     CONSTANT = 14 if FOURIER_FEATUERS else 14. # 14, Modica Mortola
 else:
-    CONSTANT = 2.0 if FOURIER_FEATUERS else 30.5 # 14, Constante höher bei FF
+    CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
 MU = .8
 
 # MISC
@@ -33,14 +33,14 @@ FILM = False
 ####################
 
 #network = ParkEtAl(2, [NUM_NODES]*3, [2],   geometric_init=False, FourierFeatures=FOURIER_FEATUERS, num_features = 6, sigma = SIGMA )
-network = ParkEtAl(2, [NUM_NODES]*3, [], geometric_init=True, FourierFeatures=False, num_features = 6, sigma = SIGMA )
+network = ParkEtAl(2, [NUM_NODES]*3, [], geometric_init=True, FourierFeatures=False, num_features = 6, sigma = SIGMA, beta=0 )
 #network = small_MLP(NUM_NODES)
 network.to(device)
  
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pc = Variable(torch.tensor( produce_circle(1000, r=.05))  , requires_grad=True).to(device)
+pc = Variable(torch.tensor( produce_pan(1000, r=.3))  , requires_grad=True).to(device)
 use_batch = (len(pc) > BATCHSIZE )
 
 for i in range(NUM_TRAINING_SESSIONS+1):

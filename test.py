@@ -38,11 +38,9 @@ def read_ply_file(file):
     return vertices
     
 
-file = open("models/octopus_1.ply")
-pc = read_ply_file(file)
-cloud = torch.tensor(normalize(pc) )
+#file = open("models/octopus_1.ply")
+#pc = read_ply_file(file)
+cloud = torch.tensor(flat_circle(3000) )
 
-cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-cloud = torch.tensor(normalize(cloud) )
 print(len(cloud))
-draw_point_cloud( torch.tensor(normalize(pc)))
+draw_point_cloud( cloud )

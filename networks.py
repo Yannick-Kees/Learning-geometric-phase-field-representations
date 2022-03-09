@@ -131,6 +131,7 @@ class ParkEtAl(nn.Module):
 
         if beta > 0:
             self.activation = nn.Softplus(beta=beta) # Softplus activation function
+            #self.activation = nn.Sigmoid()
 
         # vanilla ReLu
         else:
