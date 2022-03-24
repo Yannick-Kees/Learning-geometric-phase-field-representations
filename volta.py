@@ -8,7 +8,7 @@ from loss_functionals import *
 NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 256
+NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 1.3
 BATCHSIZE = 15000 #16k zu viel
@@ -29,7 +29,7 @@ MU = 0.5
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*5, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*7, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
