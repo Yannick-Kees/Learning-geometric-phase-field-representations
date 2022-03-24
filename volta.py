@@ -9,7 +9,7 @@ NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 256
-FOURIER_FEATUERS = False
+FOURIER_FEATUERS = True
 SIGMA = 1.3
 BATCHSIZE = 15000 #16k zu viel
 
@@ -22,7 +22,7 @@ if LOSS == "MM":
     CONSTANT = 140.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
     CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
-MU = 0.3
+MU = 0.5
 
 
 ####################
@@ -36,10 +36,11 @@ scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False
 
 file = open("3dObjects/bunny_0.ply")
 pc = read_ply_file(file)
-cloud = torch.tensor(flat_circle(4000) )
+cloud = torch.tensor(normalize(pc))
+#cloud = torch.tensor(flat_circle(8000) )
 
-#cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-#cloud = torch.tensor(normalize(cloud) )
+cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+cloud = torch.tensor(normalize(cloud) )
 
 
 pc = Variable( cloud , requires_grad=True).to(device)
@@ -70,5 +71,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "scheibeAT.pth")
+torch.save(network.state_dict(), "PLY140.pth")
 print("Finished")

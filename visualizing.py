@@ -16,7 +16,7 @@ def draw_phase_field(f,x_,y_, i, film):
     xlist = np.linspace(-x_, x_, 100)
     ylist = np.linspace(-y_, y_, 100)
     X, Y = np.meshgrid(xlist, ylist)
-
+    alpha = np.pi *1./3.
     Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
     
     fig = plt.figure()                                                    # Draw contour plot
@@ -43,11 +43,11 @@ def color_plot(f, y, film):
     Y = np.arange(-.5, .5, 0.01)
     X, Y = np.meshgrid(X, Y)
     Z = np.zeros((len(X),len(X[0])))
-
+    alpha = np.pi *1./3.
     for i in range(len(X)):
         for j in range(len(X[0])):
             Z[i][j]= f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]
-
+    # f(Tensor([ X[i][j], Y[i][j] ] ))
     # Plot the surface.
     surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
