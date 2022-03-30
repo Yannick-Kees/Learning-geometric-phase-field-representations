@@ -11,7 +11,7 @@ PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 1.3
-BATCHSIZE = 15000 #16k zu viel
+BATCHSIZE = 14000 #16k zu viel
 
 # Phase-Loss
 LOSS = "MM"
@@ -71,5 +71,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "PLY140.pth")
+torch.save(network.state_dict(), "BunnyPLY140.pth")
 print("Finished")
