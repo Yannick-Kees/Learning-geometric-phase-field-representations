@@ -29,6 +29,15 @@ def draw_phase_field(f,x_,y_, i, film):
     else:
         plt.show()
     return
+
+
+def draw_height(f):
+    x = np.linspace(0,2*np.pi,500)
+    y = [ f(Tensor([ .3 * np.sin(a), .3 * np.cos(a) ]  )).detach().numpy()[0] for a in x     ]
+    plt.xlabel("Angle")
+    plt.ylabel("Function value")
+    plt.plot(x,y)
+    plt.show()
     
 def color_plot(f, y, film):
     # Creating 3D plot of f on [0,1]^2
@@ -120,9 +129,9 @@ def plot_implicit(fn, shift=True):
     zb = .1
     """
     plot = k3d.plot()
-    x = np.linspace(xa, xb, 100, dtype=np.float32)
-    y = np.linspace(ya, yb, 100, dtype=np.float32)
-    z = np.linspace(za,zb, 100, dtype=np.float32)
+    x = np.linspace(xa, xb, 60, dtype=np.float32)
+    y = np.linspace(ya, yb, 60, dtype=np.float32)
+    z = np.linspace(za,zb, 60, dtype=np.float32)
     x, y, z = np.meshgrid(x, y, z, indexing='ij')
     Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
     plt_iso = k3d.marching_cubes(Z, compression_level=5, xmin=xa, xmax=xb,ymin=ya, ymax=yb,  zmin=za, zmax=zb, level=0.0, flat_shading=False)

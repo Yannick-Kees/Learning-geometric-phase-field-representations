@@ -40,7 +40,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pc = Variable(torch.tensor( produce_pan(1000, r=.3))  , requires_grad=True).to(device)
+pc = Variable(torch.tensor( produce_circle(1000, r=.3))  , requires_grad=True).to(device)
 use_batch = (len(pc) > BATCHSIZE )
 
 for i in range(NUM_TRAINING_SESSIONS+1):
@@ -81,7 +81,8 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, True)
 draw_point_cloud(pointcloud)
 color_plot(network, 2, False)
-draw_phase_field(network, .5, .5, i, False)
+#draw_phase_field(network, .5, .5, i, False)
+draw_height(network)
 #torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\bla.pth")
 
 

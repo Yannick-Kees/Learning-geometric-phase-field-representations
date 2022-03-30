@@ -19,7 +19,7 @@ MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 if LOSS == "MM":
-    CONSTANT = 140.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
+    CONSTANT = 140.0 if not FOURIER_FEATUERS else 100.0 # 14, Modica Mortola
 else:
     CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.5
@@ -29,7 +29,7 @@ MU = 0.5
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*7, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
