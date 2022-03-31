@@ -43,6 +43,6 @@ pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc))
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
-
+cloud = torch.tensor(flat_circle(8000) )
 
 draw_point_cloud( cloud )

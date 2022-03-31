@@ -78,11 +78,11 @@ def makeCube(size):
 def flat_circle(n):
     pc = []
     for _ in range(n):
-        r =  np.random.uniform(0,.3)
+        r =  np.random.uniform(0,.45)
         alpha = np.random.uniform(0,2.0*np.pi)
         x   = float(r * np.sin( alpha )  )
         y   = float(r * np.cos( alpha )  )
-        pc.append([x,y, 0])
+        pc.append([x,y, y])
     return pc
         
 

@@ -5,11 +5,11 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 10000
+NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 512
-FOURIER_FEATUERS = True
+NUM_NODES = 128
+FOURIER_FEATUERS = False
 SIGMA = 1.7
 BATCHSIZE = 10000 #16k zu viel
 
@@ -29,7 +29,7 @@ MU = 0.5
 # Main #############
 ####################
 
-network = ParkEtAl(3, [NUM_NODES]*7, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*4, [2], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -37,10 +37,10 @@ scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False
 file = open("3dObjects/bunny_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc))
-#cloud = torch.tensor(flat_circle(8000) )
+cloud = torch.tensor(flat_circle(800) )
 
-cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-cloud = torch.tensor(normalize(cloud) )
+#cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+#cloud = torch.tensor(normalize(cloud) )
 
 
 pc = Variable( cloud , requires_grad=True).to(device)
