@@ -1,20 +1,39 @@
 from operator import imod
-import torch
+
+# Basic Numerical operations
+import numpy as np
 from random import uniform
+
+# Neural Network
+import torch
 from torch import random
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.autograd import Variable
 import torchvision.models as models
+from torch.functional import Tensor
+
+# Drawing Plots 
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 from mpl_toolkits.mplot3d import Axes3D
-from torch.functional import Tensor
+
+# Import Adam Optimizer
 import torch.optim as optim
+
+# Report progress
 import sys
+
+# Film the learning progress
 from PIL import Image
+
+# Render in Jupyter Notebook
 import k3d
+
+# Fourier Features
 import rff
+
+# To Paraview
+from evtk.hl import structuredToVTK

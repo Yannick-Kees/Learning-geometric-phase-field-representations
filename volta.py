@@ -8,9 +8,9 @@ from loss_functionals import *
 NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
-NUM_NODES = 128
-FOURIER_FEATUERS = False
-SIGMA = 1.7
+NUM_NODES = 512
+FOURIER_FEATUERS = True
+SIGMA = 1.3
 BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
@@ -19,7 +19,7 @@ MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 if LOSS == "MM":
-    CONSTANT = 100.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
+    CONSTANT = 50.0 if not FOURIER_FEATUERS else 50.0 # 14, Modica Mortola
 else:
     CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.5
@@ -37,7 +37,7 @@ scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False
 file = open("3dObjects/bunny_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc))
-cloud = torch.tensor(flat_circle(2000) )
+#cloud = torch.tensor( flat_circle(2000) )
 
 #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 #cloud = torch.tensor(normalize(cloud) )
@@ -71,5 +71,8 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "BunnyPLY140.pth")
+torch.save(network.state_dict(), "BunnyPLY50_13.pth")
+toParaview(network, 32)
+print("Small ParaView")
+toParaview(network, 256)
 print("Finished")

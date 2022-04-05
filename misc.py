@@ -13,6 +13,8 @@ def report_progress(current, total, error):
       sys.stdout.write('\n')
    sys.stdout.flush()
    
+
+   
    
 # enable computing on GPU if possible
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
