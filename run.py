@@ -10,16 +10,16 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1000
 NUM_NODES = 128
 FOURIER_FEATUERS = True
-SIGMA = 1.3
+SIGMA = 1.7
 BATCHSIZE = 200
 
 # LOSS
-LOSS = "AT" # Either AT or MM
+LOSS = "MM" # Either AT or MM
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 20
 EPSILON = .01
 if LOSS == "MM":
-    CONSTANT = 14 if FOURIER_FEATUERS else 14. # 14, Modica Mortola
+    CONSTANT = 14 if FOURIER_FEATUERS else 40. # 14, Modica Mortola
 else:
     CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF
 MU = .8
@@ -40,7 +40,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pc = Variable(torch.tensor( produce_circle(1000, r=.3))  , requires_grad=True).to(device)
+pc = Variable(torch.tensor( normalize(g_quadrath))  , requires_grad=True).to(device)
 use_batch = (len(pc) > BATCHSIZE )
 
 for i in range(NUM_TRAINING_SESSIONS+1):
