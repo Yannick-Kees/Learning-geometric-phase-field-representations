@@ -129,9 +129,9 @@ def plot_implicit(fn, shift=True):
     zb = .1
     """
     plot = k3d.plot()
-    x = np.linspace(xa, xb, 60, dtype=np.float32)
-    y = np.linspace(ya, yb, 60, dtype=np.float32)
-    z = np.linspace(za,zb, 60, dtype=np.float32)
+    x = np.linspace(xa, xb, 30, dtype=np.float32)
+    y = np.linspace(ya, yb, 30, dtype=np.float32)
+    z = np.linspace(za,zb, 30, dtype=np.float32)
     x, y, z = np.meshgrid(x, y, z, indexing='ij')
     Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
     plt_iso = k3d.marching_cubes(Z, compression_level=5, xmin=xa, xmax=xb,ymin=ya, ymax=yb,  zmin=za, zmax=zb, level=0.0, flat_shading=False)
@@ -181,7 +181,7 @@ def toParaview(f, n):
               
     # Variables 
     
-    Z = np.array([ f(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] ).to(device)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+    Z = np.array( [ f( Variable( Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] ), requires_grad=True).to(device)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
 
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
