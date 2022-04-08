@@ -168,7 +168,7 @@ def toParaview(f, n):
     values = np.array([X,Y,Z]).T
    
       
-    # 
+    """"
     for k in range(nz + 1): 
         report_progress(k, nz  , 0 )
         for j in range(ny + 1):
@@ -177,13 +177,18 @@ def toParaview(f, n):
                 y[i,j,k] = Y[j] 
                 z[i,j,k] = Z[k]
                 
-                
-              
+    """      
+    yy,xx,zz = np.meshgrid(X,Y,Z)
+    v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3)))
+    Z = f(v).detach().numpy().reshape(-1)
+    #points = np.array([yy,zz,xx]).T
+    #print(points) 
     # Variables 
     
-    Z = np.array( [ f( Variable( Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] ), requires_grad=True).to(device)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+    #Z = np.array( [ f( Variable( Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] ), requires_grad=True).to(device)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
 
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
     structuredToVTK("./structured"+str(n), x, y, z,  pointData = {"NN" : Z})
+
 

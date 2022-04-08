@@ -10,7 +10,7 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 1.7
+SIGMA = 1.3
 BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
@@ -58,12 +58,15 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         pointcloud = pc
     
     if LOSS == "AT":
-            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+        if (i%10==0):
+            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     else:
         loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+        if (i%10==0):
+            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    if (i%10==0):
-        report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    
     # backpropagation
     network.zero_grad()
     loss.backward()
