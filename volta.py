@@ -21,7 +21,7 @@ EPSILON = .0001
 if LOSS == "MM":
     CONSTANT = 50.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 10. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
+    CONSTANT = 20. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.5
 
 
