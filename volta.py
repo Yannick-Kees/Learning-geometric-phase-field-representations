@@ -17,11 +17,11 @@ BATCHSIZE = 10000 #16k zu viel
 LOSS = "AT"
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 60
-EPSILON = .01
+EPSILON = .0001
 if LOSS == "MM":
     CONSTANT = 50.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 15. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
+    CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.5
 
 
@@ -29,7 +29,7 @@ MU = 0.5
 # Main #############
 ####################
 
-for l in range(7,8):
+for l in range(1,8):
 
     network = ParkEtAl(3, [NUM_NODES]*l, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
     network.to(device) 
