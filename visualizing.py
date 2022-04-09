@@ -12,6 +12,8 @@ def draw_phase_field(f,x_,y_, i, film):
     # Parameters:
     #   f:      Function to plot
     #   x_,y_:  Drawing the function on [0,x_] \times [0,y_]
+    #   i:      Index number, for naming the image files
+    #   film:   bool, weather to store the image file
 
     xlist = np.linspace(-x_, x_, 100)
     ylist = np.linspace(-y_, y_, 100)
@@ -19,8 +21,8 @@ def draw_phase_field(f,x_,y_, i, film):
     alpha = np.pi *1./3.
     Z = [[ f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]  for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
     
-    fig = plt.figure()                                                    # Draw contour plot
-    levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                        # Specify contours/level set to plot
+    fig = plt.figure()                                                      # Draw contour plot
+    levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                                # Specify contours/level set to plot
     contour = plt.contour(X, Y, Z, levels, colors='k')
     plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
     if film:
@@ -32,6 +34,12 @@ def draw_phase_field(f,x_,y_, i, film):
 
 
 def draw_height(f):
+    # Plot the function values on circle around the origin, radius = 0.3
+    # Used for verification of 2D circle
+        
+    # Parameters:
+    #   f:      Function to plot
+    
     x = np.linspace(0,2*np.pi,500)
     y = [ f(Tensor([ .3 * np.sin(a), .3 * np.cos(a) ]  )).detach().numpy()[0] for a in x     ]
     plt.xlabel("Angle")
@@ -44,6 +52,8 @@ def color_plot(f, y, film):
         
     # Parameters:
     #   f:      Function to plot
+    #   y:      Index number, for naming the image files
+    #   film:   bool, weather to film the learning process or not
     
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -110,34 +120,28 @@ def draw_point_cloud(pc):
 #############################       
 
 def plot_implicit(fn, shift=True):
-    # Creating 3D contour plot of f on [0,1]^2 using marching cubes 
+    # Creating 3D contour plot of f on [0,1]^2 using marching cubes. Only works in Jupyter Notebooks (interactive)
         
     # Parameters:
     #   fn:      Function to plot
+    #   shift:   for old models that have been created before 02.2022 set shift=False
+    
     if shift:
         xa = ya = za= -.3
         xb = yb = zb = .3
     else:
         xa = ya = za= 0.0
         xb = yb = zb = 1.0
-    """
-    xa = -0.4
-    xb = .1
-    ya = -.1
-    yb  = 0.4
-    za = -.4
-    zb = .1
-    """
-    plot = k3d.plot()
+
+    plot = k3d.plot()       # start k3d
     x = np.linspace(xa, xb, 30, dtype=np.float32)
     y = np.linspace(ya, yb, 30, dtype=np.float32)
     z = np.linspace(za,zb, 30, dtype=np.float32)
-    x, y, z = np.meshgrid(x, y, z, indexing='ij')
+    x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
     Z = [[[ fn(Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] )).detach().numpy()  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
     plt_iso = k3d.marching_cubes(Z, compression_level=5, xmin=xa, xmax=xb,ymin=ya, ymax=yb,  zmin=za, zmax=zb, level=0.0, flat_shading=False)
-    plot += plt_iso
-    #plot += plt_iso
-    plot.display()
+    plot += plt_iso     # add marching cubes to the file
+    plot.display()      # Show plot
 
 
 
@@ -147,37 +151,32 @@ def test_f(t):
 
 
 def toParaview(f, n, l):
-    # Dimensions 
+    # Makes a File, to visualize the network in ParaView
     # 
+    #   f:  Neuronal Network function
+    #   n:  Resolution, i.e. the number of function evaluations of NN in each dimension
+    #   l:  Number of layers, only for the nameing of the file
+    
     nx, ny, nz = n, n, n
-    lx, ly, lz = .6, .6, .6
+    lx, ly, lz = .8, .8, .8
     dx, dy, dz = lx/nx, ly/ny, lz/nz
     ncells = nx * ny * nz 
     npoints = (nx + 1) * (ny + 1) * (nz + 1) 
 
     # Coordinates 
     # 
-    X = np.arange(0, lx + 0.1*dx, dx, dtype='float64') -.3
-    Y = np.arange(0, ly + 0.1*dy, dy, dtype='float64')  -.3
-    Z = np.arange(0, lz + 0.1*dz, dz, dtype='float64') -.3
+    X = np.arange(0, lx + 0.1*dx, dx, dtype='float64') -.4
+    Y = np.arange(0, ly + 0.1*dy, dy, dtype='float64')  -.4
+    Z = np.arange(0, lz + 0.1*dz, dz, dtype='float64') -.4
+    """
     x = np.zeros((nx + 1, ny + 1, nz + 1)) 
     y = np.zeros((nx + 1, ny + 1, nz + 1)) 
     z = np.zeros((nx + 1, ny + 1, nz + 1)) 
 
     values = np.zeros((nx + 1, ny + 1, nz + 1)) 
     values = np.array([X,Y,Z]).T
-   
-      
-    """"
-    for k in range(nz + 1): 
-        report_progress(k, nz  , 0 )
-        for j in range(ny + 1):
-            for i in range(nx + 1): 
-                x[i,j,k] = X[i] 
-                y[i,j,k] = Y[j] 
-                z[i,j,k] = Z[k]
-                
-    """      
+    """
+    
     yy,xx,zz = np.meshgrid(X,Y,Z)
     all_data = np.array([xx,yy,zz]).T.reshape((n+1)**3,3)
     batch_size = 10000

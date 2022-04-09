@@ -100,7 +100,7 @@ def add_noise(pc):
 
 
 def normalize(pc):
-    # Scale all point of the point cloud in such a way, that every coordinate is betweeen 0.2 and 0.8 
+    # Scale all point of the point cloud in such a way, that every coordinate is betweeen -0.3 and 0.3 
     # So they are still away enough from the boundary
         
     pc = np.matrix(pc)
