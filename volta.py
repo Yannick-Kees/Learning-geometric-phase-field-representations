@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 10000
+NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
@@ -75,6 +75,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     
 
 torch.save(network.state_dict(), "at40.pth")
+network.to("cpu")
 toParaview(network, 32)
 print("Small ParaView")
 toParaview(network, 256)
