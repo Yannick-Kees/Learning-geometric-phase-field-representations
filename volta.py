@@ -21,7 +21,7 @@ EPSILON = .0001
 if LOSS == "MM":
     CONSTANT = 50.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 20. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
+    CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
 MU = 0.5
 
 
@@ -74,7 +74,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "BunnyPLY140_17.pth")
+torch.save(network.state_dict(), "at40.pth")
 toParaview(network, 32)
 print("Small ParaView")
 toParaview(network, 256)
