@@ -179,13 +179,13 @@ def toParaview(f, n):
                 
     """      
     yy,xx,zz = np.meshgrid(X,Y,Z)
-    v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3))).cpu()
-    Z = f(v).detach().cpu().numpy().reshape(-1)
+    #v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3))).cpu()
+    #Z = f(v).detach().cpu().numpy().reshape(-1)
     #points = np.array([yy,zz,xx]).T
     #print(points) 
     # Variables 
     #print(Z)
-    #Z = np.array( [ f( Variable( Tensor([ x[i][j][k], y[i][j][k], z[i][j][k] ] ), requires_grad=True).to(device)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+    Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
 
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
