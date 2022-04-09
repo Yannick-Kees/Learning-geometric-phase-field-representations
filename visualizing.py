@@ -146,7 +146,7 @@ def test_f(t):
     return t[0]**2+t[1]**2+t[2]**2 -1 
 
 
-def toParaview(f, n):
+def toParaview(f, n, l):
     # Dimensions 
     # 
     nx, ny, nz = n, n, n
@@ -185,10 +185,10 @@ def toParaview(f, n):
     #print(points) 
     # Variables 
     #print(Z)
-    Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+    Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach().numpy()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
 
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
-    structuredToVTK("./structured"+str(n), xx, yy, zz,  pointData = {"NN" : Z})
+    structuredToVTK("./structured"+str(n)+str(l), xx, yy, zz,  pointData = {"NN" : Z})
 
 
