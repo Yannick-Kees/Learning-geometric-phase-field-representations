@@ -31,7 +31,7 @@ MU = 0.5
 
 
 
-network = ParkEtAl(3, [NUM_NODES]*2, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [NUM_NODES]*2, [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, geometric_init=False )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
