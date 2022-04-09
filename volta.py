@@ -75,8 +75,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     
 
 torch.save(network.state_dict(), "at40.pth")
-network.to("cpu")
-toParaview(network, 32)
+toParaview(network, 32, 7)
 print("Small ParaView")
-toParaview(network, 256)
+toParaview(network, 256, 7)
 print("Finished")

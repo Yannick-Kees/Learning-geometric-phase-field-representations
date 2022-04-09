@@ -179,13 +179,19 @@ def toParaview(f, n, l):
                 
     """      
     yy,xx,zz = np.meshgrid(X,Y,Z)
-    #v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3))).cpu()
+    all_data = np.array([xx,yy,zz]).T.reshape((n+1)**3,3)
+    batch_size = 10000
+    num_batches = (n+1)**3 // batch_size
+    splitted_data = np.array_split(all_data, num_batches)
+
+    Z = np.concatenate([ f( Variable(Tensor(v)).to(device) ).detach().cpu().reshape(-1).numpy() for v in splitted_data    ])
+   
     #Z = f(v).detach().cpu().numpy().reshape(-1)
     #points = np.array([yy,zz,xx]).T
     #print(points) 
     # Variables 
-    #print(Z)
-    Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach().numpy()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+
+    #Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach().numpy()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
 
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 

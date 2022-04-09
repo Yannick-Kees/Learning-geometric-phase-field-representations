@@ -37,7 +37,7 @@ def read_ply_file(file):
     vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
     return vertices
     
-Test = True
+Test = False
 if Test:
         file = open("3dObjects/bunny_0.ply")
         pc = read_ply_file(file)
@@ -54,3 +54,6 @@ if Test:
         #cloud = torch.tensor(flat_circle(8000) )
 
         draw_point_cloud( pointcloud )
+
+x =np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+print(np.array_split(x, 4))
