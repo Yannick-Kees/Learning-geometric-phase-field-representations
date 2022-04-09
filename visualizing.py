@@ -179,7 +179,7 @@ def toParaview(f, n):
                 
     """      
     yy,xx,zz = np.meshgrid(X,Y,Z)
-    v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3))).to(device)
+    v = Variable(Tensor(np.array([xx,yy,zz]).T.reshape((n+1)**3,3))).cpu()
     Z = f(v).detach().cpu().numpy().reshape(-1)
     #points = np.array([yy,zz,xx]).T
     #print(points) 
