@@ -53,7 +53,7 @@ if Test:
         pointcloud = pc[indices]
         #cloud = torch.tensor(flat_circle(8000) )
 
-        draw_point_cloud( pointcloud )
+        print(len(pc))
 
-x =np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-print(np.array_split(x, 4))
+
+print(17*512+513*512*4+513)
