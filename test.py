@@ -39,17 +39,19 @@ def read_ply_file(file):
     
 Test = True
 if Test:
-        file = open("3dObjects/skull.ply")
+        file = open("3dObjects/octopus_0.ply")
         pc = read_ply_file(file)
+        #pc = read_off(file)
         cloud = torch.tensor(normalize(pc))
         #cloud = torch.tensor( flat_circle(2000) )
 
-        cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-        cloud = torch.tensor(normalize(cloud) )
+        #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+        #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+        #cloud = torch.tensor(normalize(cloud) )
 
 
         pc = Variable( cloud , requires_grad=True).to(device)
-        indices = np.random.choice(len(pc), 10000, False)
+        indices = np.random.choice(len(pc), 1000, False)
         pointcloud = pc[indices]
         #cloud = torch.tensor(flat_circle(8000) )
 

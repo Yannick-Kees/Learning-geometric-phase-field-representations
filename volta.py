@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 70000
+NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
@@ -36,7 +36,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/skull.ply")
+file = open("3dObjects/octopus_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc))
 #cloud = torch.tensor( flat_circle(2000) )
