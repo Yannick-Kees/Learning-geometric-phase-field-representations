@@ -31,12 +31,12 @@ MU = 0.5
 
 
 
-network = ParkEtAl(3, [512]*5, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/bunny_0.ply")
+file = open("3dObjects/skull.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor(normalize(pc))
 #cloud = torch.tensor( flat_circle(2000) )
