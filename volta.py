@@ -10,7 +10,7 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 8.0
+SIGMA = 7.0
 BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
@@ -29,53 +29,55 @@ MU = 0.5
 # Main #############
 ####################
 
+experiments = [ "3dObjects/boat.obj","3dObjects/koala.obj","3dObjects/lionstatue.obj","3dObjects/penguin.obj","3dObjects/scorpion.obj","3dObjects/falconstatue_boundary.obj","3dObjects/mountain.obj","3dObjects/pizza.obj","3dObjects/tower_holes.obj" ]
+
+for l in range(len(experiments )):
+
+    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+    network.to(device) 
+    optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
+    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
+
+    file = open(experiments[l])
+    pc = read_obj_file(file)
+    cloud = torch.tensor(normalize(pc))
+    #cloud = torch.tensor( flat_circle(2000) )
+
+    #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+    #cloud = torch.tensor(normalize(cloud) )
 
 
-network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
-network.to(device) 
-optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
-scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
+    pc = Variable( cloud , requires_grad=True).to(device)
+    use_batch = (len(pc) > BATCHSIZE )
 
-file = open("3dObjects/demosthenes.obj")
-pc = read_obj_file(file)
-cloud = torch.tensor(normalize(pc))
-#cloud = torch.tensor( flat_circle(2000) )
-
-#cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-#cloud = torch.tensor(normalize(cloud) )
-
-
-pc = Variable( cloud , requires_grad=True).to(device)
-use_batch = (len(pc) > BATCHSIZE )
-
-for i in range(NUM_TRAINING_SESSIONS+1):
-    # training the network
-    # feed forward
-    # Omega = [0,1]^2
-    if use_batch:
+    for i in range(NUM_TRAINING_SESSIONS+1):
+        # training the network
+        # feed forward
+        # Omega = [0,1]^2
+        if use_batch:
+            
+            indices = np.random.choice(len(pc), BATCHSIZE, False)
+            pointcloud = pc[indices]
+        else:
+            pointcloud = pc
         
-        indices = np.random.choice(len(pc), BATCHSIZE, False)
-        pointcloud = pc[indices]
-    else:
-        pointcloud = pc
-    
-    if LOSS == "AT":
-        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
-        if (i%50==0):
-            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    else:
-        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-        if (i%10==0):
-            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    
-    # backpropagation
-    network.zero_grad()
-    loss.backward()
-    optimizer.step()
-    scheduler.step(loss)
-    
-#torch.save(network.state_dict(), "at40.pth")
-toParaview(network, 256, 1)
-print("Finished"+str(1))
+        if LOSS == "AT":
+            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+            if (i%50==0):
+                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        else:
+            loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+            if (i%10==0):
+                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        
+        # backpropagation
+        network.zero_grad()
+        loss.backward()
+        optimizer.step()
+        scheduler.step(loss)
+        
+    #torch.save(network.state_dict(), "at40.pth")
+    toParaview(network, 256, l)
+    print("Finished"+str(l))
 
