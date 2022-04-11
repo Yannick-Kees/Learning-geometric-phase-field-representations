@@ -39,7 +39,7 @@ def read_ply_file(file):
     
 Test = True
 if Test:
-        file = open("3dObjects/scorpion.obj")
+        file = open("3dObjects/truck.obj")
         pc = read_obj_file(file)
         print(len(pc))
         #pc = read_off(file)

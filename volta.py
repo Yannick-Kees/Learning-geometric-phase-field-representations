@@ -29,7 +29,7 @@ MU = 0.5
 # Main #############
 ####################
 
-experiments = [ "3dObjects/boat.obj","3dObjects/koala.obj","3dObjects/lionstatue.obj","3dObjects/penguin.obj","3dObjects/scorpion.obj","3dObjects/falconstatue_boundary.obj","3dObjects/mountain.obj","3dObjects/pizza.obj","3dObjects/tower_holes.obj" ]
+experiments = [ "3dObjects/arm.obj","3dObjects/armadillo.obj","3dObjects/elephant.obj","3dObjects/horse_quad.obj","3dObjects/nefertiti.obj","3dObjects/truck.obj"]
 
 for l in range(len(experiments )):
 
