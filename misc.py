@@ -63,6 +63,19 @@ def read_ply_file(file):
     vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
     return vertices
 
+
+def read_obj_file(file):
+      pc = []
+      for line in file.readlines():
+         x = line.replace("\n","").split(" ")
+         if x[0] != "v":
+            break
+         else:
+            pc.append(   [float(xx)  for xx in x[1:4] ]   )
+      return pc      
+                  
+
+
 def CreateFourierMatrix(size, d):
    print([[ np.random.normal()  for _ in range(d)] for _ in range(size)])
    

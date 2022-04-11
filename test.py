@@ -39,8 +39,9 @@ def read_ply_file(file):
     
 Test = True
 if Test:
-        file = open("3dObjects/strawberry.ply")
-        pc = read_ply_file(file)
+        file = open("3dObjects/demosthenes.obj")
+        pc = read_obj_file(file)
+        print(len(pc))
         #pc = read_off(file)
         cloud = torch.tensor(normalize(pc))
         #cloud = torch.tensor( flat_circle(2000) )
