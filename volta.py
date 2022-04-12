@@ -29,22 +29,22 @@ MU = 0.5
 # Main #############
 ####################
 
-experiments = [ "3dObjects/arm.obj","3dObjects/armadillo.obj","3dObjects/elephant.obj","3dObjects/horse_quad.obj","3dObjects/nefertiti.obj","3dObjects/truck.obj"]
+experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = experiments[l] )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-    file = open(experiments[l])
-    pc = read_obj_file(file)
+    file = open("3dObjects/bunny.ply")
+    pc = read_ply_file(file)
     cloud = torch.tensor(normalize(pc))
     #cloud = torch.tensor( flat_circle(2000) )
 
-    #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-    #cloud = torch.tensor(normalize(cloud) )
+    cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+    cloud = torch.tensor(normalize(cloud) )
 
 
     pc = Variable( cloud , requires_grad=True).to(device)
