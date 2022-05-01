@@ -38,13 +38,13 @@ for l in range(len(experiments )):
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-    file = open("3dObjects/bunny_0.ply")
-    pc = read_ply_file(file)
+    file = open("3dObjects/tower_holes.obj")
+    pc = read_obj_file(file)
     cloud = torch.tensor(normalize(pc))
     #cloud = torch.tensor( flat_circle(2000) )
 
-    cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-    cloud = torch.tensor(normalize(cloud) )
+    #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+    #cloud = torch.tensor(normalize(cloud) )
 
 
     pc = Variable( cloud , requires_grad=True).to(device)

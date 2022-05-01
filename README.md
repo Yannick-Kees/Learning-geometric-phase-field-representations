@@ -44,3 +44,13 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
  
 * [Neural Geometric Level of Detail: Real-time Rendering with Implicit 3D Surfaces](https://nv-tlabs.github.io/nglod/) (Takikawa et al. 2021) 
 * [ON THE EFFECTIVENESS OF WEIGHT-ENCODED NEURAL IMPLICIT 3D SHAPES](https://arxiv.org/pdf/2009.09808v3.pdf) (Davies, Nowrouzezahrai, Jacobson 2021) 
+
+
+## Application
+
+* [PIFu: Pixel-Aligned Implicit Function for High-Resolution Clothed Human Digitization](https://arxiv.org/pdf/1905.05172.pdf) (Saito et al. 2019)
+* [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://link.springer.com/chapter/10.1007/978-3-030-58452-8_24) (Mildenhall et al. 2020)
+* [Overfit Neural Networks as a Compact Shape Representation](https://arxiv.org/pdf/2009.09808v2.pdf) (Davies et al. 2020)
+* [Neural Geometric Level of Detail: Real-time Rendering with Implicit 3D Shapes](https://arxiv.org/pdf/2101.10994.pdf) (Takikawa et al. 2021)
+* [PhySG: Inverse Rendering with Spherical Gaussians for Physics-based Material Editing and Relighting](https://kai-46.github.io/PhySG-website/) (Zhang et al. 2021)
+* [RGB-D Local Implicit Function for Depth Completion of Transparent Objects](https://arxiv.org/pdf/2104.00622.pdf) (Zhu et al. 2021)
