@@ -40,7 +40,7 @@ for l in range(len(experiments )):
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
     file = open("3dObjects/bunny_0.ply")
-    pc = read_obj_file(file)
+    pc = read_ply_file(file)
     cloud = torch.tensor(normalize(pc))
     #cloud = torch.tensor( flat_circle(2000) )
 
