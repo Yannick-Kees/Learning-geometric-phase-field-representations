@@ -50,7 +50,7 @@ f = ParkEtAl(3, [512]*7, [4], FourierFeatures=True, num_features = 8, sigma = .3
 # f = network = ParkEtAl(3, [128]*4, [2], FourierFeatures=False, num_features = 6, sigma = .3 )
 f.load_state_dict(torch.load(r"C:\Users\Yannick\Desktop\MA\Programming part\models\bunny3.pth", map_location=device))
 
-L2_Loss(f, [[0,0,0],[.5,.5,.5]], [], 10, .0001)
+Point_Loss(f, [[0,0,0],[.5,.5,.5]], [], 10, .01)
 
 
 

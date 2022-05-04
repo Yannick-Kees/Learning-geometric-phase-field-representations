@@ -43,16 +43,16 @@ sample_distances = evalute_loss['distance']
 # Main #############
 ####################
 
-experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
+experiments = [ "3dObjects\Burger.npz", "3dObjects\Castle.npz", "3dObjects\Dinosaur.npz", "3dObjects\Girl.npz",  "3dObjects\Mobius.npz", "3dObjects\PixarMike.npz", "3dObjects\Temple.npz" ]
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = experiments[l] )
+    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 6 )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-
+    cloud = np.load(experiments[l])['position']
     cloud = .5 * torch.tensor(cloud )
     pc = Variable( cloud , requires_grad=True).to(device)
     use_batch = (len(pc) > BATCHSIZE )
