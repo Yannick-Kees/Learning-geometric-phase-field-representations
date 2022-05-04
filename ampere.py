@@ -26,29 +26,34 @@ MU = 0.5
 
 
 ####################
+# Point Cloud ######
+####################
+
+npz_file = np.load("3dObjects\HumanHeadSurface.npz")
+evalute_loss = np.load("3dObjects\HumanHeadRand.npz")
+
+cloud = npz_file['position']
+
+sample_points = evalute_loss['position']
+sample_distances = evalute_loss['distance']
+# gradient = npz_file['gradient']
+
+
+####################
 # Main #############
 ####################
 
-#experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
-experiments = [ 1,2,4,8,16,32,64,128,256,512]
+experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [experiments[l]] , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 5 )
+    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = experiments[l] )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-    file = open("3dObjects/bunny_0.ply")
-    pc = read_obj_file(file)
-    cloud = torch.tensor(normalize(pc))
-    #cloud = torch.tensor( flat_circle(2000) )
 
-    # Activate for the bunny
-    cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-    cloud = torch.tensor(normalize(cloud) )
-
-
+    cloud = .5 * torch.tensor(cloud )
     pc = Variable( cloud , requires_grad=True).to(device)
     use_batch = (len(pc) > BATCHSIZE )
 
@@ -57,7 +62,7 @@ for l in range(len(experiments )):
         # feed forward
         # Omega = [0,1]^2
         if use_batch:
-            
+
             indices = np.random.choice(len(pc), BATCHSIZE, False)
             pointcloud = pc[indices]
         else:
@@ -79,10 +84,6 @@ for l in range(len(experiments )):
         optimizer.step()
         scheduler.step(loss)
         
-    indices = np.random.choice(len(pc), BATCHSIZE, False)
-    pointcloud = pc[indices]
-    print("Loss: ", torch.abs(network(pointcloud)).mean())
     #torch.save(network.state_dict(), "at40.pth")
-    #toParaview(network, 256, l)
+    toParaview(network, 256, l)
     print("Finished"+str(l))
-

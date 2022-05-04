@@ -1,6 +1,6 @@
 
 
-from networks import *
+from loss_functionals import *
 """ 
 file = open("3dObjects/bigcube.off")    
 pc = read_off(file)
@@ -8,24 +8,10 @@ print(pc)
 cloud = torch.tensor(normalize(pc) )
 draw_point_cloud(cloud)
 """ 
-def f(x):
-    return x[1]**2+x[0]**2
 
 
-"""
-file = open("3dObjects/cow.off")    
-pc = read_off(file)
- 
-cloud = torch.tensor(normalize(pc) )
 
-#draw_point_cloud(cloud)
-cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-cloud = torch.tensor(normalize(cloud) )
-print(len(cloud))
 
-pointcloud = Variable(torch.tensor(normalize(produce_pan(50)))  , requires_grad=True).to(device)
-draw_point_cloud(pointcloud)
-"""
 
 def read_ply_file(file):
     
@@ -37,7 +23,7 @@ def read_ply_file(file):
     vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
     return vertices
     
-Test = True
+Test = False
 if Test:
         file = open("3dObjects/truck.obj")
         pc = read_obj_file(file)
@@ -57,5 +43,14 @@ if Test:
         #cloud = torch.tensor(flat_circle(8000) )
 
         draw_point_cloud(pointcloud)
+
+
+f = ParkEtAl(3, [512]*7, [4], FourierFeatures=True, num_features = 8, sigma = .3 )
+#
+# f = network = ParkEtAl(3, [128]*4, [2], FourierFeatures=False, num_features = 6, sigma = .3 )
+f.load_state_dict(torch.load(r"C:\Users\Yannick\Desktop\MA\Programming part\models\bunny3.pth", map_location=device))
+
+L2_Loss(f, [[0,0,0],[.5,.5,.5]], [], 10, .0001)
+
 
 

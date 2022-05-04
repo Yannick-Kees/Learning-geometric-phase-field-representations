@@ -216,3 +216,18 @@ def AT_loss(f, pointcloud, eps, n, m, c):
 
 
 
+#############################
+# Loss on L^2 ###############
+#############################
+
+# We 
+
+def L2_Loss(f, input, Batch, n):
+    
+    
+    indices = np.random.choice(len(input), Batch, False)
+    x = Variable( Tensor(input[indices])).to(device)
+    #x = input
+    return f(x).mean()
+
+    
