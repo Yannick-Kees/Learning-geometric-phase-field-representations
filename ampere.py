@@ -29,13 +29,10 @@ MU = 0.5
 # Point Cloud ######
 ####################
 
-npz_file = np.load("3dObjects\HumanHeadSurface.npz")
-evalute_loss = np.load("3dObjects\HumanHeadRand.npz")
 
-cloud = npz_file['position']
 
-sample_points = evalute_loss['position']
-sample_distances = evalute_loss['distance']
+#sample_points = evalute_loss['position']
+#sample_distances = evalute_loss['distance']
 # gradient = npz_file['gradient']
 
 
@@ -47,7 +44,7 @@ experiments = [ "3dObjects\Burger.npz", "3dObjects\Castle.npz", "3dObjects\Dinos
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 6 )
+    network = ParkEtAl(3, [512]*3, [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -65,6 +62,7 @@ for l in range(len(experiments )):
 
             indices = np.random.choice(len(pc), BATCHSIZE, False)
             pointcloud = pc[indices]
+           
         else:
             pointcloud = pc
         
@@ -76,7 +74,7 @@ for l in range(len(experiments )):
             loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
             if (i%10==0):
                 report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-        # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+
         
         # backpropagation
         network.zero_grad()
