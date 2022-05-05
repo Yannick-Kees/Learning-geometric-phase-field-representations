@@ -40,7 +40,7 @@ MU = 0.5
 # Main #############
 ####################
 
-experiments = [ "3dObjects\Burger.npz", "3dObjects\Castle.npz", "3dObjects\Dinosaur.npz", "3dObjects\Girl.npz",  "3dObjects\Mobius.npz", "3dObjects\PixarMike.npz", "3dObjects\Temple.npz" ]
+experiments = [ "3dObjects/Burger.npz", "3dObjects/Castle.npz", "3dObjects/Dinosaur.npz", "3dObjects/Girl.npz",  "3dObjects/Mobius.npz", "3dObjects/PixarMike.npz", "3dObjects/Temple.npz" ]
 
 for l in range(len(experiments )):
 
