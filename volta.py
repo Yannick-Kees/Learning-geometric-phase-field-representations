@@ -85,6 +85,6 @@ for l in range(len(experiments )):
     pointcloud = pc[indices]
     print("Loss: ", torch.abs(network(pointcloud)).mean())
     #torch.save(network.state_dict(), "at40.pth")
-    #toParaview(network, 256, l)
+    toParaview(network, 256, l)
     print("Finished"+str(l))
 
