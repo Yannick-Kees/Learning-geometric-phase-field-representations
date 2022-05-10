@@ -34,7 +34,7 @@ experiments = [ sliced_sphere(5000), triple_slice(5000), dual_slice(5000)]
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 5 )
+    network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 3 )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -48,7 +48,7 @@ for l in range(len(experiments )):
     #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
     #cloud = torch.tensor(normalize(cloud) )
     
-    cloud = normalize(experiments[l] )
+    cloud = torch.tensor(normalize(experiments[l] ))
 
 
     pc = Variable( cloud , requires_grad=True).to(device)
