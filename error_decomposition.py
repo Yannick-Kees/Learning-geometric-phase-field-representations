@@ -78,7 +78,10 @@ if pol:
     xx =[ 19, 37, 73, 145, 289,  577, 1153, 2305, 4609, 9217   ]
     y = [0.7911,0.4779,.3958,.4212,.184,.0363,.0250,.0131,.006,0.003]
     yy =[ 766,648,605,590,457,203,168,83,59,45 ]
-    plt.plot(xx,yy)
+    plt.plot(x,y)
+    h = np.arange(1,512)
+    plt.plot(h, 1/h)
     plt.show()
-    plt.loglog(xx,yy)
+    plt.loglog(x,y)
+    plt.plot(h, 1/h)
     plt.show()

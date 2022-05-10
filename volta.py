@@ -15,7 +15,7 @@ BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
 LOSS = "AT"
-MONTE_CARLO_SAMPLES = 200
+MONTE_CARLO_SAMPLES = 2000
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 if LOSS == "MM":
@@ -30,23 +30,25 @@ MU = 0.5
 ####################
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
-experiments = [ 1,2,4,8,16,32,64,128,256,512]
+experiments = [ sliced_sphere(5000), triple_slice(5000), dual_slice(5000)]
 
 for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [experiments[l]] , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 5 )
+    network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 5 )
     network.to(device) 
     optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-    file = open("3dObjects/bunny_0.ply")
-    pc = read_ply_file(file)
-    cloud = torch.tensor(normalize(pc))
+    #file = open("3dObjects/bunny_0.ply")
+    #pc = read_ply_file(file)
+    #cloud = torch.tensor(normalize(pc))
     #cloud = torch.tensor( flat_circle(2000) )
 
     # Activate for the bunny
-    cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-    cloud = torch.tensor(normalize(cloud) )
+    #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+    #cloud = torch.tensor(normalize(cloud) )
+    
+    cloud = normalize(experiments[l] )
 
 
     pc = Variable( cloud , requires_grad=True).to(device)

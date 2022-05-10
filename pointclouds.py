@@ -32,7 +32,10 @@ def produce_circle(n, r=.3):
 
 
 def produce_pan(n, r=.3):
+    
     # n points sampled from a circle, and additional n point uniformly distrubuted from 0 to 1/3
+    # Remark: Not uniform distributed, because of using polar coordinates
+    
     pc = []
 
     
@@ -84,6 +87,52 @@ def flat_circle(n):
         y   = float(r * np.cos( alpha )  )
         pc.append([x,y, y])
     return pc
+
+def dual_slice(n):
+    pc = []
+    for _ in range(n):
+        x = np.random.uniform(-1,1)
+        y = np.random.uniform(0,1)
+        
+        if np.linalg.norm([x,y,0])<1:
+            pc.append([x,y,0])
+            pc.append([x,-y,0])
+        if np.linalg.norm([x,0,y])<1:
+            pc.append([x,0,-y])
+            
+
+    return pc
+
+
+def triple_slice(n):
+    pc = []
+    for _ in range(n):
+        x = np.random.uniform(-1,1)
+        y = np.random.uniform(0,1)
+        
+        if np.linalg.norm([x,0.577 *y,y])<1:
+            pc.append([x,0.577 *y, y])
+            pc.append([x,-0.577 *y,y])
+        if np.linalg.norm([x,0,y])<1:
+            pc.append([x,0,-y])
+            
+
+    return pc
+
+def sliced_sphere(n):
+    pc = []
+    for _ in range(n):
+        x = np.random.uniform(-1,1)
+        y = np.random.uniform(-1,1)
+        z = np.random.uniform(-1,1)
+         
+        pc.append( 1.0/(np.linalg.norm([x,y,z])) * np.array([x,y,z]))
+        
+        pc.append([x,y,0])
+        
+            
+
+    return pc
         
 
 #############################
@@ -101,7 +150,7 @@ def add_noise(pc):
 
 def normalize(pc):
     # Scale all point of the point cloud in such a way, that every coordinate is betweeen -0.3 and 0.3 
-    # So they are still away enough from the boundary
+    # That is how they are still away enough from the boundary
         
     pc = np.matrix(pc)
     
@@ -111,5 +160,15 @@ def normalize(pc):
     norm = pc - np.amin(pc)
     norm = .6 * (1.0/np.amax(norm) *  norm  ) - .3
     return norm.tolist()
+
+
+def cut_hole(pc):
+    # Cut a hole
+    
+    new_pc = []
+    for p in pc:
+        if not np.linalg.norm(np.array(p)[0:2]<.1):
+            pc.append(p)
+    return p
 
 
