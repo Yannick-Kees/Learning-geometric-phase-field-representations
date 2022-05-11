@@ -62,20 +62,20 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         pointcloud = pc[indices]
     else:
         pointcloud = pc
-    
-    if LOSS == "AT":
-        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
-        if (i%50==0):
-            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    else:
-        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-        if (i%10==0):
-            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    
-    # backpropagation
-    network.zero_grad()
-    loss.backward()
+    for _ in range(2):
+        if LOSS == "AT":
+            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+            if (i%50==0):
+                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        else:
+            loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+            if (i%10==0):
+                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+        
+        # backpropagation
+        network.zero_grad()
+        loss.backward()
     optimizer.step()
     scheduler.step(loss)
     
