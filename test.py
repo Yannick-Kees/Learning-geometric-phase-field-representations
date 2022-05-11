@@ -43,7 +43,7 @@ if Test:
 
 
 
-cloud = torch.tensor(normalize(sliced_sphere(5000) ))
+cloud = torch.tensor(normalize(triple_slice(5000) ))
 pc = Variable( cloud , requires_grad=True).to(device)
 draw_point_cloud(pc)
 

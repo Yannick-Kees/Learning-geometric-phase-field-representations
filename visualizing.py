@@ -111,6 +111,10 @@ def draw_point_cloud(pc):
         ax = fig.add_subplot(111, projection='3d')
         pointcloud = pc.detach().numpy().T 
         ax.scatter(pointcloud[0],pointcloud[1],pointcloud[2])
+
+        ax.set_xlim3d(-.3,.3)
+        ax.set_ylim3d(-.3,.3)
+        ax.set_zlim3d(-.3,.3)
         plt.show()
 
         

@@ -30,7 +30,7 @@ MU = 0.5
 ####################
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
-experiments = [ sliced_sphere(5000), triple_slice(5000), dual_slice(5000)]
+experiments = [ sliced_sphere(10000), triple_slice(5000)]
 
 for l in range(len(experiments )):
 

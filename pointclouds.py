@@ -110,9 +110,11 @@ def triple_slice(n):
         x = np.random.uniform(-1,1)
         y = np.random.uniform(0,1)
         
-        if np.linalg.norm([x,0.577 *y,y])<1:
-            pc.append([x,0.577 *y, y])
-            pc.append([x,-0.577 *y,y])
+        tan = np.tan((2.*np.pi)/12.0)
+        
+        if np.linalg.norm([x,y,tan *y])<1:
+            pc.append([x,y,tan * y])
+            pc.append([x,-y,tan *y])
         if np.linalg.norm([x,0,y])<1:
             pc.append([x,0,-y])
             
