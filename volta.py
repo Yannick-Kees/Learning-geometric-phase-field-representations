@@ -75,7 +75,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         
         # backpropagation
         network.zero_grad()
-        loss.backward()
+        loss.backward(retain_graph= True )
     optimizer.step()
     scheduler.step(loss)
     

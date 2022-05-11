@@ -53,43 +53,25 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         pointcloud = pc[indices]
     else:
         pointcloud = pc
-    
-    if LOSS == "AT":
-        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
-    else:
-        #loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-        loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
-    
-    if FILM:
-        report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
-    else:
-        if (i%50==0):
+    for _ in range(2):
+        if LOSS == "AT":
+            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+        else:
+            #loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+            loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
+        
+        if FILM:
             report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+        else:
+            if (i%50==0):
+                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
+            
         
-    
+            
+        # backpropagation
         
-    # backpropagation
-    
-    network.zero_grad()
-    loss.backward()
-    if LOSS == "AT":
-        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
-    else:
-        #loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-        loss = test_MM_GV(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, False)
-    
-    if FILM:
-        report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
-    else:
-        if (i%50==0):
-            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().numpy() )
-        
-    
-        
-    # backpropagation
-    
-    network.zero_grad()
-    loss.backward()
+        network.zero_grad()
+        loss.backward(retain_graph=True)
     optimizer.step()
     scheduler.step(loss)
     if FILM:
