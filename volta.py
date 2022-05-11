@@ -30,61 +30,59 @@ MU = 0.5
 ####################
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
-experiments = [ sliced_sphere(10000), triple_slice(5000)]
 
-for l in range(len(experiments )):
 
-    network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 3 )
-    network.to(device) 
-    optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
-    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
+network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 3 )
+network.to(device) 
+optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
+scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-    #file = open("3dObjects/bunny_0.ply")
-    #pc = read_ply_file(file)
-    #cloud = torch.tensor(normalize(pc))
-    #cloud = torch.tensor( flat_circle(2000) )
+file = open("3dObjects/nefertiti.obj")
+pc = read_obj_file(file)
+cloud = torch.tensor(cut_hole(  normalize(pc)))
+#cloud = torch.tensor( flat_circle(2000) )
 
-    # Activate for the bunny
-    #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-    #cloud = torch.tensor(normalize(cloud) )
+# Activate for the bunny
+#cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+#cloud = torch.tensor(normalize(cloud) )
+
+#cloud = torch.tensor(normalize(experiments[l] ))
+
+
+pc = Variable( cloud , requires_grad=True).to(device)
+use_batch = (len(pc) > BATCHSIZE )
+
+for i in range(NUM_TRAINING_SESSIONS+1):
+    # training the network
+    # feed forward
+    # Omega = [0,1]^2
+    if use_batch:
+        
+        indices = np.random.choice(len(pc), BATCHSIZE, False)
+        pointcloud = pc[indices]
+    else:
+        pointcloud = pc
     
-    cloud = torch.tensor(normalize(experiments[l] ))
-
-
-    pc = Variable( cloud , requires_grad=True).to(device)
-    use_batch = (len(pc) > BATCHSIZE )
-
-    for i in range(NUM_TRAINING_SESSIONS+1):
-        # training the network
-        # feed forward
-        # Omega = [0,1]^2
-        if use_batch:
-            
-            indices = np.random.choice(len(pc), BATCHSIZE, False)
-            pointcloud = pc[indices]
-        else:
-            pointcloud = pc
-        
-        if LOSS == "AT":
-            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
-            if (i%50==0):
-                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-        else:
-            loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
-            if (i%10==0):
-                report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-        # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-        
-        # backpropagation
-        network.zero_grad()
-        loss.backward()
-        optimizer.step()
-        scheduler.step(loss)
-        
-    indices = np.random.choice(len(pc), BATCHSIZE, False)
-    pointcloud = pc[indices]
-    print("Loss: ", torch.abs(network(pointcloud)).mean())
-    #torch.save(network.state_dict(), "at40.pth")
-    toParaview(network, 256, l)
-    print("Finished"+str(l))
+    if LOSS == "AT":
+        loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+        if (i%50==0):
+            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    else:
+        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
+        if (i%10==0):
+            report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    
+    # backpropagation
+    network.zero_grad()
+    loss.backward()
+    optimizer.step()
+    scheduler.step(loss)
+    
+indices = np.random.choice(len(pc), BATCHSIZE, False)
+pointcloud = pc[indices]
+print("Loss: ", torch.abs(network(pointcloud)).mean())
+#torch.save(network.state_dict(), "at40.pth")
+toParaview(network, 256, 0)
+print("Finished")
 

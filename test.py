@@ -19,13 +19,13 @@ def read_ply_file(file):
     vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
     return vertices
     
-Test = False
+Test = True
 if Test:
-        file = open("3dObjects/truck.obj")
-        pc = read_obj_file(file)
-        print(len(pc))
+        file = open("3dObjects/nefertiti.obj")
+        pc =  read_obj_file(file)
+
         #pc = read_off(file)
-        cloud = torch.tensor(normalize(pc))
+        cloud = torch.tensor(cut_hole(normalize(pc)))
         #cloud = torch.tensor( flat_circle(2000) )
 
         #cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
@@ -43,9 +43,6 @@ if Test:
 
 
 
-cloud = torch.tensor(normalize(triple_slice(5000) ))
-pc = Variable( cloud , requires_grad=True).to(device)
-draw_point_cloud(pc)
 
 
 

@@ -111,7 +111,7 @@ def triple_slice(n):
         y = np.random.uniform(0,1)
         
         tan = np.tan((2.*np.pi)/12.0)
-        
+        tan = 1.0
         if np.linalg.norm([x,y,tan *y])<1:
             pc.append([x,y,tan * y])
             pc.append([x,-y,tan *y])
@@ -169,8 +169,9 @@ def cut_hole(pc):
     
     new_pc = []
     for p in pc:
-        if not np.linalg.norm(np.array(p)[0:2]<.1):
-            pc.append(p)
-    return p
+        if (p[0])**2+(p[2]-.15)**2>.005:
+            new_pc.append(p)
+    print(len(pc), len(new_pc))
+    return new_pc
 
 
