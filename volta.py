@@ -51,11 +51,14 @@ cloud = torch.tensor(cut_hole(  normalize(pc)))
 
 pc = Variable( cloud , requires_grad=True).to(device)
 use_batch = (len(pc) > BATCHSIZE )
-network.zero_grad()
+
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
     # feed forward
     # Omega = [0,1]^2
+    
+    network.zero_grad()
+    
     if use_batch:
         
         indices = np.random.choice(len(pc), BATCHSIZE, False)
