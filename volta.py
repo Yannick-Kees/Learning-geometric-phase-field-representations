@@ -51,7 +51,7 @@ cloud = torch.tensor(cut_hole(  normalize(pc)))
 
 pc = Variable( cloud , requires_grad=True).to(device)
 use_batch = (len(pc) > BATCHSIZE )
-
+network.zero_grad()
 for i in range(NUM_TRAINING_SESSIONS+1):
     # training the network
     # feed forward
@@ -74,8 +74,8 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
         
         # backpropagation
-        network.zero_grad()
-        loss.backward(retain_graph= True )
+        
+        loss.backward(retain_graph= False )
     optimizer.step()
     scheduler.step(loss)
     
