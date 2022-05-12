@@ -64,7 +64,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         pointcloud = pc
     for _ in range(2):
         if LOSS == "AT":
-            loss = AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
+            loss = .5 * AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
             if (i%50==0):
                 report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
         else:
