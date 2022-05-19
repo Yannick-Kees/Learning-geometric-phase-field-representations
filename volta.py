@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 50000
+NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
@@ -32,7 +32,7 @@ MU = 0.5
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
 
-network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = 3 )
+network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)

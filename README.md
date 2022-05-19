@@ -6,6 +6,22 @@ Implementation of
 * [Phase Transitions, Distance Functions, and Implicit Neural Representations](https://arxiv.org/pdf/2106.07689.pdf) (Yaron Lipman 2021)
 
 
+| File | Description |
+| --- | --- |
+| `3Dvisualization.ipynb` | Coarse rendering of Neural Networks in Jupyter Notebook |
+| `ampere.py` | Ignore this.. |
+| `error_decomposition.py` | Plot of different contributions of Loss functional  |
+| `loss_functionals.py` | Computes Modica-Mortola and Ambrosio-Tortorelli  |
+| `misc.py` | Handles import of different file formates, enables CUDA and shows progress on console  |
+| `networks.py` | Neural Networks  |
+| `packages.py` | All used third party packages |
+| `pointclouds.py` | Creates or changes point clouds |
+| `run.py` | Solves the 2D reconstruction problem. Can be executed on any computer |
+| `test.py` | Ignore this.. |
+| `visualizing.py` | Handles visualization of input and output data |
+| `volta.py` | Solves the 3D reconstruction problem. Should only be executed on high performance computer |
+
+
 # Literatur:
 Quellen und so
  
@@ -27,7 +43,7 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [SAL: Sign Agnostic Learning of Shapes from Raw Data](https://arxiv.org/pdf/1911.10414.pdf) (Atzmon, Lipman 2020)
 * [NEURAL UNSIGNED DISTANCE FIELDS FOR IMPLICIT FUNCTION LEARNING](https://virtualhumans.mpi-inf.mpg.de/ndf/) (Chibane, 2020)
 * [Convolutional Occupancy Networks](https://www.is.mpg.de/publications/peng2020eccv) (Niemeyer et al. 2018)
-* [https://arxiv.org/pdf/2003.08934.pdf](https://arxiv.org/pdf/2003.08934.pdf) (Mildenhall et al. 2020) 
+* [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://arxiv.org/pdf/2003.08934.pdf) (Mildenhall et al. 2020) 
 
 
  ## Surface reconstruction via SDF:
@@ -38,19 +54,16 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [Deep Local Shapes: Learning Local SDF Priors for Detailed 3D Reconstruction](https://arxiv.org/pdf/2003.10983.pdf) (Chabra et al. 2019) 
 * [Curriculum DeepSDF](https://arxiv.org/pdf/2003.08593.pdf) (Duan et al. 2019) 
 * [Multiview Neural Surface Reconstruction by Disentangling Geometry and Appearance](https://arxiv.org/pdf/2003.09852.pdf) (Yariv, Lipman et al. 2019) 
-
-
-## Misc
- 
-* [Neural Geometric Level of Detail: Real-time Rendering with Implicit 3D Surfaces](https://nv-tlabs.github.io/nglod/) (Takikawa et al. 2021) 
 * [ON THE EFFECTIVENESS OF WEIGHT-ENCODED NEURAL IMPLICIT 3D SHAPES](https://arxiv.org/pdf/2009.09808v3.pdf) (Davies, Nowrouzezahrai, Jacobson 2021) 
 
 
 ## Application
 
 * [PIFu: Pixel-Aligned Implicit Function for High-Resolution Clothed Human Digitization](https://arxiv.org/pdf/1905.05172.pdf) (Saito et al. 2019)
-* [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://link.springer.com/chapter/10.1007/978-3-030-58452-8_24) (Mildenhall et al. 2020)
-* [Overfit Neural Networks as a Compact Shape Representation](https://arxiv.org/pdf/2009.09808v2.pdf) (Davies et al. 2020)
 * [Neural Geometric Level of Detail: Real-time Rendering with Implicit 3D Shapes](https://arxiv.org/pdf/2101.10994.pdf) (Takikawa et al. 2021)
 * [PhySG: Inverse Rendering with Spherical Gaussians for Physics-based Material Editing and Relighting](https://kai-46.github.io/PhySG-website/) (Zhang et al. 2021)
 * [RGB-D Local Implicit Function for Depth Completion of Transparent Objects](https://arxiv.org/pdf/2104.00622.pdf) (Zhu et al. 2021)
+
+
+## Other important papers
+* [A constructive geometry for computer graphics](https://watermark.silverchair.com/160157.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAsQwggLABgkqhkiG9w0BBwagggKxMIICrQIBADCCAqYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMZ3yC8S9z4j16q6adAgEQgIICd93WBkm4nz7RugxL5LvwZ3R_Hk_PR0Q333c_JNhOyjY0tEOwaVnK4H3JVvik5EWE0NfD6KX21Db0G9VhHjfdEeTEHITAbNip607L5K7TxDSmM5MZV2aBM-AHH04Psu6Qtkl98sqt3NfnO1f6jLyWqVx49oacCQ0tOZ4rAajU4w7CWJjQ95zP_qSmsaf74mgNYk6bYInYkvJOaU1LtVtSNkkdodu5a7q2NdEATvngabIQfsN03i7iPLiRCg1Oh1cfEGkrBScEO_cycYRTq4cKPfaqFcJKoLxtOaYnd_HPETC_LtfhncVQcVXItuSFlDLfrTXweitXeoSC5-lgjCbnM1jyYtFgrucVCADW_fYcHcFTHEhJIiDHLGAbt4nreSSHXtCS5AHA2GpMB1WgoEf00__hHJdF8GXgD6p1rIN0DjxPHsf2EkF_kg_2DaPdfm4T6XvX3-Bz_vdn4z3dv9AYyYT6zd46RBXyjUaaCFphFs8mpNMYCuJPieS_YF9bpMjp_3qUzIWEFSMc2_coe770WCws89aphGf2tCAfhsPJFDxxdo4bl1pYk6Lc9PN3dIAx3V5vlqHMIKfAB-BxjNsA7aLY024Ar41qJ14WfHgZ-Emxzpe88kf42E-x4qJ7BP6x_nr7pn2wyIa6nKKgl3clNZEy-6LPmhvVb3ccPHx0-cbY6SAv3AQpQxHbESNu-7jJ0b8pGXGdv3DfWYbLZnZCzcZhUlgOwKyCUqQrwcQJ_s-PGdxvMtpanXVKLIOgHgXN1jwmWt-WCOYpCkFj_TJTRoN7qDtm_Xfplf_EqqLGA1pZryo1gUYSu50fKfCnYB7btRuwIN4yPIM) (Ricci 1974)
