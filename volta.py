@@ -10,11 +10,11 @@ START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
-SIGMA = 7.0
+SIGMA = 5.0
 BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
-LOSS = "AT"
+LOSS = "MM"
 MONTE_CARLO_SAMPLES = 2000
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
@@ -37,14 +37,14 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-file = open("3dObjects/nefertiti.obj")
-pc = read_obj_file(file)
-cloud = torch.tensor(cut_hole(  normalize(pc)))
+file = open("3dObjects/bunny_0.ply")
+pc = read_ply_file(file)
+cloud = torch.tensor( normalize(pc))
 #cloud = torch.tensor( flat_circle(2000) )
 
 # Activate for the bunny
-#cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
-#cloud = torch.tensor(normalize(cloud) )
+cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
+cloud = torch.tensor(normalize(cloud) )
 
 #cloud = torch.tensor(normalize(experiments[l] ))
 
