@@ -33,6 +33,33 @@ def draw_phase_field(f,x_,y_, i, film):
     return
 
 
+def draw_phase_field_interpolate(f, g, t, x_,y_, i, film):
+    # Creating Contour plot of f
+    
+    # Parameters:
+    #   f:      Function to plot
+    #   x_,y_:  Drawing the function on [0,x_] \times [0,y_]
+    #   i:      Index number, for naming the image files
+    #   film:   bool, weather to store the image file
+
+    xlist = np.linspace(-x_, x_, 100)
+    ylist = np.linspace(-y_, y_, 100)
+    X, Y = np.meshgrid(xlist, ylist)
+    alpha = np.pi *1./3.
+    Z = [[ t * f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0] + (1-t) * g(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]     for j in range(len(X[0]))  ] for i in range(len(X)) ] # Evaluate function in points
+    
+    fig = plt.figure()                                                      # Draw contour plot
+    levels = [-1000.0,-5.0,-.5,0.0,.5,200.0]                                # Specify contours/level set to plot
+    contour = plt.contour(X, Y, Z, levels, colors='k')
+    plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
+    if film:
+        plt.savefig("images/mov/pf" + str(i).zfill(5) + '.jpg')
+        plt.close(fig)
+    else:
+        plt.show()
+    return
+
+
 def draw_height(f):
     # Plot the function values on circle around the origin, radius = 0.3
     # Used for verification of 2D circle
@@ -84,6 +111,47 @@ def color_plot(f, y, film):
     else:
         plt.show()
     return
+
+
+def color_plot_interpolate(f, g, t, y, film):
+    # Creating 3D plot of f on [0,1]^2
+        
+    # Parameters:
+    #   f:      Function to plot
+    #   y:      Index number, for naming the image files
+    #   film:   bool, weather to film the learning process or not
+    
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    # Make data.
+    X = np.arange(-.5, .5, 0.01)
+    Y = np.arange(-.5, .5, 0.01)
+    X, Y = np.meshgrid(X, Y)
+    Z = np.zeros((len(X),len(X[0])))
+    alpha = np.pi *1./3.
+    for i in range(len(X)):
+        for j in range(len(X[0])):
+            Z[i][j]= t *f(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0] + (1-t)* g(Tensor([ X[i][j], Y[i][j] ] )).detach().numpy()[0]
+    # f(Tensor([ X[i][j], Y[i][j] ] ))
+    # Plot the surface.
+    surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+
+    # Customize the z axis.
+    ax.set_zlim(-1.01, 1.01)
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    # A StrMethodFormatter is used automatically
+    # ax.zaxis.set_major_formatter('{x:.02f}') # <- This may or may not be out commented, depending on compiler
+
+    # Add a color bar which maps values to colors.
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+    if film:
+        plt.savefig('images/mov/cp' + str(y).zfill(5) + '.jpg')
+        plt.close(fig)
+    else:
+        plt.show()
+    return
+
+
 
 #############################
 # 2/3D point cloud ##########

@@ -1,6 +1,6 @@
 
 
-from loss_functionals import *
+from networks import *
 """ 
 file = open("3dObjects/bigcube.off")    
 pc = read_off(file)
@@ -14,12 +14,10 @@ def read_ply_file(file):
     data = file.readlines()
     num_vertices = int(data[4].split(" ")[2].replace("\n",""))
 
- 
-
     vertices = [   [float(x)  for x in row.split(" ")[0:3] ] for row in data[11:11+num_vertices]]
     return vertices
     
-Test = True
+Test = False
 if Test:
         file = open("3dObjects/nefertiti.obj")
         pc =  read_obj_file(file)
@@ -39,10 +37,6 @@ if Test:
         #cloud = torch.tensor(flat_circle(8000) )
 
         draw_point_cloud(pointcloud)
-
-
-
-
-
-
+        
+        
 

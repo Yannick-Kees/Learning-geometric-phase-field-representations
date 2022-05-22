@@ -3,7 +3,8 @@
 # About
 Implementation of
 
-* [Phase Transitions, Distance Functions, and Implicit Neural Representations](https://arxiv.org/pdf/2106.07689.pdf) (Yaron Lipman 2021)
+
+* [Learning Geometric Phase Field representations](https://drive.google.com/drive/u/0/folders/1LKQha7mYWvPzKKS2yC0zf_19FEzRlly8) (Yannick Kees 2022)
 
 
 | File | Description |
@@ -47,7 +48,8 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 
 
  ## Surface reconstruction via SDF:
- 
+
+* [Phase Transitions, Distance Functions, and Implicit Neural Representations](https://arxiv.org/pdf/2106.07689.pdf) (Yaron Lipman 2021)
 * [DeepSDF: Learning Continuous Signed Distance Functions for Shape Representation](https://arxiv.org/abs/1901.05103) (Park et al. 2019) 
 * [MetaSDF: Meta-Learning Signed Distance Functions](https://www.vincentsitzmann.com/metasdf/) (Sitzman et al. 2019) 
 * [Implicit Geometric Regularization for Learning Shapes](https://arxiv.org/pdf/2002.10099.pdf) (Gropp, Lipman et al. 2019) 
