@@ -59,7 +59,7 @@ def shape_maker1(d):
         contour = plt.contour(X, Y, Z,[0])
         #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
 
-        plt.show()
+        #plt.show()
 
         p = []
         for path in contour.collections[0].get_paths():
@@ -67,7 +67,7 @@ def shape_maker1(d):
                 p.append(pp)
 
 
-        #plt.close(1)
+        plt.close(1)
 
         draw_point_cloud(Variable( Tensor(np.matrix(normalize(p))) , requires_grad=True).to(device))
     if d==3:

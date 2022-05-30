@@ -18,6 +18,7 @@ Implementation of
 | `packages.py` | All used third party packages |
 | `pointclouds.py` | Creates or changes point clouds |
 | `run.py` | Solves the 2D reconstruction problem. Can be executed on any computer |
+| `Shapemaker.py` | Programm that can produce random point clouds in 2D or 3D form natural looking objects |
 | `test.py` | Ignore this.. |
 | `visualizing.py` | Handles visualization of input and output data |
 | `volta.py` | Solves the 3D reconstruction problem. Should only be executed on high performance computer |
@@ -66,6 +67,14 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [PhySG: Inverse Rendering with Spherical Gaussians for Physics-based Material Editing and Relighting](https://kai-46.github.io/PhySG-website/) (Zhang et al. 2021)
 * [RGB-D Local Implicit Function for Depth Completion of Transparent Objects](https://arxiv.org/pdf/2104.00622.pdf) (Zhu et al. 2021)
 
+## PvJ
+* [MARCHING CUBES IN AN UNSIGNED DISTANCE FIELD FOR SURFACE RECONSTRUCTION FROM UNORGANIZED POINT SETS](https://repository.eafit.edu.co/bitstream/handle/10784/9702/2010_Congote_MARCHING_CUBES_UNSIGNED_DISTANCE_FIELD.pdf) (Congote 2010)
+* [Shape-Aware Matching of Implicit Surfaces Based on Thin Shell Energies](https://link.springer.com/content/pdf/10.1007/s10208-017-9357-9.pdf) (Iglesias, Rumpf 2015)
+* [A Thin Shell Approach to the Registration of Implicit Surfaces](https://ins.uni-bonn.de/media/public/publication-media/IgBeRu13.pdf) (Iglesias, Rumpf 2013)
+* [Geometry Processing with Neural Fields](http://vladlen.info/papers/neural-fields.pdf) (Yang 2021)
 
 ## Other important papers
 * [A constructive geometry for computer graphics](https://watermark.silverchair.com/160157.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAsQwggLABgkqhkiG9w0BBwagggKxMIICrQIBADCCAqYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMZ3yC8S9z4j16q6adAgEQgIICd93WBkm4nz7RugxL5LvwZ3R_Hk_PR0Q333c_JNhOyjY0tEOwaVnK4H3JVvik5EWE0NfD6KX21Db0G9VhHjfdEeTEHITAbNip607L5K7TxDSmM5MZV2aBM-AHH04Psu6Qtkl98sqt3NfnO1f6jLyWqVx49oacCQ0tOZ4rAajU4w7CWJjQ95zP_qSmsaf74mgNYk6bYInYkvJOaU1LtVtSNkkdodu5a7q2NdEATvngabIQfsN03i7iPLiRCg1Oh1cfEGkrBScEO_cycYRTq4cKPfaqFcJKoLxtOaYnd_HPETC_LtfhncVQcVXItuSFlDLfrTXweitXeoSC5-lgjCbnM1jyYtFgrucVCADW_fYcHcFTHEhJIiDHLGAbt4nreSSHXtCS5AHA2GpMB1WgoEf00__hHJdF8GXgD6p1rIN0DjxPHsf2EkF_kg_2DaPdfm4T6XvX3-Bz_vdn4z3dv9AYyYT6zd46RBXyjUaaCFphFs8mpNMYCuJPieS_YF9bpMjp_3qUzIWEFSMc2_coe770WCws89aphGf2tCAfhsPJFDxxdo4bl1pYk6Lc9PN3dIAx3V5vlqHMIKfAB-BxjNsA7aLY024Ar41qJ14WfHgZ-Emxzpe88kf42E-x4qJ7BP6x_nr7pn2wyIa6nKKgl3clNZEy-6LPmhvVb3ccPHx0-cbY6SAv3AQpQxHbESNu-7jJ0b8pGXGdv3DfWYbLZnZCzcZhUlgOwKyCUqQrwcQJ_s-PGdxvMtpanXVKLIOgHgXN1jwmWt-WCOYpCkFj_TJTRoN7qDtm_Xfplf_EqqLGA1pZryo1gUYSu50fKfCnYB7btRuwIN4yPIM) (Ricci 1974)
+* [Representation and Rendering of Implicit Surfaces ](http://www.13thmonkey.org/documentation/CAD/Sig06.pdf) (Sigg 2006 PhD)
+* [Metaballs](https://xbdev.net/misc_demos/demos/marching_cubes/paper.pdf) (Kenwright T.A. 2014)
+* [Spelunking the Deep: Guaranteed Queries on General Neural Implicit Surfaces via Range Analysis](https://arxiv.org/pdf/2202.02444.pdf) (Sharp 2022)
