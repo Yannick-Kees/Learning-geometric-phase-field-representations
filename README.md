@@ -78,3 +78,6 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [Representation and Rendering of Implicit Surfaces ](http://www.13thmonkey.org/documentation/CAD/Sig06.pdf) (Sigg 2006 PhD)
 * [Metaballs](https://xbdev.net/misc_demos/demos/marching_cubes/paper.pdf) (Kenwright T.A. 2014)
 * [Spelunking the Deep: Guaranteed Queries on General Neural Implicit Surfaces via Range Analysis](https://arxiv.org/pdf/2202.02444.pdf) (Sharp 2022)
+* [DeepCurrents: Learning Implicit Representations of Shapes with Boundaries ](https://people.csail.mit.edu/smirnov/deep-currents/) (Palmer 2022)
+* [SAPE: Spatially-Adaptive Progressive Encoding for Neural Optimization](https://igl.ethz.ch/projects/SAPE/SAPE_paper.pdf) (Hertz 2021)
+* [Learned Initializations for Optimizing Coordinate-Based Neural Representations](https://arxiv.org/pdf/2012.02189.pdf) (Tancik 2021)
