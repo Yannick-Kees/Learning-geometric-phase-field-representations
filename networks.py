@@ -39,8 +39,38 @@ class small_MLP3D(nn.Module):
         x = torch.tanh(x)
       
         return x
-    
-    
+
+
+  
+class Siren_Network(nn.Module):
+    # Neuronal Network
+    def __init__(self, NUM_NODES):
+        super(Siren_Network, self).__init__()
+        self.lin1 = nn.Linear(3,NUM_NODES)
+        self.lin2 = nn.Linear(NUM_NODES,NUM_NODES)
+        self.lin3 = nn.Linear(NUM_NODES,NUM_NODES)
+        self.lin4 = nn.Linear(NUM_NODES,1)
+        torch.nn.init.uniform_(self.lin1.weight, -np.sqrt(1.5) , np.sqrt(1.5))
+        torch.nn.init.uniform_(self.lin2.weight, -np.sqrt(1.5) , np.sqrt(1.5))
+        torch.nn.init.uniform_(self.lin3.weight, -np.sqrt(1.5) , np.sqrt(1.5))
+        torch.nn.init.uniform_(self.lin4.weight, -np.sqrt(1.5) , np.sqrt(1.5))
+
+
+    def forward(self, x):
+        # Feed forward function
+        x = torch.sin( self.lin1(x))
+        x = torch.sin(self.lin2(x))
+        x = torch.sin(self.lin3(x))
+        x = self.lin4(x)
+        # Am Ende tanh, damit alles zwischen -1 und +1 ist
+        x = torch.tanh(x)
+      
+        return x
+
+
+
+
+  
 class big_MLP(nn.Module):
     # do not use on regular computer/CPU
     def __init__(self, NUM_NODES):
@@ -160,3 +190,76 @@ class ParkEtAl(nn.Module):
                 x = self.activation(x)
 
         return x
+    
+    
+    
+class SineLayer(nn.Module):
+    # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of omega_0.
+    
+    # If is_first=True, omega_0 is a frequency factor which simply multiplies the activations before the 
+    # nonlinearity. Different signals may require different omega_0 in the first layer - this is a 
+    # hyperparameter.
+    
+    # If is_first=False, then the weights will be divided by omega_0 so as to keep the magnitude of 
+    # activations constant, but boost gradients to the weight matrix (see supplement Sec. 1.5)
+    
+    def __init__(self, in_features, out_features, bias=True,
+                 is_first=False, omega_0=30):
+        super().__init__()
+        self.omega_0 = omega_0
+        self.is_first = is_first
+        
+        self.in_features = in_features
+        self.linear = nn.Linear(in_features, out_features, bias=bias)
+        
+        self.init_weights()
+    
+    def init_weights(self):
+        with torch.no_grad():
+            if self.is_first:
+                self.linear.weight.uniform_(-1 / self.in_features, 
+                                             1 / self.in_features)      
+            else:
+                self.linear.weight.uniform_(-np.sqrt(6 / self.in_features) / self.omega_0, 
+                                             np.sqrt(6 / self.in_features) / self.omega_0)
+        
+    def forward(self, input):
+        return torch.sin(self.omega_0 * self.linear(input))
+    
+    def forward_with_intermediate(self, input): 
+        # For visualization of activation distributions
+        intermediate = self.omega_0 * self.linear(input)
+        return torch.sin(intermediate), intermediate
+    
+    
+class Siren(nn.Module):
+    def __init__(self, in_features, hidden_features, hidden_layers, out_features, outermost_linear=False, 
+                 first_omega_0=30, hidden_omega_0=30.):
+        super().__init__()
+        
+        self.net = []
+        self.net.append(SineLayer(in_features, hidden_features, 
+                                  is_first=True, omega_0=first_omega_0))
+
+        for i in range(hidden_layers):
+            self.net.append(SineLayer(hidden_features, hidden_features, 
+                                      is_first=False, omega_0=hidden_omega_0))
+
+        if outermost_linear:
+            final_linear = nn.Linear(hidden_features, out_features)
+            
+            with torch.no_grad():
+                final_linear.weight.uniform_(-np.sqrt(6 / hidden_features) / hidden_omega_0, 
+                                              np.sqrt(6 / hidden_features) / hidden_omega_0)
+                
+            self.net.append(final_linear)
+        else:
+            self.net.append(SineLayer(hidden_features, out_features, 
+                                      is_first=False, omega_0=hidden_omega_0))
+        
+        self.net = nn.Sequential(*self.net)
+    
+    def forward(self, coords):
+        coords = coords.clone().detach().requires_grad_(True) # allows to take derivative w.r.t. input
+        output = self.net(coords)
+        return output  

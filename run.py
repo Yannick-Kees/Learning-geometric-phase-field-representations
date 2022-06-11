@@ -33,8 +33,8 @@ FILM = False
 ####################
 
 #network = ParkEtAl(2, [NUM_NODES]*3, [2],   geometric_init=False, FourierFeatures=FOURIER_FEATUERS, num_features = 6, sigma = SIGMA )
-network = ParkEtAl(2, [NUM_NODES], [], geometric_init=True, FourierFeatures=False, num_features = 6, sigma = SIGMA )
-#network = small_MLP(NUM_NODES)
+#network = ParkEtAl(2, [NUM_NODES], [], geometric_init=True, FourierFeatures=False, num_features = 6, sigma = SIGMA )
+network = Siren_Network(NUM_NODES)
 network.to(device)
  
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
