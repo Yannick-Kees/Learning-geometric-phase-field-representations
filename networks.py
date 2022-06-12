@@ -234,7 +234,7 @@ class SineLayer(nn.Module):
     
 class Siren(nn.Module):
     def __init__(self, in_features, hidden_features, hidden_layers, out_features, outermost_linear=False, 
-                 first_omega_0=30, hidden_omega_0=30.):
+                 first_omega_0=15., hidden_omega_0=1.):
         super().__init__()
         
         self.net = []
@@ -260,6 +260,6 @@ class Siren(nn.Module):
         self.net = nn.Sequential(*self.net)
     
     def forward(self, coords):
-        coords = coords.clone().detach().requires_grad_(True) # allows to take derivative w.r.t. input
+        
         output = self.net(coords)
         return output  

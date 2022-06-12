@@ -5,8 +5,8 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 10000
-START_LEARNING_RATE = 0.01
+NUM_TRAINING_SESSIONS = 50000
+START_LEARNING_RATE = 0.0001
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
@@ -21,7 +21,8 @@ EPSILON = .0001
 if LOSS == "MM":
     CONSTANT = 50.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
-    CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF
+    # CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF <- FF
+    CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # SIREN
 MU = 0.5
 
 
@@ -33,7 +34,7 @@ MU = 0.5
 
 
 #network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
-network = Siren_Network(512)
+network =  Siren(3,2,512,1)
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -86,7 +87,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 indices = np.random.choice(len(pc), BATCHSIZE, False)
 pointcloud = pc[indices]
 print("Loss: ", torch.abs(network(pointcloud)).mean())
-#torch.save(network.state_dict(), "at40.pth")
+torch.save(network.state_dict(), "cube.pth")
 toParaview(network, 256, 0)
 print("Finished")
 
