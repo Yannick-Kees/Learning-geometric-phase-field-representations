@@ -1,3 +1,3 @@
-from chamfer_distance.chamfer_distance_cpu import ChamferDistance
+from chamfer_distance import ChamferDistance
 
 chamfer_dist = ChamferDistance()
