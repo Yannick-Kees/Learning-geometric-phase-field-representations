@@ -1,6 +1,8 @@
 
 
-from networks import *
+from audioop import findfactor
+from pydoc import doc
+from loss_functionals import *
 from skimage import measure
 """ 
 file = open("3dObjects/bigcube.off")    
@@ -11,8 +13,17 @@ draw_point_cloud(cloud)
 """ 
 
    
-def shape_maker1(d):
+def shape_maker1(d, num_points):
+    # Returns:
+    #   Point Cloud samples from a randomly generated 3D Object using Metaball approach
+    
+    # Parameters:
+    #   d:              Dimension of point cloud (d=2 or d=3)
+    #   num_points:     How many points are sampled
+
+
     if d==2:
+        # 2D Point Cloud
         n=  randint(2, 15)
         
         g = 3
@@ -22,8 +33,19 @@ def shape_maker1(d):
         r = .8
         
         def overlap(s1,r1,s2,r2):
+            # Returns:
+            #   Do two circles overlap
+            
+            # Parameters:
+            #   s1:     Center of first circle
+            #   r1:     Radius of first circle
+            #   s2:     Center of second circle
+            #   r2:     Radius of second circle
+            
             return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
+        
         while len(s)!= n:
+            # Create circles
             nm = [uniform(-1,1),uniform(-1,1)] 
             ns = uniform(0.01,.1)
         
@@ -37,6 +59,12 @@ def shape_maker1(d):
                     m.append(nm)    
 
         def f(x,y):
+            # Returns:
+            #   Functions, whos zero-level set is the curve
+            
+            # Parameters:
+            #   x:     x-coordinate
+            #   y:     y-coordinate
             
             sum = -r
             
@@ -47,6 +75,7 @@ def shape_maker1(d):
                     sum+= 0
             return sum
         
+        # Extract iso-surface
         x_ = y_ = 2       
         xlist = np.linspace(-x_, x_, 100)
         ylist = np.linspace(-y_, y_, 100)
@@ -56,7 +85,8 @@ def shape_maker1(d):
 
         fig = plt.figure(1)                                                      # Draw contour plot
                                 
-        contour = plt.contour(X, Y, Z,[0])
+        contour = plt.contour(X, Y, Z,[0]) # Marching Cubes
+        
         #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
 
         #plt.show()
@@ -70,59 +100,83 @@ def shape_maker1(d):
         plt.close(1)
 
         draw_point_cloud(Variable( Tensor(np.matrix(normalize(p))) , requires_grad=True).to(device))
+        
     if d==3:
-
-        n=  randint(2, 15)
+        # 2D Point Cloud
         
-        g = 3
-        m = []
-        k = len(m)
-        s = [ ]
-        r = .8
-        
-        def overlap(s1,r1,s2,r2):
-            return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
-        while len(s)!= n:
-            nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
-            ns = uniform(0.01,.1)
-        
-            for i in range(len(s)):
-                if overlap(m[i],s[i],nm,ns):
-                    s.append(ns)
-                    m.append(nm)
-                    break
-            if len(s)==0:
-                    s.append(ns)
-                    m.append(nm)    
-
-        def f(x,y,z):
+        condition = True
+        while condition:
+            n=  randint(2, 15)
             
-            sum = -r
+            g = 3
+            m = []
+            k = len(m)
+            s = [ ]
+            r = .8
             
-            for i in range(len(m)):
-                if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
-                    sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
-                else:
-                    sum+= 0
-            return sum
+            def overlap(s1,r1,s2,r2):
+                # Returns:
+                #   Do two circles overlap
+                
+                # Parameters:
+                #   s1:     Center of first circle
+                #   r1:     Radius of first circle
+                #   s2:     Center of second circle
+                #   r2:     Radius of second circle
+            
+                return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
+            
+            while len(s)!= n:
+                nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
+                ns = uniform(0.01,.1)
+            
+                for i in range(len(s)):
+                    if overlap(m[i],s[i],nm,ns):
+                        s.append(ns)
+                        m.append(nm)
+                        break
+                if len(s)==0:
+                        s.append(ns)
+                        m.append(nm)    
+
+            def f(x,y,z):
+                # Returns:
+                #   Functions, whos zero-level set is the curve
+                
+                # Parameters:
+                #   x:     x-coordinate
+                #   y:     y-coordinate
+                #   z:     z-coordinate
+            
+                sum = -r
+                
+                for i in range(len(m)):
+                    if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
+                        sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
+                    else:
+                        sum+= 0
+                return sum
+            
+            x_ = y_ = 2       
+            num_cells = 30
+            x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+            y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+            z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+            x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
+            Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
+
+                            
+            contour = measure.marching_cubes(np.array(Z),0)[0]
+            #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
+            condition = len(contour) < num_points
+            #plt.show()
+            
+            
+        choice_indices = np.random.choice(len(contour), num_points, replace=False)
+        choices = [contour[i] for i in choice_indices]
+            
         
-        x_ = y_ = 2       
-        num_cells = 30
-        x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
-        Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
-
-                        
-        contour = measure.marching_cubes(np.array(Z),0)[0]
-        #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
-
-        #plt.show()
-
-   
-
-        draw_point_cloud(Variable( Tensor(np.matrix(normalize(contour))) , requires_grad=True).to(device))
+        return np.matrix(normalize(choices)) 
 
 """
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
@@ -157,7 +211,7 @@ from scipy.special import binom
 
 
 
-bernstein = lambda n, k, t: binom(n,k)* t**k * (1.-t)**(n-k)
+bernstein = lambda n, k, t: binom(n,k)* t**k * (1.-t)**(n-k) # Bernstein Polynomial
 
 def bezier(points, num=200):
     N = len(points)
@@ -252,5 +306,5 @@ def shape_maker2(n):
     plt.show()
     
     
-shape_maker1(3)
+#shape_maker1(3)
 #shape_maker2(6)

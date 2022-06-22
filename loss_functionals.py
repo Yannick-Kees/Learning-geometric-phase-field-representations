@@ -20,6 +20,7 @@ def gradient(inputs, outputs):
 #W = lambda s: s**2 - 2.0*torch.abs(s) + torch.tensor([1.0]).to(device) 
 W = lambda s: (9.0/16.0) *  (s**2 -torch.tensor([1.0]).to(device)   )**2
 
+
 def ModicaMortola(f, eps, n, d):
     # Returns:
     #   Monte Carlo Integral of int_{[0,1]^2} W(u(x)) + eps * |Du(x)|^2 dx
@@ -131,8 +132,10 @@ def test_MM_GV(f, pc, eps, n, m, c, p):
 
 # One well potential
 U = lambda s: (s- torch.tensor([1.0]).to(device))**2
+
 # Shifting function
 g = lambda s: s**2
+
 
 def AT_Phasefield(f, eps, n, d):
     # Returns:
@@ -220,14 +223,19 @@ def AT_loss(f, pointcloud, eps, n, m, c):
 # Loss on L^2 ###############
 #############################
 
-# We 
 
-def L2_Loss(f, input, Batch, n):
+def L2_Loss(f, input, Batch):
     
+    # Returns:
+    #   Integral over manifold \int_S f(x) dx
     
+    # Parameters:
+    #   f:      Function to evaluate
+    #   input:  Points on the manifold
+    #   Batch:  Number of integral evaluations
+
     indices = np.random.choice(len(input), Batch, False)
     x = Variable( Tensor(input[indices])).to(device)
-    #x = input
+
     return f(x).mean()
 
-    
