@@ -176,7 +176,7 @@ def shape_maker1(d, num_points):
         choices = [contour[i] for i in choice_indices]
             
         
-        return np.matrix(normalize(choices)) 
+        return np.array(normalize(choices)) 
 
 """
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})

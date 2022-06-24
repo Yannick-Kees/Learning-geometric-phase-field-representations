@@ -8,9 +8,9 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 """
-NUM_TRAINING_SESSIONS = 2
-num_points = 10
-Batch_size = 4
+NUM_TRAINING_SESSIONS = 1
+num_points = 400
+Batch_size = 2
 
 autoencoder = PCAutoEncoder(3, num_points)
 autoencoder.to(device)
@@ -28,7 +28,7 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
         points.append(np.array(shape_maker1(3,num_points)).T)
     # points = points.cuda()
     points = Variable( Tensor(points) , requires_grad=True).to(device)
-
+    print(points)
     optimizer.zero_grad()
     reconstructed_points, global_feat = autoencoder(points)
 
