@@ -1,11 +1,11 @@
-from train_autoencoder import *
+from shapemaker import *
 
 ####################
 # Settings #########
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 70000
+NUM_TRAINING_SESSIONS = 2
 START_LEARNING_RATE = 0.0001
 PATIENCE = 1500
 NUM_NODES = 512
@@ -14,7 +14,7 @@ SIGMA = 3.0
 BATCHSIZE = 10000 #16k zu viel
 
 # Phase-Loss
-MONTE_CARLO_SAMPLES = 2000
+MONTE_CARLO_SAMPLES = 20
 EPSILON = .0001
 CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # SIREN
 
@@ -28,10 +28,10 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # SIREN
 
 
 autoencoder = PCAutoEncoder(3, 400)
-autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
+# autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
 # autoencoder.train(mode=False)
 
-network =  ParkEtAl(512+3, [512]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  ParkEtAl(512+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
