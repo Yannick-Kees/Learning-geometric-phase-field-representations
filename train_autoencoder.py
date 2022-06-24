@@ -13,6 +13,7 @@ num_points = 10
 Batch_size = 4
 
 autoencoder = PCAutoEncoder(3, num_points)
+autoencoder.to(device)
 
 cd = ChamferDistance()
 
