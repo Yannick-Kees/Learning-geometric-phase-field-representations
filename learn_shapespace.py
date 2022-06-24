@@ -29,7 +29,7 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # SIREN
 
 autoencoder = PCAutoEncoder(3, 400)
 autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
-autoencoder.train(mode=False)
+# autoencoder.train(mode=False)
 
 network =  ParkEtAl(512+3, [512]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
