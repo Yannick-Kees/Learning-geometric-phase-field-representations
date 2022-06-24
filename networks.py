@@ -279,16 +279,16 @@ class PCAutoEncoder(nn.Module):
         self.conv2 = nn.Conv1d(in_channels=64, out_channels=64, kernel_size=1)
         self.conv3 = nn.Conv1d(in_channels=64, out_channels=64, kernel_size=1)
         self.conv4 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=1)
-        self.conv5 = nn.Conv1d(in_channels=128, out_channels=1024, kernel_size=1)
+        self.conv5 = nn.Conv1d(in_channels=128, out_channels=512, kernel_size=1)
 
-        self.fc1 = nn.Linear(in_features=1024, out_features=1024)
-        self.fc2 = nn.Linear(in_features=1024, out_features=1024)
-        self.fc3 = nn.Linear(in_features=1024, out_features=num_points*3)
+        self.fc1 = nn.Linear(in_features=512, out_features=512)
+        self.fc2 = nn.Linear(in_features=512, out_features=512)
+        self.fc3 = nn.Linear(in_features=512, out_features=num_points*3)
 
         #batch norm
         self.bn1 = nn.BatchNorm1d(64)
         self.bn2 = nn.BatchNorm1d(128)
-        self.bn3 = nn.BatchNorm1d(1024)
+        self.bn3 = nn.BatchNorm1d(512)
     
     def forward(self, x):
 
@@ -305,7 +305,7 @@ class PCAutoEncoder(nn.Module):
 
         # do max pooling 
         x = torch.max(x, 2, keepdim=True)[0]
-        x = x.view(-1, 1024)
+        x = x.view(-1, 512)
         # get the global embedding
         global_feat = x
 
