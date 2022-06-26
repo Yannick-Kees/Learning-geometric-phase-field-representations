@@ -24,6 +24,41 @@ Implementation of
 | `volta.py` | Solves the 3D reconstruction problem. Should only be executed on high performance computer |
 
 
+
+# How to install:
+1. ssh .... & enter password
+2. install conda using wget URL, bash~/Anaconda, conda env list
+Then type 
+```shell
+source ~/anaconda3/bin/activate
+conda create -n pytorch3d python=3.10
+conda activate pytorch3d
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+conda install -c fvcore -c iopath -c conda-forge fvcore iopath
+conda install -c bottler nvidiacub
+conda install pytorch3d -c pytorch3d
+pip install matplotlib
+pip install random-fourier-features-pytorch 
+pip install k3d
+git clone https://github.com/paulo-herrera/PyEVTK
+cd PyEVTK
+python setup.py install
+git clone https://github.com/Yannick-Kees/Masterarbeit
+cd Masterarbeit
+```
+
+
+Get files from external Computer using 
+```
+scp IP_ADRESS:~\Masterarbeit\structured2560.vts C:\Users\Yannick\Desktop
+```
+
+### External packages:
+* [Random Fourier Features Pytorch](https://github.com/jmclong/random-fourier-features-pytorch)  
+* [K3D Jupyter](https://github.com/K3D-tools/K3D-jupyter)  
+* [EVTK (Export VTK) ](https://github.com/paulo-herrera/PyEVTK)  
+
+
 # Literatur:
 Quellen und so
  

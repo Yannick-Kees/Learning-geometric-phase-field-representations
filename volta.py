@@ -33,8 +33,8 @@ MU = 0.5
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
 
-#network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
-network =  Siren(3,2,512,1)
+network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+#network =  Siren(3,2,512,1)
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)

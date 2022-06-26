@@ -39,9 +39,9 @@ if Test:
         draw_point_cloud(pointcloud)
         
         
-fv = Tensor([7,5,6])
+fv = Tensor([7,7,7])
 start_points = Variable(torch.rand(8, 2), requires_grad =True)-torch.full(size=(8,2), fill_value=.5)   # Create random points [ x_i ]
-features = fv.repeat(8,1)
+features = fv.repeat(8)
 
 start_points = torch.cat((start_points, features), 1)
 print(start_points)
