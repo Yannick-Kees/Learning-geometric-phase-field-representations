@@ -1,4 +1,3 @@
-from chamferdist import ChamferDistance
 from shapemaker import *
 
 from pytorch3d.loss import (

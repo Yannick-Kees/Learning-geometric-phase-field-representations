@@ -56,7 +56,10 @@ scp IP_ADRESS:~\Masterarbeit\structured2560.vts C:\Users\Yannick\Desktop
 ### External packages:
 * [Random Fourier Features Pytorch](https://github.com/jmclong/random-fourier-features-pytorch)  
 * [K3D Jupyter](https://github.com/K3D-tools/K3D-jupyter)  
-* [EVTK (Export VTK) ](https://github.com/paulo-herrera/PyEVTK)  
+* [EVTK (Export VTK) ](https://github.com/paulo-herrera/PyEVTK) 
+* [PointNet Autoencoder](https://github.com/charlesq34/pointnet-autoencoder/tree/cc270113da3f429cebdbe806aa665c1a47ccf0c1) 
+* [Park]
+* [PyTorch3D](https://pytorch3d.readthedocs.io/en/latest/modules/loss.html)
 
 
 # Literatur:
