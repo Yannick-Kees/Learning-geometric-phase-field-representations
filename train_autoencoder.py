@@ -7,7 +7,7 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 
-NUM_TRAINING_SESSIONS = 100
+NUM_TRAINING_SESSIONS = 101
 num_points = 400
 Batch_size = 20
 

@@ -331,7 +331,7 @@ class PCAutoEncoder2(nn.Module):
     Output: 
     """
     def __init__(self, point_dim, num_points):
-        super(PCAutoEncoder, self).__init__()
+        super(PCAutoEncoder2, self).__init__()
 
         self.conv1 = nn.Conv1d(in_channels=point_dim, out_channels=512, kernel_size=1)
 
