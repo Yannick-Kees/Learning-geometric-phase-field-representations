@@ -7,11 +7,11 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 
-NUM_TRAINING_SESSIONS = 301
+NUM_TRAINING_SESSIONS = 100
 num_points = 400
 Batch_size = 20
 
-autoencoder = PCAutoEncoder(3, num_points)
+autoencoder = PCAutoEncoder2(3, num_points)
 autoencoder.to(device)
 
 
@@ -41,13 +41,13 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
     # Update the weights and biases 
     optimizer.step()
     report_progress(epoch, NUM_TRAINING_SESSIONS , train_loss.detach().cpu().numpy() )
-    if epoch % 100 == 0:
+    if epoch % 50 == 0:
         torch.save(autoencoder.state_dict(), 'autoencoder.pth')
         
 
     scheduler.step()
 
-torch.save(autoencoder.state_dict(), 'autoencoder.pth')
+torch.save(autoencoder.state_dict(), 'autoencoder2.pth')
 
 print("Finished")
     

@@ -318,3 +318,49 @@ class PCAutoEncoder(nn.Module):
         reconstructed_points = reconstructed_points.reshape(batch_size, point_dim, num_points)
 
         return reconstructed_points , global_feat
+    
+    
+    
+    
+    
+
+
+class PCAutoEncoder2(nn.Module):
+    """ Point-Net Autoencoder for Point Cloud 
+    Input: 
+    Output: 
+    """
+    def __init__(self, point_dim, num_points):
+        super(PCAutoEncoder, self).__init__()
+
+        self.conv1 = nn.Conv1d(in_channels=point_dim, out_channels=512, kernel_size=1)
+
+
+        self.fc1 = nn.Linear(in_features=512, out_features=512)
+
+        self.fc3 = nn.Linear(in_features=512, out_features=num_points*3)
+
+    
+    def forward(self, x):
+
+        batch_size = x.shape[0]
+        point_dim = x.shape[1]
+        num_points = x.shape[2]
+
+        #encoder
+        x = F.relu(self.conv1(x))
+
+        # do max pooling 
+        x = torch.max(x, 2, keepdim=True)[0]
+        x = x.view(-1, 512)
+        # get the global embedding
+        global_feat = x
+
+        #decoder
+        x = F.relu(self.fc1(x))
+        reconstructed_points = self.fc3(x)
+
+        #do reshaping
+        reconstructed_points = reconstructed_points.reshape(batch_size, point_dim, num_points)
+
+        return reconstructed_points , global_feat
