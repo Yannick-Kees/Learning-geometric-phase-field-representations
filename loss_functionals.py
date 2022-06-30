@@ -307,3 +307,113 @@ def AT_loss_shapespace(f, pointcloud, eps, n, c, fv):
     return AT_Phasefield_shapespace(f, eps, n, d, fv) +  Zero_recontruction_loss_AT_shapespace(f, pointcloud, eps, c, fv)
 
 
+
+
+
+
+
+
+def _handle_pointcloud_input(
+    points: Union[torch.Tensor, Pointclouds],
+    lengths: Union[torch.Tensor, None],
+    normals: Union[torch.Tensor, None],
+):
+    """
+    If points is an instance of Pointclouds, retrieve the padded points tensor
+    along with the number of points per batch and the padded normals.
+    Otherwise, return the input points (and normals) with the number of points per cloud
+    set to the size of the second dimension of `points`.
+    """
+    if isinstance(points, Pointclouds):
+        X = points.points_padded()
+        lengths = points.num_points_per_cloud()
+        normals = points.normals_padded()  # either a tensor or None
+    elif torch.is_tensor(points):
+        if points.ndim != 3:
+            raise ValueError("Expected points to be of shape (N, P, D)")
+        X = points
+        if lengths is not None and (
+            lengths.ndim != 1 or lengths.shape[0] != X.shape[0]
+        ):
+            raise ValueError("Expected lengths to be of shape (N,)")
+        if lengths is None:
+            lengths = torch.full(
+                (X.shape[0],), X.shape[1], dtype=torch.int64, device=points.device
+            )
+        if normals is not None and normals.ndim != 3:
+            raise ValueError("Expected normals to be of shape (N, P, 3")
+    else:
+        raise ValueError(
+            "The input pointclouds should be either "
+            + "Pointclouds objects or torch.Tensor of shape "
+            + "(minibatch, num_points, 3)."
+        )
+    return X, lengths, normals
+
+
+def chamfer_distanceown(
+    x,
+    y,
+    x_lengths=None,
+    y_lengths=None,
+    x_normals=None,
+    y_normals=None,
+    weights=None,
+    batch_reduction: Union[str, None] = "mean",
+    point_reduction: str = "mean",
+    norm: int = 2,
+):
+    """
+    Chamfer distance between two pointclouds x and y.
+    Args:
+        x: FloatTensor of shape (N, P1, D) or a Pointclouds object representing
+            a batch of point clouds with at most P1 points in each batch element,
+            batch size N and feature dimension D.
+        y: FloatTensor of shape (N, P2, D) or a Pointclouds object representing
+            a batch of point clouds with at most P2 points in each batch element,
+            batch size N and feature dimension D.
+        x_lengths: Optional LongTensor of shape (N,) giving the number of points in each
+            cloud in x.
+        y_lengths: Optional LongTensor of shape (N,) giving the number of points in each
+            cloud in y.
+        x_normals: Optional FloatTensor of shape (N, P1, D).
+        y_normals: Optional FloatTensor of shape (N, P2, D).
+        weights: Optional FloatTensor of shape (N,) giving weights for
+            batch elements for reduction operation.
+        batch_reduction: Reduction operation to apply for the loss across the
+            batch, can be one of ["mean", "sum"] or None.
+        point_reduction: Reduction operation to apply for the loss across the
+            points, can be one of ["mean", "sum"].
+        norm: int indicates the norm used for the distance. Supports 1 for L1 and 2 for L2.
+    Returns:
+        2-element tuple containing
+        - **loss**: Tensor giving the reduced distance between the pointclouds
+          in x and the pointclouds in y.
+        - **loss_normals**: Tensor giving the reduced cosine distance of normals
+          between pointclouds in x and pointclouds in y. Returns None if
+          x_normals and y_normals are None.
+    """
+
+    if not ((norm == 1) or (norm == 2)):
+        raise ValueError("Support for 1 or 2 norm.")
+
+    x, x_lengths, x_normals = _handle_pointcloud_input(x, x_lengths, x_normals)
+    y, y_lengths, y_normals = _handle_pointcloud_input(y, y_lengths, y_normals)
+
+    
+
+    x_nn = knn_points(x, y, lengths1=x_lengths, lengths2=y_lengths, norm=norm, K=1)
+    y_nn = knn_points(y, x, lengths1=y_lengths, lengths2=x_lengths, norm=norm, K=1)
+
+    cham_x = x_nn.dists[..., 0]  # (N, P1)
+    cham_y = y_nn.dists[..., 0]  # (N, P2)
+
+    # Apply point reduction
+    cham_x = cham_x.sum(1)  # (N,)
+    cham_y = cham_y.sum(1)  # (N,)
+    
+
+    cham_dist = cham_x + cham_y
+    
+
+    return cham_dist

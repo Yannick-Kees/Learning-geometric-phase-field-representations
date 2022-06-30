@@ -7,7 +7,7 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 
-NUM_TRAINING_SESSIONS = 101
+NUM_TRAINING_SESSIONS = 200
 num_points = 400
 Batch_size = 20
 
@@ -23,15 +23,17 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
 
     points = []
     for _ in range(Batch_size):
-        points.append(np.array(shape_maker1(3,num_points)).T)
+        points.append(shape_maker1(3,num_points))
     # points = points.cuda()
     points = np.array(points)
     points = Variable( Tensor(points) , requires_grad=True).to(device)
 
     optimizer.zero_grad()
-    reconstructed_points, global_feat = autoencoder(points)
+    inputs = torch.transpose(points, 1, 2)
+    reconstructed_points, global_feat = autoencoder(inputs)
 
-    dist, normals = chamfer_distance(points, reconstructed_points)
+    dist = chamfer_distanceown(points, torch.transpose(reconstructed_points, 1, 2))
+
 
     train_loss = torch.mean(dist)
 
@@ -50,7 +52,3 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
 torch.save(autoencoder.state_dict(), 'autoencoder2.pth')
 
 print("Finished")
-    
-    
-    
-        
