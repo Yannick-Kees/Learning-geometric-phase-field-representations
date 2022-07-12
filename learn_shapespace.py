@@ -6,14 +6,14 @@ from shapemaker import *
 ####################
 
 # Training Parameters
-NUM_TRAINING_SESSIONS = 70000
+NUM_TRAINING_SESSIONS = 1
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 3.0
 MONTE_CARLO_SAMPLES = 2000
-SHAPES_EACH_STEP = 4
+SHAPES_EACH_STEP = 16
 EPSILON = .0001
 CONSTANT = 40. if FOURIER_FEATUERS else 10.0 
 
@@ -23,9 +23,11 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 # Main #############
 ####################
 
-autoencoder = PCAutoEncoder(3, 400)
+autoencoder = PCAutoEncoder2(3, 400)
 autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
 autoencoder.train(mode=False)
+
+dataset = np.load(open("dataset.npy", "rb"))
 
 network =  ParkEtAl(512+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
@@ -38,10 +40,11 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     network.zero_grad()
     loss = 0
     for _ in range(SHAPES_EACH_STEP):
-        shape = shape_maker1(3,400)
-        cloud = Tensor( shape)
-        pointcloud = Variable( cloud , requires_grad=True).to(device)
-        cloudT = Tensor( [ np.array(shape).T])
+        index = np.random.randint(50)
+        shape = dataset[index]#[:,:num_points]
+        pointcloud = Variable( Tensor(shape) , requires_grad=False).to(device)
+
+        cloudT = Tensor( np.array([ np.array(shape).T]))
         pointcloudT = Variable( cloudT , requires_grad=True).to(device)
 
         rec, latent = autoencoder(pointcloudT)
@@ -53,7 +56,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         
         # backpropagation
         
-        loss.backward(retain_graph= True )
+    loss.backward(retain_graph= True )
     optimizer.step()
     scheduler.step(loss)
     

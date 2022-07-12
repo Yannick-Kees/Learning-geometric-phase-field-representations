@@ -7,35 +7,34 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 
-NUM_TRAINING_SESSIONS = 200
+NUM_TRAINING_SESSIONS = 5000
 num_points = 400
-Batch_size = 20
+Batch_size = 40
 
 autoencoder = PCAutoEncoder2(3, num_points)
 autoencoder.to(device)
 
+dataset = np.load(open("dataset.npy", "rb"))
 
-optimizer = optim.Adam(autoencoder.parameters(), lr=0.001, betas=(0.9, 0.999))
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
+
+optimizer = optim.Adam(autoencoder.parameters(), lr=0.001 )
+scheduler = ReduceLROnPlateau(optimizer, 'min', patience=40, verbose=False)
 
 
 for epoch in range(NUM_TRAINING_SESSIONS+1):
 
-    points = []
-    for _ in range(Batch_size):
-        points.append(shape_maker1(3,num_points))
-    # points = points.cuda()
-    points = np.array(points)
-    points = Variable( Tensor(points) , requires_grad=True).to(device)
+    indices = np.random.choice(len(dataset), Batch_size, False)
+    pointcloud = dataset[indices]#[:,:num_points]
+    points = Variable( Tensor(pointcloud) , requires_grad=False).to(device)
 
-    optimizer.zero_grad()
+    autoencoder.zero_grad()
     inputs = torch.transpose(points, 1, 2)
     reconstructed_points, global_feat = autoencoder(inputs)
 
-    dist = chamfer_distanceown(points, torch.transpose(reconstructed_points, 1, 2))
+    #dist = chamfer_distanceown(points, torch.transpose(reconstructed_points, 1, 2))
+    dist = torch.mean(torch.abs(points - torch.transpose(reconstructed_points, 1, 2)),2)
 
-
-    train_loss = torch.mean(dist)
+    train_loss = torch.mean(torch.mean(dist, 1))
 
     # Calculate the gradients using Back Propogation
     train_loss.backward() 
@@ -44,11 +43,11 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
     optimizer.step()
     report_progress(epoch, NUM_TRAINING_SESSIONS , train_loss.detach().cpu().numpy() )
     if epoch % 50 == 0:
-        torch.save(autoencoder.state_dict(), 'autoencoder.pth')
+        report_progress(epoch, NUM_TRAINING_SESSIONS , train_loss.detach().cpu().numpy() )
         
 
-    scheduler.step()
+    scheduler.step(train_loss)
 
-torch.save(autoencoder.state_dict(), 'autoencoder2.pth')
+torch.save(autoencoder.state_dict(), 'autoencoder1.pth')
 
 print("Finished")

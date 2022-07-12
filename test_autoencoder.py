@@ -7,11 +7,22 @@ from pytorch3d.loss import (
 )
 from typing import Union
 autoencoder = PCAutoEncoder2(3, 400)
-#autoencoder.load_state_dict(torch.load(r"autoencoder2.pth", map_location=device))
+
+autoencoder.load_state_dict(torch.load(r"autoencoder1.pth", map_location=device))
+autoencoder.eval()
+dataset = np.load(open("dataset.npy", "rb"))
+
+points= [dataset[14],dataset[2]]
+# points = points.cuda()
+points = np.array(points)
+points = Variable( Tensor(points) , requires_grad=True).to(device)
+draw_point_cloud(points[0])
+
+inputs = torch.transpose(points, 1, 2)
+reconstructed_points, global_feat = autoencoder(inputs)
+draw_point_cloud(torch.transpose(reconstructed_points,1,2)[0])
 
 
-import numpy as np
-from sklearn.neighbors import NearestNeighbors
 
 
 def chamfer_distancenp(x, y, metric='l2', direction='bi'):
@@ -112,7 +123,6 @@ print(chamfer_distance(Tensor(np.array([t1])),Tensor(np.array([t2]))))
 print(chamfer_distanceown(Tensor(np.array([t1])),Tensor(np.array([t2]))))
 print(2.0+1.0/np.sqrt(2))
 
-"""
 
 t1 = Tensor([[[-0.0738,  0.0724,  0.2252],
          [ 0.2626, -0.3000,  0.3000]],
@@ -126,3 +136,5 @@ t2 = Tensor([[[-0.3406,  0.0560,  0.1559],
          [-0.2588,  0.0094, -0.0351]]])
 
 print(chamfer_distanceown(t1, t2))
+
+"""
