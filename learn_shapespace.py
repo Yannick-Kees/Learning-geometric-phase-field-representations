@@ -25,7 +25,9 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 
 autoencoder = PCAutoEncoder2(3, 400)
 autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
-autoencoder.train(mode=False)
+autoencoder.to(device) 
+autoencoder.eval()
+
 
 dataset = np.load(open("dataset.npy", "rb"))
 
