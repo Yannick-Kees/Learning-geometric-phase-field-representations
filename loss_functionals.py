@@ -262,7 +262,7 @@ def AT_Phasefield_shapespace(f, eps, n, d, fv):
     #   n:      Number of samples drawn in the Monte Carlo Algorithm
     #   d:      Dimension of point cloud
      
-    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5)   # Create random points [ x_i ]
+    start_points = Variable(torch.rand(n, d), requires_grad =True)-torch.full(size=(n,d), fill_value=.5).to(device)    # Create random points [ x_i ]
     features = fv.repeat(n,1)
     start_points = torch.cat((start_points, features), 1)
     start_points = start_points.to(device)                          # Move points to GPU if possible
