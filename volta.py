@@ -32,7 +32,7 @@ MU = 0.5
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
-dataset = np.load(open("dataset.npy", "rb"))
+dataset = np.load(open("dataset1k.npy", "rb"))
 
 network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 #network =  Siren(3,2,512,1)
@@ -50,7 +50,7 @@ cloud = torch.tensor( normalize(pc))
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
 """
-cloud = Tensor(dataset[32])
+cloud = Tensor(dataset[6])
 
 
 pc = Variable( cloud , requires_grad=True).to(device)
