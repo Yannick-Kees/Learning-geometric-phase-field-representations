@@ -50,7 +50,7 @@ cloud = torch.tensor( normalize(pc))
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
 """
-cloud = torch.tensor(dataset[32])
+cloud = Tensor(dataset[32])
 
 
 pc = Variable( cloud , requires_grad=True).to(device)
