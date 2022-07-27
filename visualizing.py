@@ -269,3 +269,53 @@ def toParaview(f, n, l):
     structuredToVTK("./structured"+str(n)+str(l), xx, yy, zz,  pointData = {"NN" : Z})
 
 
+
+def shape_space_toParaview(f, n, l, fv):
+    # Makes a File, to visualize the network in ParaView
+    # 
+    #   f:  Neuronal Network function
+    #   n:  Resolution, i.e. the number of function evaluations of NN in each dimension
+    #   l:  Number of layers, only for the nameing of the file
+    
+    nx, ny, nz = n, n, n
+    lx, ly, lz = .8, .8, .8
+    dx, dy, dz = lx/nx, ly/ny, lz/nz
+    ncells = nx * ny * nz 
+    npoints = (nx + 1) * (ny + 1) * (nz + 1) 
+
+    # Coordinates 
+    # 
+    X = np.arange(0, lx + 0.1*dx, dx, dtype='float64') -.4
+    Y = np.arange(0, ly + 0.1*dy, dy, dtype='float64')  -.4
+    Z = np.arange(0, lz + 0.1*dz, dz, dtype='float64') -.4
+    """
+    x = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    y = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    z = np.zeros((nx + 1, ny + 1, nz + 1)) 
+
+    values = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    values = np.array([X,Y,Z]).T
+    """
+    fv = fv.detach().cpu().numpy()
+    yy,xx,zz = np.meshgrid(X,Y,Z)
+    all_data = np.array([xx,yy,zz]).T.reshape((n+1)**3,3)
+    features = fv.repeat(len(all_data),0)
+    start_points = np.concatenate((all_data, features), 1)
+    batch_size = 10000
+    num_batches = (n+1)**3 // batch_size
+    splitted_data = np.array_split(start_points, num_batches)
+
+    Z = np.concatenate([ f( Variable(Tensor(v)).to(device) ).detach().cpu().reshape(-1).numpy() for v in splitted_data    ])
+   
+    #Z = f(v).detach().cpu().numpy().reshape(-1)
+    #points = np.array([yy,zz,xx]).T
+    #print(points) 
+    # Variables 
+
+    #Z = np.array( [ f( Variable( Tensor([ xx[i][j][k], yy[i][j][k], zz[i][j][k] ] ), requires_grad=True)).detach().numpy()  for k in range(len(x[0][0]))  for j in range(len(x[0])) for i in range(len(x)) ])
+
+    #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
+    #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
+    structuredToVTK("./structured"+str(n)+str(l), xx, yy, zz,  pointData = {"NN" : Z})
+
+

@@ -8,11 +8,11 @@ from pytorch3d.loss import (
 from typing import Union
 autoencoder = PCAutoEncoder2(3, 400)
 
-autoencoder.load_state_dict(torch.load(r"autoencoder1.pth", map_location=device))
+autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
 autoencoder.eval()
 dataset = np.load(open("dataset.npy", "rb"))
 
-points= [dataset[14],dataset[2]]
+points= [dataset[32],dataset[2]]
 # points = points.cuda()
 points = np.array(points)
 points = Variable( Tensor(points) , requires_grad=True).to(device)

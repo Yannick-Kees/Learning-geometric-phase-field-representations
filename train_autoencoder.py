@@ -31,10 +31,10 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
     inputs = torch.transpose(points, 1, 2)
     reconstructed_points, global_feat = autoencoder(inputs)
 
-    #dist = chamfer_distanceown(points, torch.transpose(reconstructed_points, 1, 2))
-    dist = torch.mean(torch.abs(points - torch.transpose(reconstructed_points, 1, 2)),2)
-
-    train_loss = torch.mean(torch.mean(dist, 1))
+    dist = chamfer_distance(points, torch.transpose(reconstructed_points, 1, 2))
+    # dist = torch.mean(torch.abs(points - torch.transpose(reconstructed_points, 1, 2)),2)
+    
+    train_loss = dist[0]
 
     # Calculate the gradients using Back Propogation
     train_loss.backward() 
@@ -48,6 +48,6 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
 
     scheduler.step(train_loss)
 
-torch.save(autoencoder.state_dict(), 'autoencoder1.pth')
+torch.save(autoencoder.state_dict(), 'autoencoderNeu.pth')
 
 print("Finished")

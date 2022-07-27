@@ -32,6 +32,7 @@ MU = 0.5
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
+dataset = np.load(open("dataset.npy", "rb"))
 
 network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 #network =  Siren(3,2,512,1)
@@ -39,6 +40,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
+"""
 file = open("3dObjects/bunny_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor( normalize(pc))
@@ -47,8 +49,8 @@ cloud = torch.tensor( normalize(pc))
 # Activate for the bunny
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
-
-#cloud = torch.tensor(normalize(experiments[l] ))
+"""
+cloud = torch.tensor(dataset[32])
 
 
 pc = Variable( cloud , requires_grad=True).to(device)

@@ -119,3 +119,11 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [DeepCurrents: Learning Implicit Representations of Shapes with Boundaries ](https://people.csail.mit.edu/smirnov/deep-currents/) (Palmer 2022)
 * [SAPE: Spatially-Adaptive Progressive Encoding for Neural Optimization](https://igl.ethz.ch/projects/SAPE/SAPE_paper.pdf) (Hertz 2021)
 * [Learned Initializations for Optimizing Coordinate-Based Neural Representations](https://arxiv.org/pdf/2012.02189.pdf) (Tancik 2021)
+
+
+## MtbA
+
+* [Spelunking the Deep: Guaranteed Queries on General Neural Implicit Surfaces via Range Analysis](https://arxiv.org/pdf/2202.02444.pdf) (SHARP 2022)
+* [MIP-plicits: Level of Detail Factorization of Neural Implicits Sphere Tracing](https://arxiv.org/pdf/2201.09147.pdf) (Silva 2022)
+* [Seeing Implicit Neural Representations as Fourier Series](https://arxiv.org/pdf/2109.00249.pdf) (Benbarka 2021)
+* [COIN: COmpression with Implicit Neural representations](https://neuralfields.cs.brown.edu/paper_120.html) (Emilien Dupont 2021)
