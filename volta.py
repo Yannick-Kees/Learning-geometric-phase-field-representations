@@ -6,12 +6,12 @@ from loss_functionals import *
 
 # Neuronal Network
 NUM_TRAINING_SESSIONS = 50000
-START_LEARNING_RATE = 0.0001
+START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 5.0
-BATCHSIZE = 10000 #16k zu viel
+BATCHSIZE = 20 #16k zu viel
 
 # Phase-Loss
 LOSS = "AT"
@@ -70,6 +70,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     else:
         pointcloud = pc
     #for _ in range(2):
+    
     if LOSS == "AT":
         loss = .5 * AT_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT )
         if (i%50==0):
@@ -82,9 +83,10 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         
         # backpropagation
         
-        loss.backward(retain_graph= True )
+    loss.backward(retain_graph= True )
     optimizer.step()
     scheduler.step(loss)
+    
     
 indices = np.random.choice(len(pc), BATCHSIZE, False)
 pointcloud = pc[indices]
