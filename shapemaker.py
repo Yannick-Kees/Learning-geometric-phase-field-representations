@@ -158,7 +158,7 @@ def shape_maker1(d, num_points):
                 return sum
             
             x_ = y_ = 2       
-            num_cells = 30
+            num_cells = 40
             x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
             y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
             z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
@@ -167,6 +167,7 @@ def shape_maker1(d, num_points):
 
                             
             contour = measure.marching_cubes(np.array(Z),0)[0]
+            print(len(contour))
             #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
             condition = len(contour) < num_points
             #plt.show()
