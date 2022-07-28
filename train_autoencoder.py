@@ -8,13 +8,13 @@ from pytorch3d.loss import (
 )
 
 NUM_TRAINING_SESSIONS = 5000
-num_points = 400
+num_points = 1000
 Batch_size = 40
 
 autoencoder = PCAutoEncoder2(3, num_points)
 autoencoder.to(device)
 
-dataset = np.load(open("dataset.npy", "rb"))
+dataset = np.load(open("dataset1k.npy", "rb"))
 
 
 optimizer = optim.Adam(autoencoder.parameters(), lr=0.001 )
@@ -42,12 +42,10 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
     # Update the weights and biases 
     optimizer.step()
     report_progress(epoch, NUM_TRAINING_SESSIONS , train_loss.detach().cpu().numpy() )
-    if epoch % 50 == 0:
-        report_progress(epoch, NUM_TRAINING_SESSIONS , train_loss.detach().cpu().numpy() )
         
 
     scheduler.step(train_loss)
 
-torch.save(autoencoder.state_dict(), 'autoencoderNeu.pth')
+torch.save(autoencoder.state_dict(), 'autoencoderNyyeu.pth')
 
 print("Finished")

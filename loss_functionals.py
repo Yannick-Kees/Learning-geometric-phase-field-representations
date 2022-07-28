@@ -283,7 +283,8 @@ def Zero_recontruction_loss_AT_shapespace(f, pc, eps, c, fv):
     #   eps:    Epsilon
     #   c:      Constant
     
-    features = fv.repeat(400,1)    
+    n = pc.shape[0]
+    features = fv.repeat(n,1)    
     pc = torch.cat((pc, features), 1)
 
     return  c*eps**(-1.0/3.0) *  ( torch.abs(f(pc)).mean() )            # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} g( u(x) ) dx|

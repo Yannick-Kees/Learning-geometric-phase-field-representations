@@ -23,13 +23,13 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 # Main #############
 ####################
 
-autoencoder = PCAutoEncoder2(3, 400)
-autoencoder.load_state_dict(torch.load(r"autoencoder.pth", map_location=device))
+autoencoder = PCAutoEncoder2(3, 1000)
+autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
 autoencoder.to(device) 
 autoencoder.eval()
 
 
-dataset = np.load(open("dataset.npy", "rb"))
+dataset = np.load(open("dataset1k.npy", "rb"))
 
 network =  ParkEtAl(512+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
@@ -41,8 +41,10 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     
     network.zero_grad()
     loss = 0
-    for _ in range(SHAPES_EACH_STEP):
-        index = np.random.randint(50)
+    shape_batch = np.random.choice(50, SHAPES_EACH_STEP, replace=False)
+    
+    for index in shape_batch:
+
         shape = dataset[index]#[:,:num_points]
         pointcloud = Variable( Tensor(shape) , requires_grad=False).to(device)
 
@@ -63,6 +65,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "shape_space.pth")
+torch.save(network.state_dict(), "shape_space_new.pth")
 print("Finished")
 
