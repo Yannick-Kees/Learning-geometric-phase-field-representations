@@ -1,9 +1,9 @@
 from shapemaker import *
 
 
-create = False
 
-if create:
+
+def create():
     points = []
 
     f = open("dataset1k.npy", "wb")
@@ -13,6 +13,10 @@ if create:
         
         
     np.save(f, points)
-else:
+    return
+    
+def eval(i):
     f = np.load(open("dataset1k.npy", "rb"))
-    draw_point_cloud(Tensor(f[6]))
+    draw_point_cloud(Tensor(f[i]))
+    
+eval(32)

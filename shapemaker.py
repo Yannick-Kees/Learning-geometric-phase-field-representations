@@ -4,6 +4,11 @@ from audioop import findfactor
 from pydoc import doc
 from loss_functionals import *
 from skimage import measure
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+from skimage import measure
+from skimage.draw import ellipsoid
+
 """ 
 file = open("3dObjects/bigcube.off")    
 pc = read_off(file)
@@ -11,6 +16,12 @@ print(pc)
 cloud = torch.tensor(normalize(pc) )
 draw_point_cloud(cloud)
 """ 
+
+
+
+#####################################
+# Metaball Ansatz  ##################
+#####################################
 
    
 def shape_maker1(d, num_points):
@@ -102,7 +113,7 @@ def shape_maker1(d, num_points):
         draw_point_cloud(Variable( Tensor(np.matrix(normalize(p))) , requires_grad=True).to(device))
         
     if d==3:
-        # 2D Point Cloud
+        # 3D Point Cloud
         
         condition = True
         while condition:
@@ -178,35 +189,104 @@ def shape_maker1(d, num_points):
             
         
         return np.array(normalize(choices)) 
+    
+    
+    
+    
+def shape_maker1_contour():
+    # Returns:
+    #   Plot of of metaball in 3d
+    
+    
+    d = 3
+    if d==3:
+        # 2D Point Cloud
+        
+        
+        n=  randint(2, 15)
+        print(n)
+        g = 3
+        m = []
+        k = len(m)
+        s = [ ]
+        r = .8
+        
+        def overlap(s1,r1,s2,r2):
+            # Returns:
+            #   Do two circles overlap
+            
+            # Parameters:
+            #   s1:     Center of first circle
+            #   r1:     Radius of first circle
+            #   s2:     Center of second circle
+            #   r2:     Radius of second circle
+        
+            return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
+        
+        while len(s)!= n:
+            nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
+            ns = uniform(0.01,.1)
+        
+            for i in range(len(s)):
+                if overlap(m[i],s[i],nm,ns):
+                    s.append(ns)
+                    m.append(nm)
+                    break
+            if len(s)==0:
+                    s.append(ns)
+                    m.append(nm)    
 
-"""
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+        def f(x,y,z):
+            # Returns:
+            #   Functions, whos zero-level set is the curve
+            
+            # Parameters:
+            #   x:     x-coordinate
+            #   y:     y-coordinate
+            #   z:     z-coordinate
+        
+            sum = -r
+            
+            for i in range(len(m)):
+                if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
+                    sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
+                else:
+                    sum+= 0
+            return sum
+        
+        x_ = y_ = 2       
+        num_cells = 40
+        x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+        y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+        z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+        x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
+        Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
 
-# Make data.
-X = np.arange(-2, 2, 0.01)
-Y = np.arange(-2, 2, 0.01)
-X, Y = np.meshgrid(X, Y)
-Z = np.zeros((len(X),len(X[0])))
-alpha = np.pi *1./3.
-for i in range(len(X)):
-    for j in range(len(X[0])):
-        Z[i][j]= f(X[i][j], Y[i][j])
+                        
+        verts, faces, normals, values = measure.marching_cubes(np.array(Z),0)
 
-# Plot the surface.
-surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(111, projection='3d')
 
-# Customize the z axis.
-ax.set_zlim(-2.01, 2.01)
-ax.zaxis.set_major_locator(LinearLocator(10))
-# A StrMethodFormatter is used automatically
-# ax.zaxis.set_major_formatter('{x:.02f}') # <- This may or may not be out commented, depending on compiler
+        # Fancy indexing: `verts[faces]` to generate a collection of triangles
+        mesh = Poly3DCollection(verts[faces])
+        mesh.set_edgecolor('k')
+        ax.add_collection3d(mesh)
 
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.show()
+        ax.set_xlim(10, 35)  # a = 6 (times two for 2nd ellipsoid)
+        ax.set_ylim(10, 35)  # b = 10
+        ax.set_zlim(10, 35)
 
-"""
+  
+        plt.show()
 
+            
+        
+        return
+
+#####################################
+# Bezier curve Ansatz  ##############
+#####################################
 
 from scipy.special import binom
 
@@ -307,5 +387,12 @@ def shape_maker2(n):
     plt.show()
     
     
+    
+################
+# Run  #########
+################
+    
+    
 #shape_maker1(3)
 #shape_maker2(6)
+#shape_maker1_contour(3)

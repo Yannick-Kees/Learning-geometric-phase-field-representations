@@ -38,5 +38,4 @@ if Test:
 
         draw_point_cloud(pointcloud)
         
-        
-print(np.random.choice(50, 49, replace=False))
+

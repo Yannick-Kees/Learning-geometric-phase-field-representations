@@ -127,3 +127,5 @@ Functions](https://www.cs.jhu.edu/~misha/Fall05/Papers/carr01.pdf) (Carr, Beatso
 * [MIP-plicits: Level of Detail Factorization of Neural Implicits Sphere Tracing](https://arxiv.org/pdf/2201.09147.pdf) (Silva 2022)
 * [Seeing Implicit Neural Representations as Fourier Series](https://arxiv.org/pdf/2109.00249.pdf) (Benbarka 2021)
 * [COIN: COmpression with Implicit Neural representations](https://neuralfields.cs.brown.edu/paper_120.html) (Emilien Dupont 2021)
+* [DISN: Deep Implicit Surface Network for High-quality Single-view 3D Reconstruction](https://arxiv.org/pdf/1905.10711.pdf) (Wang 2021)
+

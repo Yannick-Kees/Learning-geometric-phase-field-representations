@@ -6,27 +6,53 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 from typing import Union
-autoencoder = PCAutoEncoder2(3, 1000)
-
-autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
-autoencoder.eval()
-dataset = np.load(open("dataset1k.npy", "rb"))
-
-points= [dataset[9],dataset[2]]
-# points = points.cuda()
-points = np.array(points)
-points = Variable( Tensor(points) , requires_grad=True).to(device)
-draw_point_cloud(points[0])
-
-inputs = torch.transpose(points, 1, 2)
-reconstructed_points, global_feat = autoencoder(inputs)
-draw_point_cloud(torch.transpose(reconstructed_points,1,2)[0])
 
 
+def test_shape(index):
+    autoencoder = PCAutoEncoder2(3, 1000)
 
+    autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
+    autoencoder.eval()
+    dataset = np.load(open("dataset1k.npy", "rb"))
+
+    points= [dataset[index],dataset[2]]
+    # points = points.cuda()
+    points = np.array(points)
+    points = Variable( Tensor(points) , requires_grad=True).to(device)
+    draw_point_cloud(points[0])
+
+    inputs = torch.transpose(points, 1, 2)
+    reconstructed_points, global_feat = autoencoder(inputs)
+    draw_point_cloud(torch.transpose(reconstructed_points,1,2)[0])
+
+
+# test_shape(28)
+
+
+
+
+
+
+
+
+
+
+
+#####################################
+# Test Chamfer Distance #############
+#####################################
+
+# Just for testing, not important
+
+
+
+
+
+
+"""
 
 def chamfer_distancenp(x, y, metric='l2', direction='bi'):
-    """Chamfer distance between two point clouds
+    Chamfer distance between two point clouds
     Parameters
     ----------
     x: numpy array [n_points_x, n_dims]
@@ -45,7 +71,7 @@ def chamfer_distancenp(x, y, metric='l2', direction='bi'):
     chamfer_dist: float
         computed bidirectional Chamfer distance:
             sum_{x_i \in x}{\min_{y_j \in y}{||x_i-y_j||**2}} + sum_{y_j \in y}{\min_{x_i \in x}{||x_i-y_j||**2}}
-    """
+
     
     if direction=='y_to_x':
         x_nn = NearestNeighbors(n_neighbors=1, leaf_size=1, algorithm='kd_tree', metric=metric).fit(x)
@@ -65,7 +91,7 @@ def chamfer_distancenp(x, y, metric='l2', direction='bi'):
         raise ValueError("Invalid direction type. Supported types: \'y_x\', \'x_y\', \'bi\'")
         
     return chamfer_dist
-"""
+
 points = []
 for _ in range(2):
     points.append(np.array(shape_maker1(3,400)).T)
@@ -87,24 +113,6 @@ train_loss = torch.mean(dist)
 
 # Calculate the gradients using Back Propogation
 print(train_loss)
-
-"""
-
-
-from typing import Union
-
-import torch
-import torch.nn.functional as F
-from pytorch3d.ops.knn import knn_gather, knn_points
-from pytorch3d.structures.pointclouds import Pointclouds
-
-
-
-
-
-
-"""
-
 
 t1 = np.array([[1.,0.],[2.,0.]])
 t2 = np.array([[1.,1.],[2.,2.]])

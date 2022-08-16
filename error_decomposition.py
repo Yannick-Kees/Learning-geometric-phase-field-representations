@@ -72,7 +72,7 @@ if Decom:
     plt.show()
     
     
-pol = True
+pol = False
 if pol:
     x = [ 1,2,4,8,16,32,64,128,256,512]
     xx =[ 19, 37, 73, 145, 289,  577, 1153, 2305, 4609, 9217   ]
@@ -85,3 +85,21 @@ if pol:
     plt.loglog(x,y)
     plt.plot(h, 1/h)
     plt.show()
+    
+    
+asdf = True
+if asdf:
+    x = [ 1,2,4,8,16,32,64,128,256,512]
+    xx =[ 19, 37, 73, 145, 289,  577, 1153, 2305, 4609, 9217   ]
+    y = [0.7911,0.4779,.3958,.4212,.184,.0363,.0250,.0131,.006,0.003]
+    yy =[ 766,648,605,590,457,203,168,83,59,45 ]
+    h = np.arange(1,512)
+    plt.xlabel("Number of Neurons")
+    plt.ylabel("Loss")
+    plt.loglog(x,y, 'p-', label="$\Psi(x)$")
+    plt.plot(h, 1/h, label="$\\frac{1}{x}$")
+    plt.legend(loc="upper right")
+
+    plt.show()
+    
+    
