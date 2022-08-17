@@ -18,6 +18,45 @@ draw_point_cloud(cloud)
 """ 
 
 
+#####################################
+# Ellipsoid Ansatz  #################
+#####################################
+
+
+
+def make_ellipse():
+    a = uniform(.1,.3)
+    b = uniform(.1,.3)
+    c = uniform(.1,.3)
+    
+    ft= Tensor([a,b,c])
+
+    
+    def f(x,y,z):
+        return (1.0/(a**2)) * x**2+ (1.0/(b**2)) *y**2+(1.0/(c**2)) *z**2 -1
+    
+    
+    x_ = y_ = .3       
+    num_cells = 30
+    x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
+    
+    Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
+
+                
+    contour = measure.marching_cubes(np.array(Z),0)[0]
+
+    contour = np.array(contour)
+    contour =  (float(x_*2)/(num_cells)  * contour ) - x_
+    return [contour, ft]
+
+
+
+
+
+
 
 #####################################
 # Metaball Ansatz  ##################
@@ -396,3 +435,4 @@ def shape_maker2(n):
 #shape_maker1(3)
 #shape_maker2(6)
 #shape_maker1_contour(3)
+# make_ellipse()
