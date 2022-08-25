@@ -310,6 +310,60 @@ def AT_loss_shapespace(f, pointcloud, eps, n, c, fv):
 
 
 
+def AT_Phasefield_shapespace2(f, eps, n, d, fv):
+    # Returns:
+    #   Monte Carlo Integral of int_{[0,1]^2} W(u(x)) + eps * |Du(x)|^2 dx
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   eps:    Epsilon
+    #   n:      Number of samples drawn in the Monte Carlo Algorithm
+    #   d:      Dimension of point cloud
+     
+    start_points = Variable(torch.rand(n, d), requires_grad =True).to(device)-torch.full(size=(n,d), fill_value=.5).to(device)    # Create random points [ x_i ]
+    features = fv.repeat(n,1)
+    
+    start_points = start_points.to(device)                          # Move points to GPU if possible
+    gradients = gradient(start_points, f(start_points, features))             # Calculate their gradients [ Dx_i ]
+    norms = gradients.norm(2,dim=-1)**2                             # [ |Dx_i| ]
+
+    return ( (1.0/(4*eps))  * U(f(start_points, features))+eps*norms).mean()                    # returns 1/n * sum_{i=1}^n W(u(x_i)) + eps * |Du(x_i)|^2
+
+
+
+def Zero_recontruction_loss_AT_shapespace2(f, pc, eps, c, fv):
+    # Returns:
+    #   Monte Carlo Estimation of C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta}(x) u(s) ds|
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   pc:     Pointcloud X
+    #   eps:    Epsilon
+    #   c:      Constant
+    
+    n = pc.shape[0]
+    features = fv.repeat(n,1)    
+ 
+
+    return  c*eps**(-1.0/3.0) *  ( torch.abs(f(pc, features)).mean() )            # returns C * eps^(1/3) * 1/|X| * \sum_{x\in X} |\dashint_{B_delta(x)} g( u(x) ) dx|
+
+
+def AT_loss_shapespace2(f, pointcloud, eps, n, c, fv):
+    # Returns:
+    #   PHASE Loss = e^(-.5)(\int_\Omega W(u) +e|Du|^2 + Ce(^.3)/(n) sum_{p\in P} \dashint u ) + \mu/n \sum_{p\in P} |1-|w||
+    
+    # Parameters:
+    #   f:      Function to evaluate
+    #   pc:     Pointcloud X = [ x_i ]
+    #   eps:    Epsilon
+    #   n:      Number of Sample for Monte-Carlo in int_\Omega
+    #   m:      Number of Sample for Monte-Carlo in int_{B_\delta}
+    #   c:      Constant C, contribution of Zero recontruction loss
+    #   mu:     Constant \mu, contribution of Eikonal equation
+    
+    d = pointcloud.shape[1] # dimension of point cloud
+    
+    return AT_Phasefield_shapespace2(f, eps, n, d, fv) +  Zero_recontruction_loss_AT_shapespace2(f, pointcloud, eps, c, fv)
 
 
 

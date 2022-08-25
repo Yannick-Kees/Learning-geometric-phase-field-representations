@@ -31,7 +31,7 @@ autoencoder.eval()
 
 dataset = np.load(open("dataset1k.npy", "rb"))
 
-network =  ParkEtAl(64+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -53,7 +53,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 
         rec, latent = autoencoder(pointcloudT)
         latent = torch.ravel(latent)
-        loss +=  AT_loss_shapespace(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES,  CONSTANT, latent )
+        loss +=  AT_loss_shapespace2(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES,  CONSTANT, latent )
         
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
