@@ -11,7 +11,7 @@ NUM_TRAINING_SESSIONS = 5000
 num_points = 1000
 Batch_size = 40
 
-autoencoder = PCAutoEncoder2(3, num_points)
+autoencoder = PCAutoEncoder64(3, num_points)
 autoencoder.to(device)
 
 dataset = np.load(open("dataset1k.npy", "rb"))
@@ -46,6 +46,6 @@ for epoch in range(NUM_TRAINING_SESSIONS+1):
 
     scheduler.step(train_loss)
 
-torch.save(autoencoder.state_dict(), 'autoencoderNyyeu.pth')
+torch.save(autoencoder.state_dict(), 'autoencoder64.pth')
 
 print("Finished")

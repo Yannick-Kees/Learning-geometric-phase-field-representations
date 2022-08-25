@@ -10,8 +10,11 @@ Implementation of
 | File | Description |
 | --- | --- |
 | `3Dvisualization.ipynb` | Coarse rendering of Neural Networks in Jupyter Notebook |
-| `ampere.py` | Ignore this.. |
+| `dataset.py` | Creates and Visualises Datasets with the shapes from the shapemaker file |
 | `error_decomposition.py` | Plot of different contributions of Loss functional  |
+| `different_networksizes.py` | Measure accuracy of NN while increasing networks  |
+| `learn_shape_space_ellipse.py` | Training shape space network for ellipsoids |
+| `learn_shapespace.py` | Training shape space network for Metaballs  |
 | `loss_functionals.py` | Computes Modica-Mortola and Ambrosio-Tortorelli  |
 | `misc.py` | Handles import of different file formates, enables CUDA and shows progress on console  |
 | `networks.py` | Neural Networks  |
@@ -19,7 +22,10 @@ Implementation of
 | `pointclouds.py` | Creates or changes point clouds |
 | `run.py` | Solves the 2D reconstruction problem. Can be executed on any computer |
 | `Shapemaker.py` | Programm that can produce random point clouds in 2D or 3D form natural looking objects |
+| `test_autoencoder.py` | Plot inputs and outputs of Autoencoder for differnt shapes of dataset  |
+| `test_shape_space.py` | Make plots of elements of shape space after training  |
 | `test.py` | Ignore this.. |
+| `train_autoencoder.py` | Train PointNet - Autoencoder for the different datasets  |
 | `visualizing.py` | Handles visualization of input and output data |
 | `volta.py` | Solves the 3D reconstruction problem. Should only be executed on high performance computer |
 

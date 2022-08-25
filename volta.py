@@ -14,12 +14,12 @@ SIGMA = 3.0
 BATCHSIZE = 20 #16k zu viel
 
 # Phase-Loss
-LOSS = "AT"
+LOSS = "MM"
 MONTE_CARLO_SAMPLES = 2000
 MONTE_CARLO_BALL_SAMPLES = 60
 EPSILON = .0001
 if LOSS == "MM":
-    CONSTANT = 50.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
+    CONSTANT = 80.0 if not FOURIER_FEATUERS else 140.0 # 14, Modica Mortola
 else:
     # CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # 14, Constante höher bei FF <- FF
     CONSTANT = 40. if FOURIER_FEATUERS else 10.0 # SIREN
@@ -32,7 +32,7 @@ MU = 0.5
 
 #experiments = [ 0.01,0.1,.5,1,2,3,4,5,6,7,8,9,10]
 
-dataset = np.load(open("dataset1k.npy", "rb"))
+
 
 network = ParkEtAl(3, [512]*3 , [], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 #network =  Siren(3,2,512,1)
@@ -40,7 +40,7 @@ network.to(device)
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-"""
+
 file = open("3dObjects/bunny_0.ply")
 pc = read_ply_file(file)
 cloud = torch.tensor( normalize(pc))
@@ -49,8 +49,8 @@ cloud = torch.tensor( normalize(pc))
 # Activate for the bunny
 cloud += torch.tensor([0.15,-.15,.1]).repeat(cloud.shape[0],1)
 cloud = torch.tensor(normalize(cloud) )
-"""
-cloud = Tensor(dataset[6])
+
+
 
 
 pc = Variable( cloud , requires_grad=True).to(device)
@@ -91,7 +91,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 indices = np.random.choice(len(pc), BATCHSIZE, False)
 pointcloud = pc[indices]
 print("Loss: ", torch.abs(network(pointcloud)).mean())
-torch.save(network.state_dict(), "cube.pth")
+torch.save(network.state_dict(), "MM.pth")
 toParaview(network, 256, 0)
 print("Finished")
 

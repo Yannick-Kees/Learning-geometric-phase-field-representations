@@ -23,15 +23,15 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 # Main #############
 ####################
 
-autoencoder = PCAutoEncoder2(3, 1000)
-autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
+autoencoder = PCAutoEncoder64(3, 1000)
+autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
 autoencoder.to(device) 
 autoencoder.eval()
 
 
 dataset = np.load(open("dataset1k.npy", "rb"))
 
-network =  ParkEtAl(512+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  ParkEtAl(64+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
@@ -65,6 +65,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "shape_space_new.pth")
+torch.save(network.state_dict(), "shape_space_64.pth")
 print("Finished")
-

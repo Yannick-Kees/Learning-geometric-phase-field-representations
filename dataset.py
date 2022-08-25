@@ -1,7 +1,9 @@
 from shapemaker import *
 
 
-
+####################
+# Metaballs ########
+####################
 
 def create():
     points = []
@@ -19,6 +21,11 @@ def eval(i):
     f = np.load(open("dataset1k.npy", "rb"))
     draw_point_cloud(Tensor(f[i]))
     
+    
+    
+####################
+# Ellipsoid ########
+####################    
     
     
 def create_ell():
@@ -39,6 +46,5 @@ def eval_ell(i):
     draw_point_cloud(Tensor(f[i][0]))
     
     
-
-    
-eval_ell(5)
+ 
+eval(10)

@@ -9,9 +9,9 @@ from typing import Union
 
 
 def test_shape(index):
-    autoencoder = PCAutoEncoder2(3, 1000)
+    autoencoder = PCAutoEncoder64(3, 1000)
 
-    autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
+    autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
     autoencoder.eval()
     dataset = np.load(open("dataset1k.npy", "rb"))
 
@@ -23,10 +23,11 @@ def test_shape(index):
 
     inputs = torch.transpose(points, 1, 2)
     reconstructed_points, global_feat = autoencoder(inputs)
+
     draw_point_cloud(torch.transpose(reconstructed_points,1,2)[0])
 
 
-# test_shape(28)
+test_shape(1)
 
 
 
