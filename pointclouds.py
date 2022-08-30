@@ -70,6 +70,7 @@ def makeCube(size):
     for x in range(0,size+1):
         for y in range(0,size+1):
             for z in range(0,size+1):
+                
                 if x ==size or x==0 or y==size or y==0 or z==size or z==0:
                     counter += 1
                     print(float("{0:.2f}".format(x)), float("{0:.2f}".format(y)), float("{0:.2f}".format(z)))
@@ -79,17 +80,22 @@ def makeCube(size):
 
 
 def flat_circle(n):
+    # Make 2d circle in 3d space
     pc = []
+    
     for _ in range(n):
         r =  np.random.uniform(0,.45)
         alpha = np.random.uniform(0,2.0*np.pi)
         x   = float(r * np.sin( alpha )  )
         y   = float(r * np.cos( alpha )  )
         pc.append([x,y, y])
+        
     return pc
 
 def dual_slice(n):
+    # Create slice on top of circle
     pc = []
+    
     for _ in range(n):
         x = np.random.uniform(-1,1)
         y = np.random.uniform(0,1)
@@ -97,6 +103,7 @@ def dual_slice(n):
         if np.linalg.norm([x,y,0])<1:
             pc.append([x,y,0])
             pc.append([x,-y,0])
+            
         if np.linalg.norm([x,0,y])<1:
             pc.append([x,0,-y])
             
@@ -105,23 +112,29 @@ def dual_slice(n):
 
 
 def triple_slice(n):
+    # Create three slices touching at 120 degree angle
     pc = []
+    
     for _ in range(n):
         x = np.random.uniform(-1,1)
         y = np.random.uniform(0,1)
         
         tan = np.tan((2.*np.pi)/12.0)
         tan = 1.0
+        
         if np.linalg.norm([x,y,tan *y])<1:
             pc.append([x,y,tan * y])
             pc.append([x,-y,tan *y])
+            
         if np.linalg.norm([x,0,y])<1:
             pc.append([x,0,-y])
             
 
     return pc
 
+
 def sliced_sphere(n):
+    
     pc = []
     for _ in range(n):
         x = np.random.uniform(-1,1)
@@ -132,8 +145,6 @@ def sliced_sphere(n):
         
         pc.append([x,y,0])
         
-            
-
     return pc
         
 
@@ -165,12 +176,15 @@ def normalize(pc):
 
 
 def cut_hole(pc):
-    # Cut a hole
+    # Cut a hole in point cloud
     
     new_pc = []
+    
     for p in pc:
+        
         if (p[0])**2+(p[2]-.15)**2>.005:
             new_pc.append(p)
+            
     print(len(pc), len(new_pc))
     return new_pc
 

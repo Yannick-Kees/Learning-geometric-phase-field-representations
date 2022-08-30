@@ -24,8 +24,8 @@ def test_ellipse(index):
 
 
 def test_shape(index):
-    autoencoder = PCAutoEncoder2(3, 1000)
-    autoencoder.load_state_dict(torch.load(r"autoencoderNeu.pth", map_location=device))
+    autoencoder = PCAutoEncoder64(3, 1000)
+    autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
     autoencoder.to(device) 
     autoencoder.eval()
     
@@ -34,8 +34,8 @@ def test_shape(index):
 
     dataset = np.load(open("dataset1k.npy", "rb"))
 
-    network =  ParkEtAl(512+3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network.load_state_dict(torch.load(r"shape_space_new.pth", map_location=device))
+    network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    network.load_state_dict(torch.load(r"shape_space_64.pth", map_location=device))
     network.to(device) 
     network.eval()
 
@@ -53,13 +53,13 @@ def test_shape(index):
 
     inputs = torch.transpose(points, 1, 2)
     reconstructed_points, global_feat = autoencoder(inputs)
-    print(global_feat)
+
 
     x = torch.cat((point, global_feat[0]))
     # print(network(x))
 
-    #shape_space_toParaview(network, 128, index, global_feat)
+    shape_space_toParaview2(network, 129, index, global_feat)
     return
 
-#test_shape(1)
-test_ellipse(1)
+test_shape(0)
+

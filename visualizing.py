@@ -240,14 +240,7 @@ def toParaview(f, n, l):
     X = np.arange(0, lx + 0.1*dx, dx, dtype='float64') -.4
     Y = np.arange(0, ly + 0.1*dy, dy, dtype='float64')  -.4
     Z = np.arange(0, lz + 0.1*dz, dz, dtype='float64') -.4
-    """
-    x = np.zeros((nx + 1, ny + 1, nz + 1)) 
-    y = np.zeros((nx + 1, ny + 1, nz + 1)) 
-    z = np.zeros((nx + 1, ny + 1, nz + 1)) 
 
-    values = np.zeros((nx + 1, ny + 1, nz + 1)) 
-    values = np.array([X,Y,Z]).T
-    """
     
     yy,xx,zz = np.meshgrid(X,Y,Z)
     all_data = np.array([xx,yy,zz]).T.reshape((n+1)**3,3)
@@ -317,5 +310,51 @@ def shape_space_toParaview(f, n, l, fv):
     #pressure = np.random.rand(ncells).reshape( (nx, ny, nz)) 
     #temp = np.random.rand(npoints).reshape( (nx + 1, ny + 1, nz + 1)) 
     structuredToVTK("./structured"+str(n)+str(l), xx, yy, zz,  pointData = {"NN" : Z})
+    
+    
+    
+    
+def shape_space_toParaview2(f, n, l, fv):
+    # Makes a File, to visualize the network in ParaView
+    # 
+    #   f:  Neuronal Network function
+    #   n:  Resolution, i.e. the number of function evaluations of NN in each dimension
+    #   l:  Number of layers, only for the nameing of the file
+    
+    nx, ny, nz = n, n, n
+    lx, ly, lz = .8, .8, .8
+    dx, dy, dz = lx/nx, ly/ny, lz/nz
+    ncells = nx * ny * nz 
+    npoints = (nx + 1) * (ny + 1) * (nz + 1) 
+
+    # Coordinates 
+    # 
+    X = np.arange(0, lx + 0.1*dx, dx, dtype='float64') -.4
+    Y = np.arange(0, ly + 0.1*dy, dy, dtype='float64')  -.4
+    Z = np.arange(0, lz + 0.1*dz, dz, dtype='float64') -.4
+    """
+    x = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    y = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    z = np.zeros((nx + 1, ny + 1, nz + 1)) 
+
+    values = np.zeros((nx + 1, ny + 1, nz + 1)) 
+    values = np.array([X,Y,Z]).T
+    """
+    fv = fv.detach().cpu().numpy()
+    yy,xx,zz = np.meshgrid(X,Y,Z)
+    all_data = np.array([xx,yy,zz]).T.reshape((n+1)**3,3)
+    features = fv.repeat(len(all_data),0)
+    
+    batch_size = 10000
+    num_batches = (n+1)**3 // batch_size
+    splitted_data = np.array_split(all_data, num_batches)
+    splitted_features = np.array_split(features, num_batches)
+
+
+    Z = np.concatenate([ f( Variable(Tensor(splitted_data[v])).to(device) ,Variable(Tensor( splitted_features[v])).to(device) ).detach().cpu().reshape(-1).numpy() for v in range(len(splitted_data))    ])
+   
+    structuredToVTK("./structured"+str(n)+str(l), xx, yy, zz,  pointData = {"NN" : Z})
+    return
+
 
 

@@ -1,4 +1,3 @@
-from torch import double
 from shapemaker import *
 
 ####################
@@ -23,14 +22,16 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 # Main #############
 ####################
 
+#   Load autoencoder
 autoencoder = PCAutoEncoder64(3, 1000)
 autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
 autoencoder.to(device) 
 autoencoder.eval()
 
-
+#   Load dataset
 dataset = np.load(open("dataset1k.npy", "rb"))
 
+#   Setup Shape Space Learning Network
 network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )

@@ -15,7 +15,7 @@ class small_MLP(nn.Module):
         x = F.relu(self.lin2(x))
         x = F.relu(self.lin3(x))
         x = self.lin4(x)
-        # Am Ende tanh, damit alles zwischen -1 und +1 ist
+        # In the end tanh, such that values are between -1 and 1
         x = torch.tanh(x)
       
         return x
@@ -35,7 +35,7 @@ class small_MLP3D(nn.Module):
         x = F.relu(self.lin2(x))
         x = F.relu(self.lin3(x))
         x = self.lin4(x)
-        # Am Ende tanh, damit alles zwischen -1 und +1 ist
+        # In the end tanh, such that values are between -1 and 1
         x = torch.tanh(x)
       
         return x
@@ -43,7 +43,9 @@ class small_MLP3D(nn.Module):
 
   
 class Siren_Network(nn.Module):
-    # Neuronal Network
+    # Neuronal Network (SIREN-Network)
+    # Sin- function as activation function
+    
     def __init__(self, NUM_NODES):
         super(Siren_Network, self).__init__()
         self.lin1 = nn.Linear(3,NUM_NODES)
@@ -62,7 +64,7 @@ class Siren_Network(nn.Module):
         x = torch.sin(self.lin2(x))
         x = torch.sin(self.lin3(x))
         x = self.lin4(x)
-        # Am Ende tanh, damit alles zwischen -1 und +1 ist
+        # In the end tanh, such that values are between -1 and 1
         x = torch.tanh(x)
       
         return x
@@ -86,13 +88,16 @@ class big_MLP(nn.Module):
         x = F.relu(self.lin2(x))
         x = F.relu(self.lin3(x))
         x = self.lin4(x)
-        # Am Ende tanh, damit alles zwischen -1 und +1 ist
+        # In the end tanh, such that values are between -1 and 1
         x = torch.tanh(x)
         
         return x
       
 
 class ParkEtAl(nn.Module):
+    
+    #   !! COPYRIGHT for this network class : https://github.com/amosgropp/IGR/blob/master/code/model/network.py  !!
+    #   Added Fourier features
 
     def __init__(
         self,
@@ -124,6 +129,7 @@ class ParkEtAl(nn.Module):
         
         self.FourierFeatures = FourierFeatures
         self.d_in = d_in
+        
         if FourierFeatures:
             # Use Fourier Features
 
@@ -141,6 +147,7 @@ class ParkEtAl(nn.Module):
 
             if layer + 1 in skip_in:
                 out_dim = dims[layer + 1] - d_in
+                
             else:
                 out_dim = dims[layer + 1]
 
@@ -193,6 +200,9 @@ class ParkEtAl(nn.Module):
     
 
 class FeatureSpaceNetwork(nn.Module):
+    
+    #   !! COPYRIGHT for this network class : https://github.com/amosgropp/IGR/blob/master/code/model/network.py  !!
+    #   Added Fourier features and a feature vector gets concatenated after passing FF-layer
 
     def __init__(
         self,
@@ -271,12 +281,15 @@ class FeatureSpaceNetwork(nn.Module):
 
     def forward(self, input, ft):
         # forward pass of the NN
+        #
+        # input:    Point in R^3
+        # ft:       Feature Vector   
 
         x = input
         if self.FourierFeatures:
             # Fourier Layer
-            x = self.FFL(x)
-            x = torch.cat((x,ft),1)
+            x = self.FFL(x)         # Pass Fourier Features
+            x = torch.cat((x,ft),1) # Concatenate Feature vector
 
         for layer in range(0, self.num_layers - 1):
 
@@ -294,86 +307,11 @@ class FeatureSpaceNetwork(nn.Module):
 
         return x
     
-    
-    
-class SineLayer(nn.Module):
-    # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of omega_0.
-    
-    # If is_first=True, omega_0 is a frequency factor which simply multiplies the activations before the 
-    # nonlinearity. Different signals may require different omega_0 in the first layer - this is a 
-    # hyperparameter.
-    
-    # If is_first=False, then the weights will be divided by omega_0 so as to keep the magnitude of 
-    # activations constant, but boost gradients to the weight matrix (see supplement Sec. 1.5)
-    
-    def __init__(self, in_features, out_features, bias=True,
-                 is_first=False, omega_0=30):
-        super().__init__()
-        self.omega_0 = omega_0
-        self.is_first = is_first
-        
-        self.in_features = in_features
-        self.linear = nn.Linear(in_features, out_features, bias=bias)
-        
-        self.init_weights()
-    
-    def init_weights(self):
-        with torch.no_grad():
-            if self.is_first:
-                self.linear.weight.uniform_(-1 / self.in_features, 
-                                             1 / self.in_features)      
-            else:
-                self.linear.weight.uniform_(-np.sqrt(6 / self.in_features) / self.omega_0, 
-                                             np.sqrt(6 / self.in_features) / self.omega_0)
-        
-    def forward(self, input):
-        return torch.sin(self.omega_0 * self.linear(input))
-    
-    def forward_with_intermediate(self, input): 
-        # For visualization of activation distributions
-        intermediate = self.omega_0 * self.linear(input)
-        return torch.sin(intermediate), intermediate
-    
-    
-class Siren(nn.Module):
-    def __init__(self, in_features, hidden_features, hidden_layers, out_features, outermost_linear=False, 
-                 first_omega_0=15., hidden_omega_0=1.):
-        super().__init__()
-        
-        self.net = []
-        self.net.append(SineLayer(in_features, hidden_features, 
-                                  is_first=True, omega_0=first_omega_0))
-
-        for i in range(hidden_layers):
-            self.net.append(SineLayer(hidden_features, hidden_features, 
-                                      is_first=False, omega_0=hidden_omega_0))
-
-        if outermost_linear:
-            final_linear = nn.Linear(hidden_features, out_features)
-            
-            with torch.no_grad():
-                final_linear.weight.uniform_(-np.sqrt(6 / hidden_features) / hidden_omega_0, 
-                                              np.sqrt(6 / hidden_features) / hidden_omega_0)
-                
-            self.net.append(final_linear)
-        else:
-            self.net.append(SineLayer(hidden_features, out_features, 
-                                      is_first=False, omega_0=hidden_omega_0))
-        
-        self.net = nn.Sequential(*self.net)
-    
-    def forward(self, coords):
-        
-        output = self.net(coords)
-        return output  
-    
-    
-    
-
+ 
 class PCAutoEncoder(nn.Module):
+    #  !! COPYRIGHT: https://github.com/dhirajsuvarna/pointnet-autoencoder-pytorch/blob/master/model/model.py !!
     """ Point-Net Autoencoder for Point Cloud 
-    Input: 
-    Output: 
+
     """
     def __init__(self, point_dim, num_points):
         super(PCAutoEncoder, self).__init__()
@@ -429,6 +367,7 @@ class PCAutoEncoder(nn.Module):
 
 
 class PCAutoEncoder2(nn.Module):
+    #  !! COPYRIGHT: https://github.com/dhirajsuvarna/pointnet-autoencoder-pytorch/blob/master/model/model.py !!
     """ Point-Net Autoencoder for Point Cloud 
     Input: 
     Output: 
@@ -470,10 +409,10 @@ class PCAutoEncoder2(nn.Module):
     
     
 class PCAutoEncoder64(nn.Module):
-    """ Point-Net Autoencoder for Point Cloud 
-    Input: 
-    Output: 
-    """
+    #  !! COPYRIGHT: https://github.com/dhirajsuvarna/pointnet-autoencoder-pytorch/blob/master/model/model.py !!
+    #
+    # 64 dimensional Feature space
+
     def __init__(self, point_dim, num_points):
         super(PCAutoEncoder64, self).__init__()
 

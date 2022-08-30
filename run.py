@@ -6,7 +6,7 @@ from loss_functionals import *
 
 # Neuronal Network
 NUM_TRAINING_SESSIONS = 1000
-START_LEARNING_RATE = 0.0001 #  0.01
+START_LEARNING_RATE = 0.0001                        #  0.01
 PATIENCE = 1000
 NUM_NODES = 512
 FOURIER_FEATUERS = False
@@ -14,28 +14,27 @@ SIGMA = 1.7
 BATCHSIZE = 200
 
 # LOSS
-LOSS = "AT" # Either AT or MM
+LOSS = "AT"                                         # Either AT or MM
 MONTE_CARLO_SAMPLES = 200
 MONTE_CARLO_BALL_SAMPLES = 20
 EPSILON = .01
 if LOSS == "MM":
-    CONSTANT = 14 if FOURIER_FEATUERS else 14. # 14, Modica Mortola
+    CONSTANT = 14 if FOURIER_FEATUERS else 14.      # 14, Modica Mortola
 else:
-    # CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5 # 14, Constante höher bei FF 5 10
-    CONSTANT = 2.0 if FOURIER_FEATUERS else 2.5 # 14, Constante höher bei FF
+    # CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5   # 14, Constante höher bei FF 5 10
+    CONSTANT = 2.0 if FOURIER_FEATUERS else 2.5     # 14, Constante höher bei FF
 MU = .8
 
 # MISC
-FILM = False
+FILM = False                                        # Makes a movie from the learning process
 
 
 ####################
 # Main #############
 ####################
 
-#network = ParkEtAl(2, [NUM_NODES]*3, [2],   geometric_init=False, FourierFeatures=FOURIER_FEATUERS, num_features = 6, sigma = SIGMA )
-#network = ParkEtAl(2, [NUM_NODES]*2, [], geometric_init=False, FourierFeatures=False, num_features = 6, sigma = SIGMA )
-network = Siren(2,1,128,1)
+
+network = ParkEtAl(2, [NUM_NODES]*2, [], geometric_init=False, FourierFeatures=False, num_features = 6, sigma = SIGMA )
 network.to(device)
  
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )

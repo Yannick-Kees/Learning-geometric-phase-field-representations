@@ -6,18 +6,22 @@ from shapemaker import *
 ####################
 
 def create():
+    # Create dataset of metaballs
+    
     points = []
 
     f = open("dataset1k.npy", "wb")
+    
     for i in range(50):
         points.append(shape_maker1(3,1000))
         print(i)
-        
         
     np.save(f, points)
     return
     
 def eval(i):
+    # visualize items from the metaball dataset
+    
     f = np.load(open("dataset1k.npy", "rb"))
     draw_point_cloud(Tensor(f[i]))
     
@@ -29,9 +33,11 @@ def eval(i):
     
     
 def create_ell():
+    # Create dataset of ellipsoids
     points = []
 
     f = open("dataset_ellipsoid.npy", "wb")
+    
     for i in range(50):
         points.append(make_ellipse())
         print(i)
@@ -41,8 +47,9 @@ def create_ell():
     return
     
 def eval_ell(i):
+    # Plot ellipsoids from the dataset
+    
     f = np.load(open("dataset_ellipsoid.npy", "rb"),allow_pickle=True)
-    print(f[i][1])
     draw_point_cloud(Tensor(f[i][0]))
     
     

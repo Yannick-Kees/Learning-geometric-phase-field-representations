@@ -25,14 +25,17 @@ draw_point_cloud(cloud)
 
 
 def make_ellipse():
+    
+    # Randomly create parameters
     a = uniform(.1,.3)
     b = uniform(.1,.3)
     c = uniform(.1,.3)
     
-    ft= Tensor([a,b,c])
+    ft= Tensor([a,b,c])     # Feature Vector
 
     
     def f(x,y,z):
+        # Implicit function
         return (1.0/(a**2)) * x**2+ (1.0/(b**2)) *y**2+(1.0/(c**2)) *z**2 -1
     
     
@@ -46,10 +49,11 @@ def make_ellipse():
     Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
 
                 
-    contour = measure.marching_cubes(np.array(Z),0)[0]
+    contour = measure.marching_cubes(np.array(Z),0)[0]  # Extract surface using marching cubes
 
     contour = np.array(contour)
     contour =  (float(x_*2)/(num_cells)  * contour ) - x_
+    
     return [contour, ft]
 
 
@@ -100,10 +104,12 @@ def shape_maker1(d, num_points):
             ns = uniform(0.01,.1)
         
             for i in range(len(s)):
+                
                 if overlap(m[i],s[i],nm,ns):
                     s.append(ns)
                     m.append(nm)
                     break
+                
             if len(s)==0:
                     s.append(ns)
                     m.append(nm)    
@@ -119,10 +125,13 @@ def shape_maker1(d, num_points):
             sum = -r
             
             for i in range(len(m)):
+                
                 if x != m[i][0] and y!= m[i][1]:
                     sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2     )**g    )
+                    
                 else:
                     sum+= 0
+                    
             return sum
         
         # Extract iso-surface
@@ -142,7 +151,9 @@ def shape_maker1(d, num_points):
         #plt.show()
 
         p = []
+        
         for path in contour.collections[0].get_paths():
+            
             for pp in path.vertices:
                 p.append(pp)
 
@@ -155,6 +166,7 @@ def shape_maker1(d, num_points):
         # 3D Point Cloud
         
         condition = True
+        
         while condition:
             n=  randint(2, 15)
             
@@ -177,14 +189,17 @@ def shape_maker1(d, num_points):
                 return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
             
             while len(s)!= n:
+                
                 nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
                 ns = uniform(0.01,.1)
             
                 for i in range(len(s)):
+                    
                     if overlap(m[i],s[i],nm,ns):
                         s.append(ns)
                         m.append(nm)
                         break
+                    
                 if len(s)==0:
                         s.append(ns)
                         m.append(nm)    
@@ -201,10 +216,13 @@ def shape_maker1(d, num_points):
                 sum = -r
                 
                 for i in range(len(m)):
+                    
                     if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
                         sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
+                        
                     else:
                         sum+= 0
+                        
                 return sum
             
             x_ = y_ = 2       
@@ -217,11 +235,10 @@ def shape_maker1(d, num_points):
 
                             
             contour = measure.marching_cubes(np.array(Z),0)[0]
-            print(len(contour))
-            #plt.clabel(contour, colors = 'k', fmt = '%2.1f', fontsize=12)
+
+
             condition = len(contour) < num_points
-            #plt.show()
-            
+
             
         choice_indices = np.random.choice(len(contour), num_points, replace=False)
         choices = [contour[i] for i in choice_indices]
@@ -235,97 +252,93 @@ def shape_maker1(d, num_points):
 def shape_maker1_contour():
     # Returns:
     #   Plot of of metaball in 3d
+
+    n=  randint(2, 15)
+    print(n)
+    g = 3
+    m = []
+    k = len(m)
+    s = [ ]
+    r = .8
     
+    def overlap(s1,r1,s2,r2):
+        # Returns:
+        #   Do two circles overlap
+        
+        # Parameters:
+        #   s1:     Center of first circle
+        #   r1:     Radius of first circle
+        #   s2:     Center of second circle
+        #   r2:     Radius of second circle
     
-    d = 3
-    if d==3:
-        # 2D Point Cloud
+        return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
+    
+    while len(s)!= n:
+        nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
+        ns = uniform(0.01,.1)
+    
+        for i in range(len(s)):
+            if overlap(m[i],s[i],nm,ns):
+                s.append(ns)
+                m.append(nm)
+                break
+        if len(s)==0:
+                s.append(ns)
+                m.append(nm)    
+
+    def f(x,y,z):
+        # Returns:
+        #   Functions, whos zero-level set is the curve
         
+        # Parameters:
+        #   x:     x-coordinate
+        #   y:     y-coordinate
+        #   z:     z-coordinate
+    
+        sum = -r
         
-        n=  randint(2, 15)
-        print(n)
-        g = 3
-        m = []
-        k = len(m)
-        s = [ ]
-        r = .8
-        
-        def overlap(s1,r1,s2,r2):
-            # Returns:
-            #   Do two circles overlap
+        for i in range(len(m)):
             
-            # Parameters:
-            #   s1:     Center of first circle
-            #   r1:     Radius of first circle
-            #   s2:     Center of second circle
-            #   r2:     Radius of second circle
-        
-            return np.linalg.norm(np.array(s1)-np.array(s2)) < abs(r1+r2)+r
-        
-        while len(s)!= n:
-            nm = [uniform(-1,1),uniform(-1,1),uniform(-1,1)] 
-            ns = uniform(0.01,.1)
-        
-            for i in range(len(s)):
-                if overlap(m[i],s[i],nm,ns):
-                    s.append(ns)
-                    m.append(nm)
-                    break
-            if len(s)==0:
-                    s.append(ns)
-                    m.append(nm)    
+            if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
+                sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
+            else:
+                sum+= 0
+        return sum
+    
+    x_ = y_ = 2       
+    num_cells = 40
+    x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
+    x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
+    Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
 
-        def f(x,y,z):
-            # Returns:
-            #   Functions, whos zero-level set is the curve
-            
-            # Parameters:
-            #   x:     x-coordinate
-            #   y:     y-coordinate
-            #   z:     z-coordinate
-        
-            sum = -r
-            
-            for i in range(len(m)):
-                if x != m[i][0] and y!= m[i][1] and z != m[i][2]:
-                    sum += s[i]/(  np.sqrt( (m[i][0]-x)**2+(m[i][1]-y)**2 +(m[i][2]-z)**2     )**g    )
-                else:
-                    sum+= 0
-            return sum
-        
-        x_ = y_ = 2       
-        num_cells = 40
-        x = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        y = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        z = np.linspace(-x_, x_, num_cells, dtype=np.float32)
-        x, y, z = np.meshgrid(x, y, z, indexing='ij')   # make mesh grid
-        Z = [[[ f(x[i][j][k], y[i][j][k], z[i][j][k] )  for k in range(len(x[0][0]))  ] for j in range(len(x[0])) ] for i in range(len(x)) ]# Evaluate function in points
+                    
+    verts, faces, normals, values = measure.marching_cubes(np.array(Z),0)
 
-                        
-        verts, faces, normals, values = measure.marching_cubes(np.array(Z),0)
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
 
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
+    # Fancy indexing: `verts[faces]` to generate a collection of triangles
+    mesh = Poly3DCollection(verts[faces])
+    mesh.set_edgecolor('k')
+    ax.add_collection3d(mesh)
 
-        # Fancy indexing: `verts[faces]` to generate a collection of triangles
-        mesh = Poly3DCollection(verts[faces])
-        mesh.set_edgecolor('k')
-        ax.add_collection3d(mesh)
+    ax.set_xlim(10, 35)  # a = 6 (times two for 2nd ellipsoid)
+    ax.set_ylim(10, 35)  # b = 10
+    ax.set_zlim(10, 35)
 
-        ax.set_xlim(10, 35)  # a = 6 (times two for 2nd ellipsoid)
-        ax.set_ylim(10, 35)  # b = 10
-        ax.set_zlim(10, 35)
 
-  
-        plt.show()
+    plt.show()
 
-            
-        
-        return
+    return
 
 #####################################
 # Bezier curve Ansatz  ##############
 #####################################
+
+
+# !! COPYRIGHT:  https://stackoverflow.com/a/50751932 !!
 
 from scipy.special import binom
 

@@ -11,7 +11,7 @@ PATIENCE = 1500
 NUM_NODES = 512
 FOURIER_FEATUERS = True
 SIGMA = 3.0
-BATCHSIZE = 20 #16k zu viel
+BATCHSIZE = 20 #16k to much
 
 # Phase-Loss
 LOSS = "MM"

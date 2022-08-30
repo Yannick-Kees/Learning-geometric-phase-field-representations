@@ -1,4 +1,3 @@
-from torch import double
 from shapemaker import *
 
 ####################
@@ -24,8 +23,10 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 # Main #############
 ####################
 
+#   Load dataset
 dataset = np.load(open("dataset_ellipsoid.npy", "rb"),allow_pickle=True)
 
+#   Setup Network
 network =  ParkEtAl(3+3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
@@ -50,7 +51,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
         
-        # backpropagation
+    # backpropagation
         
     loss.backward(retain_graph= True )
     optimizer.step()

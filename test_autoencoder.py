@@ -1,14 +1,8 @@
 from shapemaker import *
-from pytorch3d.loss import (
-    chamfer_distance, 
-    mesh_edge_loss, 
-    mesh_laplacian_smoothing, 
-    mesh_normal_consistency,
-)
-from typing import Union
-
 
 def test_shape(index):
+    # index:    Index in dataset which to test
+    
     autoencoder = PCAutoEncoder64(3, 1000)
 
     autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
@@ -23,11 +17,13 @@ def test_shape(index):
 
     inputs = torch.transpose(points, 1, 2)
     reconstructed_points, global_feat = autoencoder(inputs)
+    print(global_feat)
 
     draw_point_cloud(torch.transpose(reconstructed_points,1,2)[0])
 
 
-test_shape(1)
+test_shape(5)
+
 
 
 

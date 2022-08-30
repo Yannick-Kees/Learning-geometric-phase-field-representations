@@ -9,8 +9,10 @@ def report_progress(current, total, error):
    #     error:      Current Error, i.e. evaluation of the loss functional
    
    sys.stdout.write('\rProgress: {:.2%}, Current Error: {:}'.format(float(current)/total, error))
+   
    if current==total:
       sys.stdout.write('\n')
+      
    sys.stdout.flush()
    
 
@@ -65,18 +67,28 @@ def read_ply_file(file):
 
 
 def read_obj_file(file):
+      # returning matrix of points from an .obj file
+      # needed for large numbers of points
+
+      # Parameters:
+      #   file:   path of file to read
       pc = []
+      
       for line in file.readlines():
          x = line.replace("\n","").split(" ")
+         
          if x[0] != "v":
             break
+         
          else:
             pc.append(   [float(xx)  for xx in x[1:4] ]   )
+            
       return pc      
                   
 
 
 def CreateFourierMatrix(size, d):
+   # Matrix for Fourier Features
    print([[ np.random.normal()  for _ in range(d)] for _ in range(size)])
    
    

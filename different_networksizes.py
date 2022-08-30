@@ -1,11 +1,11 @@
-
 from networks import *
 
-
+# Measure size of Neural Network
 measure = False
 
 if measure:
 
+    # Create Network models, to measure the size
     for i in [1,2,4,8,16,32,64,128,256,512]:
         network = ParkEtAl(3, [i] , [], FourierFeatures=8, num_features = 8, sigma = 3 )  
         torch.save(network.state_dict(), str(i)+"cube.pth")
