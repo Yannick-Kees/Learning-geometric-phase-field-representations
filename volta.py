@@ -75,7 +75,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         if (i%50==0):
             report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
     else:
-        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, e)
+        loss = Phase_loss(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES, MONTE_CARLO_BALL_SAMPLES, CONSTANT, MU)
         if (i%10==0):
             report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
         # report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
@@ -86,9 +86,11 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     optimizer.step()
     scheduler.step(loss)
     
-    
-indices = np.random.choice(len(pc), BATCHSIZE, False)
-pointcloud = pc[indices]
+if use_batch: 
+    indices = np.random.choice(len(pc), BATCHSIZE, False)
+    pointcloud = pc[indices]
+else:
+    pointcloud = pc
 print("Loss: ", torch.abs(network(pointcloud)).mean())
 # torch.save(network.state_dict(), "MM.pth")
 toParaview(network, 256, 14)
