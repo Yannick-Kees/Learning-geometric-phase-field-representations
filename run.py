@@ -5,19 +5,19 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 1000
+NUM_TRAINING_SESSIONS = 10000
 START_LEARNING_RATE = 0.0001                        #  0.01
 PATIENCE = 1000
 NUM_NODES = 512
 FOURIER_FEATUERS = False
 SIGMA = 1.7
-BATCHSIZE = 200
+BATCHSIZE = 100
 
 # LOSS
 LOSS = "AT"                                         # Either AT or MM
-MONTE_CARLO_SAMPLES = 200
-MONTE_CARLO_BALL_SAMPLES = 20
-EPSILON = .01
+MONTE_CARLO_SAMPLES = 50
+MONTE_CARLO_BALL_SAMPLES = 1
+EPSILON = .05
 if LOSS == "MM":
     CONSTANT = 14 if FOURIER_FEATUERS else 14.      # 14, Modica Mortola
 else:
@@ -34,7 +34,8 @@ FILM = False                                        # Makes a movie from the lea
 ####################
 
 
-network = ParkEtAl(2, [NUM_NODES]*2, [], geometric_init=False, FourierFeatures=False, num_features = 6, sigma = SIGMA )
+#network = ParkEtAl(2, [NUM_NODES]*2, [], geometric_init=False, FourierFeatures=False, num_features = 6, sigma = SIGMA )
+network = small_MLP(128)
 network.to(device)
  
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
@@ -76,6 +77,6 @@ draw_point_cloud(pointcloud)
 color_plot(network, 2, False)
 draw_phase_field(network, .5, .5, i, False)
 #draw_height(network)
-torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\CUBE.pth")
+#torch.save(network.state_dict(), r"C:\Users\Yannick\Desktop\MA\Programming part\models\CUBE.pth")
 
 
