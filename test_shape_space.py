@@ -35,7 +35,7 @@ def test_shape(index):
     dataset = np.load(open("dataset1k.npy", "rb"))
 
     network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network.load_state_dict(torch.load(r"shape_space_64.pth", map_location=device))
+    network.load_state_dict(torch.load(r"shape_space_64b.pth", map_location=device))
     network.to(device) 
     network.eval()
 
@@ -58,8 +58,10 @@ def test_shape(index):
     x = torch.cat((point, global_feat[0]))
     # print(network(x))
 
-    shape_space_toParaview2(network, 129, index, global_feat)
+    shape_space_toParaview2(network, 256, index, global_feat)
     return
 
-test_shape(0)
+
+for e in [1,2,0,3,4,5,6,7,8,9,10,14,42]:
+    test_shape(e)
 

@@ -13,7 +13,7 @@ FOURIER_FEATUERS = True
 SIGMA = 3.0
 MONTE_CARLO_SAMPLES = 2000
 SHAPES_EACH_STEP = 16
-EPSILON = .0001
+EPSILON = .01
 CONSTANT = 40. if FOURIER_FEATUERS else 10.0 
 
 
@@ -66,5 +66,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "shape_space_64.pth")
+torch.save(network.state_dict(), "shape_space_64b.pth")
 print("Finished")
