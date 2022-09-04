@@ -52,16 +52,17 @@ def test_shape(index):
 
 
     inputs = torch.transpose(points, 1, 2)
-    reconstructed_points, global_feat = autoencoder(inputs)
+    reconstructed_points, global_feat = autoencoder(inputs).to(device)
 
 
-    x = torch.cat((point, global_feat[0]))
+    #x = torch.cat((point, global_feat[0]))
     # print(network(x))
 
-    shape_space_toParaview2(network, 256, index, global_feat)
+    shape_space_toParaview2(network, 130, index, global_feat)
     return
 
 
-for e in [1,2,0,3,4,5,6,7,8,9,10,14,42]:
+for e in [2,0,3,4,5,6,7,8,9,10,14,42]:
+    
     test_shape(e)
-
+    print(e)
