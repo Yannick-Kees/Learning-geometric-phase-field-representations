@@ -66,5 +66,5 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
     
 
-torch.save(network.state_dict(), "shape_space_64b.pth")
+torch.save(network.state_dict(), "shape_space_64c.pth")
 print("Finished")
