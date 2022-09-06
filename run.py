@@ -15,7 +15,7 @@ BATCHSIZE = 100
 
 # LOSS
 LOSS = "AT"                                         # Either AT or MM
-MONTE_CARLO_SAMPLES = 50
+MONTE_CARLO_SAMPLES = 1000
 MONTE_CARLO_BALL_SAMPLES = 1
 EPSILON = .05
 if LOSS == "MM":
