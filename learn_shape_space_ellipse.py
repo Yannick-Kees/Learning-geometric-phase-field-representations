@@ -44,8 +44,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 
         shape = dataset[index][0]#[:,:num_points]
         latent = Tensor(dataset[index][1]).to(device)
-        print(index)
-        print(latent)
         pointcloud = Variable( Tensor(shape) , requires_grad=False).to(device)
 
         latent = torch.ravel(latent)
