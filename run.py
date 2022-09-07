@@ -5,7 +5,7 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 10000
+NUM_TRAINING_SESSIONS = 5000
 START_LEARNING_RATE = 0.0001                        #  0.01
 PATIENCE = 1000
 NUM_NODES = 512

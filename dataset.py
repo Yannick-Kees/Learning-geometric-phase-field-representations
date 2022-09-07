@@ -5,6 +5,30 @@ from shapemaker import *
 # Metaballs ########
 ####################
 
+def create_8D():
+    # Create dataset of metaballs from 2 balls
+    # 2 . 3 coordinates + 2 radii = 8 dimensions
+    
+    points = []
+
+    f = open("dataset_8D.npy", "wb")
+    
+    for i in range(50):
+        points.append(shape_maker8D(2000))
+        print(i)
+        
+        
+    np.save(f, points)
+    return
+    
+def eval_8D(i):
+    # Plot metaballs of 2 balls from the dataset
+    
+    f = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
+    draw_point_cloud(Tensor(f[i][0]))
+    print(f[i][1])
+
+
 def create():
     # Create dataset of metaballs
     
@@ -54,4 +78,3 @@ def eval_ell(i):
     
     
  
-eval(10)
