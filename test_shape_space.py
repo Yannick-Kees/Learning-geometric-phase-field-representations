@@ -26,9 +26,9 @@ def test_8D(index):
 
     dataset = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
 
-    # network =  ParkEtAl(3+3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network = FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=8 )
-    network.load_state_dict(torch.load(r"shape_space_8D_NoEncoder.pth", map_location=device))
+    network =  ParkEtAl(3+8, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    #network = FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=8 )
+    network.load_state_dict(torch.load(r"shape_space_8D_NoEncoder_AFF.pth", map_location=device))
     network.to(device) 
 
     network.eval()
@@ -37,7 +37,7 @@ def test_8D(index):
 
     
 
-    shape_space_toParaview2(network, 127, index, latent)
+    shape_space_toParaview(network, 127, index, latent)
     return
 
 

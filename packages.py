@@ -52,3 +52,6 @@ from pytorch3d.loss import (
     mesh_normal_consistency,
 )
 from typing import Union
+
+# Train two networks at the same time
+from itertools import chain
