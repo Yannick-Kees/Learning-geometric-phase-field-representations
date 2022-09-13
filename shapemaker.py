@@ -69,12 +69,12 @@ def make_ellipse():
 
 
 
-def shape_maker8D(num_points):
+def shape_maker8D(num_points, N):
     # Returns:
     #   Point Cloud samples from a randomly generated 3D Object using Metaball approach
     
     # Parameters:
-    #   d:              Dimension of point cloud (d=2 or d=3)
+    #   N:              Number of points
     #   num_points:     How many points are sampled
 
     
@@ -84,7 +84,7 @@ def shape_maker8D(num_points):
     
     while condition:
         
-        n=  2
+        n=  N
         g = 3
         m = []
         k = len(m)
@@ -161,6 +161,7 @@ def shape_maker8D(num_points):
         
         if not condition:
             # Save Parameters for feature vector
+            # Only works for 8D; Maybe change later
             
             ft.extend(m[0])
             ft.append(s[0])

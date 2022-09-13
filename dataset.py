@@ -11,10 +11,10 @@ def create_8D():
     
     points = []
 
-    f = open("dataset_8D.npy", "wb")
+    f = open(r"dataset/dataset_16D.npy", "wb")
     
     for i in range(50):
-        points.append(shape_maker8D(2000))
+        points.append(shape_maker8D(2000, 4))
         print(i)
         
         
@@ -24,7 +24,7 @@ def create_8D():
 def eval_8D(i):
     # Plot metaballs of 2 balls from the dataset
     
-    f = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
+    f = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
     draw_point_cloud(Tensor(f[i][0]))
     print(f[i][1])
 
@@ -34,7 +34,7 @@ def create():
     
     points = []
 
-    f = open("dataset1k.npy", "wb")
+    f = open(r"dataset/dataset1k.npy", "wb")
     
     for i in range(50):
         points.append(shape_maker1(3,1000))
@@ -46,7 +46,7 @@ def create():
 def eval(i):
     # visualize items from the metaball dataset
     
-    f = np.load(open("dataset1k.npy", "rb"))
+    f = np.load(open(r"dataset/dataset1k.npy", "rb"))
     draw_point_cloud(Tensor(f[i]))
     
     
@@ -60,7 +60,7 @@ def create_ell():
     # Create dataset of ellipsoids
     points = []
 
-    f = open("dataset_ellipsoid.npy", "wb")
+    f = open(r"dataset/dataset_ellipsoid.npy", "wb")
     
     for i in range(50):
         points.append(make_ellipse())
@@ -73,9 +73,9 @@ def create_ell():
 def eval_ell(i):
     # Plot ellipsoids from the dataset
     
-    f = np.load(open("dataset_ellipsoid.npy", "rb"),allow_pickle=True)
+    f = np.load(open(r"dataset/dataset_ellipsoid.npy", "rb"),allow_pickle=True)
     draw_point_cloud(Tensor(f[i][0]))
     
     
- 
-eval_8D(1)
+for i in range(10):
+    eval_8D(i)

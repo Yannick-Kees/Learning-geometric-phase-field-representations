@@ -13,8 +13,8 @@ FOURIER_FEATUERS = True
 SIGMA = 3.0
 MONTE_CARLO_SAMPLES = 2000
 SHAPES_EACH_STEP = 16
-EPSILON = .001
-CONSTANT = 4. if FOURIER_FEATUERS else 10.0 
+EPSILON = .0001
+CONSTANT = 40. if FOURIER_FEATUERS else 10.0 
 
 
 
@@ -24,12 +24,12 @@ CONSTANT = 4. if FOURIER_FEATUERS else 10.0
 
 #   Load autoencoder
 autoencoder = PCAutoEncoder64(3, 1000)
-autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
+autoencoder.load_state_dict(torch.load(r"models/autoencoder64.pth", map_location=device))
 autoencoder.to(device) 
 autoencoder.eval()
 
 #   Load dataset
-dataset = np.load(open("dataset1k.npy", "rb"))
+dataset = np.load(open(r"dataset/dataset1k.npy", "rb"))
 
 #   Setup Shape Space Learning Network
 network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )

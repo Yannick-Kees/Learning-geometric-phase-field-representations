@@ -24,7 +24,7 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 ####################
 
 #   Load dataset
-dataset = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
+dataset = np.load(open(r"dataset/dataset_8D.npy", "rb"),allow_pickle=True)
 
 #   Setup Network
 network =  ParkEtAl(3+8, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )

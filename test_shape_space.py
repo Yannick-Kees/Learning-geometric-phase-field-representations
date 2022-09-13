@@ -5,10 +5,10 @@ def test_ellipse(index):
  
 
 
-    dataset = np.load(open("dataset_ellipsoid.npy", "rb"),allow_pickle=True)
+    dataset = np.load(open(r"dataset/dataset_ellipsoid.npy", "rb"),allow_pickle=True)
 
     network =  ParkEtAl(3+3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network.load_state_dict(torch.load(r"shape_space_ellipse.pth", map_location=device))
+    network.load_state_dict(torch.load(r"models/shape_space_ellipse.pth", map_location=device))
     network.to(device) 
 
     network.eval()
@@ -24,11 +24,11 @@ def test_8D(index):
  
 
 
-    dataset = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
+    dataset = np.load(open(r"dataset/dataset_8D.npy", "rb"),allow_pickle=True)
 
     network =  ParkEtAl(3+8, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
     #network = FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=8 )
-    network.load_state_dict(torch.load(r"shape_space_8D_NoEncoder_AFF.pth", map_location=device))
+    network.load_state_dict(torch.load(r"models/shape_space_8D_NoEncoder_AFF.pth", map_location=device))
     network.to(device) 
 
     network.eval()
@@ -37,23 +37,24 @@ def test_8D(index):
 
     
 
-    shape_space_toParaview(network, 127, index, latent)
+    shape_space_toParaview(network, 140, index, latent)
     return
 
 
 def test_shape(index):
-    autoencoder = PCAutoEncoder64(3, 1000)
-    autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
+    autoencoder = PointNetAutoEncoder(3,2000,8)
+    autoencoder.load_state_dict(torch.load(r"models/autoencoder64_8D_AT.pth", map_location=device))
     autoencoder.to(device) 
     autoencoder.eval()
     
     
 
 
-    dataset = np.load(open("dataset1k.npy", "rb"))
+    dataset = np.load(open(r"dataset/dataset_8D.npy", "rb"),allow_pickle=True)
 
-    network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network.load_state_dict(torch.load(r"shape_space_64e.pth", map_location=device))
+    #network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    network =  ParkEtAl(3+8, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    network.load_state_dict(torch.load(r"models/shape_space_8D_AT.pth", map_location=device))
     network.to(device) 
     network.eval()
 
@@ -62,7 +63,7 @@ def test_shape(index):
     point = [.5,  -.5,  -.5 ]
 
     point = Tensor(point)
-    points = [dataset[index]]
+    points = [dataset[index][0]]
 
     # points = points.cuda()
     points = np.array(points)
@@ -76,9 +77,12 @@ def test_shape(index):
     #x = torch.cat((point, global_feat[0]))
     # print(network(x))
 
-    shape_space_toParaview2(network, 131, index, global_feat)
+    shape_space_toParaview(network, 141, index, global_feat)
     return
 
-test_8D(1)
-print("HEy")
-test_8D(3)
+
+for i in [1,8,16,6,10]:
+    print(i)
+    test_shape(i)
+    test_8D(i)
+  

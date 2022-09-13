@@ -23,17 +23,17 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 ####################
 
 #   Load autoencoder
-autoencoder = PointNetAutoEncoder(3,2000,8)
+autoencoder = PointNetAutoEncoder(3,2000,16)
 # autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
 autoencoder.to(device) 
 # autoencoder.eval()
 
 #   Load dataset
-dataset = np.load(open("dataset_8D.npy", "rb"),allow_pickle=True)
+dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
 
 #   Setup Shape Space Learning Network
  # network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
-network =  ParkEtAl(3+8, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 
 all_params = chain(network.parameters(), autoencoder.parameters())
@@ -77,6 +77,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 # Check if it really trains both networks at the same time | Part 1    
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-torch.save(network.state_dict(), "shape_space_8D_AT.pth")
-torch.save(autoencoder.state_dict(), 'autoencoder64_8D_AT.pth')
+torch.save(network.state_dict(), "shape_space_16D_AT.pth")
+torch.save(autoencoder.state_dict(), 'autoencoder64_16D_AT.pth')
 print("Finished")
