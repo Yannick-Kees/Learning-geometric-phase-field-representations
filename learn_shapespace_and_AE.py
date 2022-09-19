@@ -5,7 +5,7 @@ from shapemaker import *
 ####################
 
 # Training Parameters
-NUM_TRAINING_SESSIONS = 70000
+NUM_TRAINING_SESSIONS = 50000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512

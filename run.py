@@ -5,8 +5,8 @@ from loss_functionals import *
 ####################
 
 # Neuronal Network
-NUM_TRAINING_SESSIONS = 5000
-START_LEARNING_RATE = 0.0001                        #  0.01
+NUM_TRAINING_SESSIONS = 7000
+START_LEARNING_RATE = 0.01                        #  0.01
 PATIENCE = 1000
 NUM_NODES = 512
 FOURIER_FEATUERS = False
@@ -14,16 +14,16 @@ SIGMA = 1.7
 BATCHSIZE = 100
 
 # LOSS
-LOSS = "AT"                                         # Either AT or MM
+LOSS = "MM"                                         # Either AT or MM
 MONTE_CARLO_SAMPLES = 1000
-MONTE_CARLO_BALL_SAMPLES = 1
+MONTE_CARLO_BALL_SAMPLES = 20
 EPSILON = .05
 if LOSS == "MM":
-    CONSTANT = 14 if FOURIER_FEATUERS else 14.      # 14, Modica Mortola
+    CONSTANT = 14 if FOURIER_FEATUERS else 6.      # 14, Modica Mortola
 else:
     # CONSTANT = 2.0 if FOURIER_FEATUERS else 5.5   # 14, Constante höher bei FF 5 10
     CONSTANT = 2.0 if FOURIER_FEATUERS else 2.5     # 14, Constante höher bei FF
-MU = .8
+MU = 2.0
 
 # MISC
 FILM = False                                        # Makes a movie from the learning process
@@ -34,14 +34,14 @@ FILM = False                                        # Makes a movie from the lea
 ####################
 
 
-#network = ParkEtAl(2, [NUM_NODES]*2, [], geometric_init=False, FourierFeatures=False, num_features = 6, sigma = SIGMA )
+#network = ParkEtAl(2, [NUM_NODES], [], geometric_init=True, FourierFeatures=FOURIER_FEATUERS, num_features = 6, sigma = SIGMA )
 network = small_MLP(128)
 network.to(device)
  
 optimizer = optim.Adam(network.parameters(), START_LEARNING_RATE )
 scheduler = ReduceLROnPlateau(optimizer, 'min', patience=PATIENCE, verbose=False)
 
-pointcloud = Variable(torch.tensor( normalize(g_quadrath))  , requires_grad=True).to(device)
+pointcloud = Variable(torch.tensor( normalize(m_quadrath))  , requires_grad=True).to(device)
 
 
 for i in range(NUM_TRAINING_SESSIONS+1):
