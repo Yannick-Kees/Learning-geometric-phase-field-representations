@@ -32,7 +32,7 @@ autoencoder.to(device)
 dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
 
 #   Setup Shape Space Learning Network
-network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=16 )
+network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=16 )
 #network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 

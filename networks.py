@@ -355,13 +355,16 @@ class FeatureSpaceNetwork2(nn.Module):
         dims = [self.d_in] + dims + [1]     # Number of neurons in each layer
         dims[0] += feature_space
         
+        
         self.num_layers = len(dims)         # Number of layers
         self.skip_in = skip_in              # Skipping layers
 
         for layer in range(0, self.num_layers - 1):
 
             if layer + 1 in skip_in:
-                out_dim = dims[layer + 1] - d_in
+        
+                out_dim = dims[layer + 1] - dims[0]
+   
             else:
                 out_dim = dims[layer + 1]
 
@@ -388,6 +391,7 @@ class FeatureSpaceNetwork2(nn.Module):
         else:
             self.activation = nn.ReLU()
 
+
     def forward(self, input, ft):
         # forward pass of the NN
         #
@@ -398,16 +402,20 @@ class FeatureSpaceNetwork2(nn.Module):
         if self.FourierFeatures:
             # Fourier Layer
             x = self.FFL(x)         # Pass Fourier Features
+   
             x = torch.cat((x,ft),1) # Concatenate Feature vector
-
+            y = x
+        
+        
         for layer in range(0, self.num_layers - 1):
+
 
             lin = getattr(self, "lin" + str(layer))
 
             if layer in self.skip_in:
                 # Skipping layer
                 
-                x = torch.cat([x, input], -1) / np.sqrt(2)
+                x = torch.cat([x, y], -1) / np.sqrt(2)
 
             x = lin(x) # Apply layer
 
