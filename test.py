@@ -39,12 +39,8 @@ if Test:
         draw_point_cloud(pointcloud)
         
 
-dataset = np.load(open("dataset_ellipsoid.npy", "rb"),allow_pickle=True)
+file = open("3dObjects/nefertiti.obj")
+pc =  read_obj_file(file)
 
-network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-network.load_state_dict(torch.load(r"shape_space_64.pth", map_location=device))
-network.to(device) 
-
-network.eval()
-x = np.array([dataset[1][1].detach().cpu().numpy()])
-latent = Tensor( x ) 
+x= cut_hole(pc)
+print(len(x))

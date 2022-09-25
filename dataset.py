@@ -11,7 +11,7 @@ def create_8D():
     
     points = []
 
-    f = open(r"dataset/dataset_16D.npy", "wb")
+    f = open(r"dataset/dataset_8D.npy", "wb")
     
     for i in range(50):
         points.append(shape_maker8D(2000, 4))
@@ -75,7 +75,6 @@ def eval_ell(i):
     
     f = np.load(open(r"dataset/dataset_ellipsoid.npy", "rb"),allow_pickle=True)
     draw_point_cloud(Tensor(f[i][0]))
-    
     
 for i in range(10):
     eval_8D(i)

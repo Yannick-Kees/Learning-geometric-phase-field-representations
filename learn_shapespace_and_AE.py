@@ -5,7 +5,7 @@ from shapemaker import *
 ####################
 
 # Training Parameters
-NUM_TRAINING_SESSIONS = 50000
+NUM_TRAINING_SESSIONS = 70000
 START_LEARNING_RATE = 0.01
 PATIENCE = 1500
 NUM_NODES = 512
@@ -32,8 +32,8 @@ autoencoder.to(device)
 dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
 
 #   Setup Shape Space Learning Network
- # network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
-network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=16 )
+#network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
 network.to(device) 
 
 all_params = chain(network.parameters(), autoencoder.parameters())
@@ -62,7 +62,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 
         rec, latent = autoencoder(pointcloudT)
         latent = torch.ravel(latent)
-        loss +=  AT_loss_shapespace(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES,  CONSTANT, latent )
+        loss +=  AT_loss_shapespace2(network, pointcloud, EPSILON, MONTE_CARLO_SAMPLES,  CONSTANT, latent )
         
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
@@ -77,6 +77,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 # Check if it really trains both networks at the same time | Part 1    
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-torch.save(network.state_dict(), "shape_space_16D_AT.pth")
-torch.save(autoencoder.state_dict(), 'autoencoder64_16D_AT.pth')
+torch.save(network.state_dict(), r"models/shape_space_16D_AT2.pth")
+torch.save(autoencoder.state_dict(), r"models/autoencoder64_16D_AT2.pth")
 print("Finished")

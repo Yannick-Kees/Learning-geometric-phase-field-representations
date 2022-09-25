@@ -40,15 +40,15 @@ def test_8D(index):
 
 def test_shape(index):
     autoencoder = PointNetAutoEncoder(3,2000,16)
-    autoencoder.load_state_dict(torch.load(r"models/autoencoder64_16D_AT.pth", map_location=device))
+    autoencoder.load_state_dict(torch.load(r"models/autoencoder64_16D_AT2.pth", map_location=device))
     autoencoder.to(device) 
     autoencoder.eval()
 
     dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
 
-    #network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
-    network.load_state_dict(torch.load(r"models/shape_space_16D_AT.pth", map_location=device))
+    network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=16 )
+    #network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    network.load_state_dict(torch.load(r"models/shape_space_16D_AT2.pth", map_location=device))
     network.to(device) 
     network.eval()
 
@@ -75,7 +75,7 @@ def test_shape(index):
     return
 
 
-for i in [1,8,16,6,10]:
+for i in range(10):
     print(i)
     test_shape(i)
   
