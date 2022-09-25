@@ -46,7 +46,7 @@ def test_shape(index):
 
     dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
 
-    network =  FeatureSpaceNetwork(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=16 )
+    network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=16 )
     #network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
     network.load_state_dict(torch.load(r"models/shape_space_16D_AT2.pth", map_location=device))
     network.to(device) 
