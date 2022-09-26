@@ -71,7 +71,7 @@ def test_shape(index):
     #x = torch.cat((point, global_feat[0]))
     # print(network(x))
 
-    shape_space_toParaview(network, 160, index, global_feat)
+    shape_space_toParaview2(network, 256, index, global_feat)
     return
 
 
