@@ -16,6 +16,11 @@ SHAPES_EACH_STEP = 16
 EPSILON = .0001
 CONSTANT = 40. if FOURIER_FEATUERS else 10.0 
 
+# Network Design
+FEATURE_DIMENSION = 12
+SIZE_POINTCLOUD = 23725
+TOTAL_SHAPES = 100
+
 
 
 ####################
@@ -23,17 +28,16 @@ CONSTANT = 40. if FOURIER_FEATUERS else 10.0
 ####################
 
 #   Load autoencoder
-autoencoder = PointNetAutoEncoder(3,2000,16)
-# autoencoder.load_state_dict(torch.load(r"autoencoder64.pth", map_location=device))
+autoencoder = PointNetAutoEncoder(3,SIZE_POINTCLOUD,FEATURE_DIMENSION)
 autoencoder.to(device) 
-# autoencoder.eval()
+
 
 #   Load dataset
-dataset = np.load(open(r"dataset/dataset_16D.npy", "rb"),allow_pickle=True)
+dataset = np.load(open(r"dataset/dataset_faces100.npy", "rb"),allow_pickle=True)
 
 #   Setup Shape Space Learning Network
-network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=16 )
-#network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA )
+network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=FEATURE_DIMENSION )
+
 network.to(device) 
 
 all_params = chain(network.parameters(), autoencoder.parameters())
@@ -50,7 +54,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     network.zero_grad()
     autoencoder.zero_grad()
     loss = 0
-    shape_batch = np.random.choice(50, SHAPES_EACH_STEP, replace=False)
+    shape_batch = np.random.choice(TOTAL_SHAPES, SHAPES_EACH_STEP, replace=False)
     
     for index in shape_batch:
 
@@ -74,9 +78,9 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
 
 
-# Check if it really trains both networks at the same time | Part 1    
+# Check if it really trains both networks at the same time | Part 2   
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-torch.save(network.state_dict(), r"models/shape_space_16D_AT2.pth")
-torch.save(autoencoder.state_dict(), r"models/autoencoder64_16D_AT2.pth")
+torch.save(network.state_dict(), r"models/face_space.pth")
+torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
 print("Finished")

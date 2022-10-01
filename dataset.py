@@ -76,5 +76,52 @@ def eval_ell(i):
     f = np.load(open(r"dataset/dataset_ellipsoid.npy", "rb"),allow_pickle=True)
     draw_point_cloud(Tensor(f[i][0]))
     
-for i in range(10):
-    eval_8D(i)
+    
+####################
+# Faces   ##########
+####################  
+
+# 383 faces in total
+
+#import open3d as o3d
+
+def load_face(index):
+    # Load face 'index' from .ply file
+    # Need to enable the import open3d part for this
+
+    pcd = o3d.io.read_point_cloud("faces/face_" + str(index) + ".ply")
+    x = np.asarray(pcd.points)
+    x = Tensor(normalize(x))
+    x = x - np.array([-0.22,-0.22,0.24])
+    x = Tensor(normalize(x))
+    x = x + np.array([0.0,.15,-0.15])
+    x = np.array(normalize(x))
+    
+    if x.shape[0] != 23725:
+        print("NOT THE RIGHT SIZE!!")
+        print(index)
+        
+    return x
+
+def make_face_dataset():
+    # Convert all .ply files into one numpy array and save it
+    points = []
+
+    f = open(r"dataset/dataset_faces.npy", "wb")
+    
+    for i in range(100):
+        print(i)
+        x = (load_face(i),0)
+        points.append(x)
+        
+    np.save(f, points)
+    return
+
+def show_face(i):
+    # Plot face from the dataset
+
+    f = np.load(open(r"dataset/dataset_faces.npy", "rb"),allow_pickle=True)
+    draw_point_cloud(Tensor(f[i][0]))     
+
+
+show_face(5)
