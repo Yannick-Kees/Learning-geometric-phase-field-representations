@@ -85,6 +85,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 # Check if it really trains both networks at the same time | Part 2   
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-#torch.save(network.state_dict(), r"models/face_space.pth")
-#torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
+torch.save(network.state_dict(), r"models/face_space.pth")
+torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
 print("Finished")
