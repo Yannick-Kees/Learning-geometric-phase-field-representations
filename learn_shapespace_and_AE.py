@@ -5,14 +5,14 @@ from shapemaker import *
 ####################
 
 # Training Parameters
-NUM_TRAINING_SESSIONS = 100     
+NUM_TRAINING_SESSIONS = 70000    
 START_LEARNING_RATE = 0.01      
 PATIENCE = 1500
 NUM_NODES = 512         
 FOURIER_FEATUERS = True
 SIGMA = 3.0
 MONTE_CARLO_SAMPLES = 2000
-SHAPES_EACH_STEP = 1
+SHAPES_EACH_STEP = 16
 EPSILON = .0001
 CONSTANT = 40. if FOURIER_FEATUERS else 10.0 
 
@@ -81,6 +81,6 @@ for i in range(NUM_TRAINING_SESSIONS+1):
 # Check if it really trains both networks at the same time | Part 2   
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-#torch.save(network.state_dict(), r"models/face_space.pth")
-#torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
+torch.save(network.state_dict(), r"models/face_space.pth")
+torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
 print("Finished")
