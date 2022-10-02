@@ -6,7 +6,7 @@ from shapemaker import *
 
 # Training Parameters
 NUM_TRAINING_SESSIONS = 70000    
-START_LEARNING_RATE = 0.05      
+START_LEARNING_RATE = 0.01      
 PATIENCE = 1500
 NUM_NODES = 512         
 FOURIER_FEATUERS = True
@@ -36,7 +36,7 @@ autoencoder.to(device)
 dataset = np.load(open(r"dataset/dataset_faces100.npy", "rb"),allow_pickle=True)
 
 #   Setup Shape Space Learning Network
-network =  FeatureSpaceNetwork2(3, [520]*2 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=FEATURE_DIMENSION, geometric_init=False )
+network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=FOURIER_FEATUERS, num_features = 8, sigma = SIGMA, feature_space=FEATURE_DIMENSION, geometric_init=False )
 
 network.to(device) 
 
@@ -53,7 +53,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     
     network.zero_grad()
     autoencoder.zero_grad()
-    loss = 0
+    loss = 0.0
     shape_batch = np.random.choice(TOTAL_SHAPES, SHAPES_EACH_STEP, replace=False)
     
     for index in shape_batch:
@@ -70,6 +70,9 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
+    if (i==1400 or i == 5000):
+        print( network(Tensor([[0.0,0.0,0.0]]),  autoencoder(Variable( Tensor( np.array([ np.array(dataset[0][0]).T])) , requires_grad=True).to(device))[1]))
+        
         
         # backpropagation
         
@@ -78,9 +81,10 @@ for i in range(NUM_TRAINING_SESSIONS+1):
     scheduler.step(loss)
 
 
+
 # Check if it really trains both networks at the same time | Part 2   
 #print(autoencoder(Variable( Tensor( np.array([ np.array(dataset[1][0]).T])) , requires_grad=True).to(device)))
 
-torch.save(network.state_dict(), r"models/face_space.pth")
-torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
+#torch.save(network.state_dict(), r"models/face_space.pth")
+#torch.save(autoencoder.state_dict(), r"models/face_ae.pth")
 print("Finished")
