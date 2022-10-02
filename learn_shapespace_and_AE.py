@@ -70,9 +70,7 @@ for i in range(NUM_TRAINING_SESSIONS+1):
         
     if (i%10==0):
         report_progress(i, NUM_TRAINING_SESSIONS , loss.detach().cpu().numpy() )
-    if (i==1400 or i == 5000):
-        print( network(Tensor([[0.0,0.0,0.0]]),  autoencoder(Variable( Tensor( np.array([ np.array(dataset[0][0]).T])) , requires_grad=True).to(device))[1]))
-        
+       
         
         # backpropagation
         
