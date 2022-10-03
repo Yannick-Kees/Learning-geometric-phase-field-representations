@@ -74,8 +74,33 @@ def test_shape(index):
     shape_space_toParaview2(network, 256, index, global_feat)
     return
 
+def test_face(index):
+    
+    autoencoder = PointNetAutoEncoder(3,23725,12)
+    autoencoder.load_state_dict(torch.load(r"models/face_ae5.pth", map_location=device))
+    autoencoder.to(device) 
+    autoencoder.eval()
 
-for i in range(10):
+    dataset = np.load(open(r"dataset/dataset_faces100.npy", "rb"),allow_pickle=True)
+
+    network =  FeatureSpaceNetwork2(3, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3, feature_space=12 )
+    #network =  ParkEtAl(3+16, [520]*7 , [4], FourierFeatures=True, num_features = 8, sigma = 3 )
+    network.load_state_dict(torch.load(r"models/face_space5.pth", map_location=device))
+    network.to(device) 
+    network.eval()
+
+    points = [dataset[index][0]]
+    points = np.array(points)
+    points = Variable( Tensor(points) , requires_grad=True).to(device)
+
+
+    inputs = torch.transpose(points, 1, 2)
+    reconstructed_points, global_feat = autoencoder(inputs)
+    shape_space_toParaview2(network, 120, index, global_feat)
+    return
+
+
+for i in range(15):
     print(i)
-    test_shape(i)
+    test_face(i)
   
