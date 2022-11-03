@@ -39,8 +39,5 @@ if Test:
         draw_point_cloud(pointcloud)
         
 
-file = open("3dObjects/nefertiti.obj")
-pc =  read_obj_file(file)
-
-x= cut_hole(pc)
-print(len(x))
+from math import tanh
+print(-0.1*(1-tanh(.6)**2)*0.3*2.5*(1-tanh(.3)**2))
